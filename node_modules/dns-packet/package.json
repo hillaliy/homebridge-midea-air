@@ -1,0 +1,43 @@
+{
+  "name": "dns-packet",
+  "version": "4.2.0",
+  "description": "An abstract-encoding compliant module for encoding / decoding DNS packets",
+  "author": "Mathias Buus",
+  "license": "MIT",
+  "repository": "mafintosh/dns-packet",
+  "homepage": "https://github.com/mafintosh/dns-packet",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "eslint --color *.js && tape test.js"
+  },
+  "dependencies": {
+    "ip": "^1.1.5",
+    "safe-buffer": "^5.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.10.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "tape": "^4.9.0"
+  },
+  "keywords": [
+    "dns",
+    "packet",
+    "encodings",
+    "encoding",
+    "encoder",
+    "abstract-encoding"
+  ],
+  "files": [
+    "index.js",
+    "types.js",
+    "rcodes.js",
+    "opcodes.js",
+    "classes.js"
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "pluginAlias": "midea-air",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "Homebridge plugin for Midea AC",
+  "footerDisplay": "Created by @hillaliy",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "user": {
+        "title": "Midea account email",
+        "type": "string",
+        "required": true
+      },
+      "password": {
+        "title": "Midea account password",
+        "type": "string",
+        "x-schema-form": {
+          "type": "password",
+          "required": true
+        }
+      },
+      "interval": {
+        "title": "Update interval in minutes",
+        "description": "Time in minutes between each status polling of the Midea devices, Default is 1",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 10
+      },
+      "devices": {
+        "type": "array",
+        "items": {
+          "title": "Device",
+          "type": "object",
+          "properties": {
+            "deviceId": {
+              "title": "Device ID",
+              "type": "string"
+            },
+            "supportedSwingModes": {
+              "title": "Supported Swing Modes",
+              "description": "Off, Vertical, Horizontal, Both You have to select which type your device supports",
+              "type": "string",
+              "required": false,
+              "oneOf": [
+                {
+                  "title": "None",
+                  "enum": [
+                    "None"
+                  ]
+                },
+                {
+                  "title": "Vertical",
+                  "enum": [
+                    "Vertical"
+                  ]
+                },
+                {
+                  "title": "Horizontal",
+                  "enum": [
+                    "Horizontal"
+                  ]
+                },
+                {
+                  "title": "Both",
+                  "enum": [
+                    "Both"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

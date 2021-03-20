@@ -1,0 +1,13 @@
+{
+  "name": "basic-auth-parser",
+  "description": "Parse Basic Auth `Authorization` HTTP headers",
+  "author": "Maciej Małecki <me@mmalecki.com>",
+  "version": "0.0.2",
+  "main": "./lib/basic-auth-parser.js",
+  "devDependencies": {
+    "vows": "0.6.x"
+  },
+  "scripts": {
+    "test": "vows --spec"
+  }
+}
