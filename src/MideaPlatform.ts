@@ -88,7 +88,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			}
 			this.updateInterval = setInterval(() => {
 				this.updateValues();
-			}, this.config['interval'] * 60 * 1000);
+			}, this.config['interval'] * 1000);
 		} catch (err) {
 			this.log.debug('Login failed')
 		}
@@ -96,7 +96,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	}
 
 	async login() {
-		return new Promise(async (resolve, reject) => {
+		return new Promise<void>(async (resolve, reject) => {
 			const url = '/user/login/id/get';
 
 			const form: any = {
@@ -167,7 +167,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 
 	async getUserList() {
 		this.log.debug('getUserList called');
-		return new Promise(async (resolve, reject) => {
+		return new Promise<void>(async (resolve, reject) => {
 			const form: any = {
 				src: Constants.RequestSource,
 				format: Constants.RequestFormat,
@@ -234,7 +234,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	}
 
 	async sendCommand(device: MideaAccessory, order: any, intent: string) {
-		return new Promise(async (resolve, reject) => {
+		return new Promise<void>(async (resolve, reject) => {
 			if (device) {
 				const orderEncode = Utils.encode(order);
 				const orderEncrypt = Utils.encryptAes(orderEncode, this.dataKey);
@@ -262,10 +262,12 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 						this.log.error(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) returned error ${response.data.msg}`)
 						reject();
 					} else {
+
 						this.log.debug(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) success!`);
 						let applianceResponse: any
 						if (device.deviceType == MideaDeviceType.AirConditioner) {
 							applianceResponse = new ACApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
+
 							device.targetTemperature = applianceResponse.targetTemperature;
 							device.indoorTemperature = applianceResponse.indoorTemperature;
 							device.useFahrenheit = applianceResponse.tempUnit
@@ -324,10 +326,9 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			this.log.debug('Updating accessory', accessory.context.deviceId)
 			// this.log.debug(JSON.stringify(this.mideaAccessories))
 			let mideaAccessory = this.mideaAccessories.find(ma => ma.deviceId == accessory.context.deviceId)
-			if (mideaAccessory === undefined) {
+			if (mideaAccessory == undefined) {
 				this.log.warn('Could not find accessory with id', accessory.context.deviceId)
 			} else {
-
 				// Setup the data payload based on deviceType
 				if (mideaAccessory.deviceType == MideaDeviceType.AirConditioner) {
 					data = ac_data_header.concat(Constants.UpdateCommand_AirCon);
@@ -343,6 +344,9 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				} catch (err) {
 					// TODO: this should be handled only on invalidSession error. Also all the retry logic could be done better (Promise retry instead of await?)
 					this.log.warn(`[updateValues] Error sending the command: ${err}. Trying to re-login before re-issuing command...`);
+
+					// sendUpdateToDevice
+
 					try {
 						const loginResponse = await this.login()
 						this.log.debug("[updateValues] Login successful!");
@@ -362,23 +366,22 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 
 	async sendUpdateToDevice(device?: MideaAccessory) {
 		if (device) {
-
 			let command: any
 			if (device.deviceType == MideaDeviceType.AirConditioner) {
 				command = new ACSetCommand();
-				command.useFahrenheit = device.useFahrenheit
+				command.useFahrenheit = device.useFahrenheit;
 				command.targetTemperature = device.targetTemperature;
 				command.swingMode = device.swingMode;
-				command.ecoMode = device.ecoMode
+				command.ecoMode = device.ecoMode;
 				command.fanSpeed = device.fanSpeed;
 			} else if (device.deviceType == MideaDeviceType.Dehumidifier) {
 				command = new DehumidifierSetCommand()
 				this.log.debug(`[sendUpdateToDevice] Generated a new command to set targetHumidity to: ${device.targetHumidity}`)
-				command.targetHumidity = device.targetHumidity
+				command.targetHumidity = device.targetHumidity;
 			}
 
 			command.powerState = device.powerState;
-			command.operationalMode = device.operationalMode
+			command.operationalMode = device.operationalMode;
 
 			//operational mode for workaround with fan only mode on device
 			const pktBuilder = new PacketBuilder();
