@@ -21,11 +21,11 @@
         }
       },
       "interval": {
-        "title": "Update interval in minutes",
-        "description": "Time in minutes between each status polling of the Midea devices, Default is 1",
+        "title": "Update interval in seconds",
+        "description": "Time in seconds between each status polling of the Midea devices, Default is 30",
         "type": "integer",
         "minimum": 0,
-        "maximum": 10
+        "maximum": 600
       },
       "devices": {
         "type": "array",
