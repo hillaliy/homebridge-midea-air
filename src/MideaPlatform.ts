@@ -345,8 +345,6 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 					// TODO: this should be handled only on invalidSession error. Also all the retry logic could be done better (Promise retry instead of await?)
 					this.log.warn(`[updateValues] Error sending the command: ${err}. Trying to re-login before re-issuing command...`);
 
-					// sendUpdateToDevice
-
 					try {
 						const loginResponse = await this.login()
 						this.log.debug("[updateValues] Login successful!");
