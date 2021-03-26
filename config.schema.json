@@ -39,9 +39,9 @@
             },
             "supportedSwingModes": {
               "title": "Supported Swing Modes",
-              "description": "Off, Vertical, Horizontal, Both You have to select which type your device supports",
+              "description": "None, Vertical, Horizontal, Both You have to select which type your device supports",
               "type": "string",
-              "required": false,
+              "required": true,
               "oneOf": [
                 {
                   "title": "None",

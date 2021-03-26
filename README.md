@@ -1,2 +1,3 @@
-# homebridge-midea-ac
- Homebridge plugin for Midea AC units
+# homebridge-midea-air
+
+Homebridge plugin for Midea AC units
