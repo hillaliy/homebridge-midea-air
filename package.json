@@ -23,7 +23,7 @@
     "author": "hillaliy",
     "license": "MIT",
     "dependencies": {
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "axios-cookiejar-support": "^1.0.0",
         "node-tunnel": "^4.0.0",
         "querystring": "^0.2.0",
