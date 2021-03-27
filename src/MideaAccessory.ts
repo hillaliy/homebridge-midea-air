@@ -258,7 +258,9 @@ export class MideaAccessory {
 				this.platform.sendUpdateToDevice(this);
 				break;
 			}
-			default: { }
+			default: {
+				this.platform.Characteristic.CurrentHeaterCoolerState.Active.ACTIVE;
+			}
 				callback(null, value);
 		}
 	}
@@ -324,12 +326,14 @@ export class MideaAccessory {
 	handleSwingModeSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		this.platform.log.debug('Triggered SET swingMode:', value);
 		// convert this.swingMode to a 0/1
-		if (value == 0) {
-			this.swingMode = 0;
-		} else {
-			this.swingMode = 15;
+		if (this.swingMode != value) {
+			if (value == 0) {
+				this.swingMode = 0;
+			} else {
+				this.swingMode = 15;
+			}
+			this.platform.sendUpdateToDevice(this)
 		}
-		this.platform.sendUpdateToDevice(this)
 		callback(null, value);
 	}
 
@@ -347,7 +351,7 @@ export class MideaAccessory {
 			this.targetTemperature = value;
 			this.platform.sendUpdateToDevice(this);
 		}
-		callback(value);
+		callback(null, value);
 	}
 
 	// Handle requests to get the current value of the "HeatingThresholdTemperature" characteristic
@@ -364,7 +368,7 @@ export class MideaAccessory {
 			this.targetTemperature = value;
 			this.platform.sendUpdateToDevice(this);
 		}
-		callback(value);
+		callback(null, value);
 	}
 
 	// Handle requests to get the current value of the "Temperature Display Units" characteristic
@@ -381,12 +385,14 @@ export class MideaAccessory {
 	// Handle requests to set the "Temperature Display Units" characteristic
 	handleTemperatureDisplayUnitsSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		this.platform.log.debug('Triggered SET TemperatureDisplayUnits:', value);
-		if (value == true) {
-			this.useFahrenheit = true;
-		} else {
-			this.useFahrenheit = false;
+		if (this.useFahrenheit != value) {
+			if (value == true) {
+				this.useFahrenheit = true;
+			} else {
+				this.useFahrenheit = false;
+			}
+			this.platform.sendUpdateToDevice(this);
 		}
-		this.platform.sendUpdateToDevice(this);
 		callback(null, value);
 	}
 
@@ -394,7 +400,7 @@ export class MideaAccessory {
 
 	// Handle requests to get the current value of the "On" characteristic
 	handleFanActiveGet(callback: CharacteristicGetCallback) {
-		this.platform.log.debug('Triggered GET Fan:');
+		this.platform.log.debug('Triggered GET Fan:', this.fanOnlyMode);
 		// workaround to get the "fan only mode" from device
 		// device operation values are 1.0="Auto",2.0="Cool",3.0="Dry",4.0="Heat",5.0="Fan"
 		// set this to a valid value for Active
