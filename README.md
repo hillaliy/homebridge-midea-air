@@ -48,9 +48,9 @@ You have to select which type your device supports
 Temperature display units can set in the homekit device when you swipe up to device settings.
 Display Units values are: FAHRENHEIT, CELSIUS
 
-## Usage
+## Rotation Speed and Swing
 
-Rotation Speed/Swing mode can set in the homekit device when you swipe up to device settings.
+Rotation Speed and Swing mode can set in the homekit device when you swipe up to device settings.
 Rotation Speed values are:
 0 : device off
 -25%: Low
