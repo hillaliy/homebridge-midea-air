@@ -1,8 +1,16 @@
-# homebridge-midea
+<img src="branding/midea.png" width="500px">
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/TobiasTimpe) – In case you want to support my work :)
+# Homebridge-Midea-Air
 
-Homebridge plugin to control Midea AC units. Still in early development.
+[Homebridge](https://github.com/nfarina/homebridge) Homebridge plugin to control Midea AC units. Still in early development.
+
+<img src="branding/product.png" width="300px">
+
+### Requirements
+
+<img src="https://img.shields.io/badge/node-%3E%3D10.17-brightgreen"> &nbsp;
+<img src="https://img.shields.io/badge/homebridge-%3E%3D0.4.4-brightgreen"> &nbsp;
+<img src="https://img.shields.io/badge/iOS-%3E%3D11.0.0-brightgreen">
 
 ## Configuration
 
