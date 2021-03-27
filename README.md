@@ -20,7 +20,7 @@ Add this to the platforms array in your config.json:
         "user": "MIDEA_ACCOUNT_EMAIL",
         "password": "MIDEA_PASSWORD",
         "interval": 1,
-    "debug": true,
+        "debug": true,
         "devices": [
         	{
         		"deviceId": "DEVICE_ID",
