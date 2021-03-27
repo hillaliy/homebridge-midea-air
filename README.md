@@ -4,6 +4,7 @@
 
 [![Downloads](https://img.shields.io/npm/dt/homebridge-midea-air.svg?color=critical)](https://www.npmjs.com/package/homebridge-midea-air)
 [![Version](https://img.shields.io/npm/v/homebridge-midea-air)](https://www.npmjs.com/package/homebridge-midea-air)<br>
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/hillaliy)
 
 [Homebridge](https://github.com/nfarina/homebridge) plugin to control Midea AC units. Still in early development.
 
@@ -37,14 +38,19 @@ Add this to the platforms array in your config.json:
 
 To set specific per-device values, be sure to first look into the Home app to find your deviceId and use it as the key in the devices object
 
-### supportedSwingMode
+### Supported Swing Mode
 
-"Nona", "Vertical", "Horizontal", "Both"
+"None", "Vertical", "Horizontal", "Both"
 You have to select which type your device supports
+
+### Temperature Display Units
+
+Temperature display units can set in the homekit device when you swipe up to device settings.
+Display Units values are: FAHRENHEIT, CELSIUS
 
 ## Usage
 
-Rotation Speed/Swing mode can set in the homekit device when you swipe up tp the device settings.
+Rotation Speed/Swing mode can set in the homekit device when you swipe up to device settings.
 Rotation Speed values are:
 0 : device off
 -25%: Low
