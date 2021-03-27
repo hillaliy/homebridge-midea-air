@@ -1,10 +1,10 @@
-<img src="branding/midea.png" width="300px">
+<img src="branding/midea.png" width="200px">
 
 # Homebridge-Midea-Air
 
 [Homebridge](https://github.com/nfarina/homebridge) Homebridge plugin to control Midea AC units. Still in early development.
 
-<img src="branding/product.png" width="200px">
+<img src="branding/product.jpeg" width="200px">
 
 ### Requirements
 
