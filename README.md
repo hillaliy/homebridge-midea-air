@@ -2,7 +2,7 @@
 
 # Homebridge-Midea-Air
 
-[Homebridge](https://github.com/nfarina/homebridge) Homebridge plugin to control Midea AC units. Still in early development.
+[Homebridge](https://github.com/nfarina/homebridge) plugin to control Midea AC units. Still in early development.
 
 <img src="branding/product.jpeg" width="200px">
 
