@@ -17,7 +17,7 @@
 Add this to the platforms array in your config.json:
 
     {
-        "platform": "midea",
+        "platform": "midea-air",
         "user": "MIDEA_ACCOUNT_EMAIL",
         "password": "MIDEA_PASSWORD",
         "interval": 1,
