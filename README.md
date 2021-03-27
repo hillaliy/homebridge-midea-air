@@ -17,7 +17,6 @@
 Add this to the platforms array in your config.json:
 
     {
-        "platform": "midea-air",
         "user": "MIDEA_ACCOUNT_EMAIL",
         "password": "MIDEA_PASSWORD",
         "interval": 1,
@@ -27,7 +26,8 @@ Add this to the platforms array in your config.json:
         		"deviceId": "DEVICE_ID",
         		"supportedSwingMode": "Both"
         	}
-        ]
+        ],
+        "platform": "midea-air"
     }
 
 ## Optional per-device Configuration Values
