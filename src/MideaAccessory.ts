@@ -27,7 +27,7 @@ export class MideaAccessory {
 	public targetHumidity: number = 0
 	public waterLevel: number = 0
 	public userId: string = ''
-	public firmwareVersion: string = '1.0.3'
+	public firmwareVersion: string = '1.0.4'
 
 	private service!: Service
 	private fanService!: Service
@@ -199,9 +199,9 @@ export class MideaAccessory {
 	// Handle requests to set the "Active" characteristic
 	handleActiveSet(value: any, callback: CharacteristicSetCallback) {
 		this.platform.log.debug('Triggered SET Active:', value);
-		if (value != this.powerState) {
-			this.platform.sendUpdateToDevice(this);
+		if (this.powerState != value) {
 			this.powerState = value;
+			this.platform.sendUpdateToDevice(this);
 		}
 		callback(value);
 	}
