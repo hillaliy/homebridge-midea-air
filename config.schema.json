@@ -2,6 +2,7 @@
   "pluginAlias": "midea-air",
   "pluginType": "platform",
   "singular": true,
+  "customUi": false,
   "headerDisplay": "Homebridge plugin for Midea AC",
   "footerDisplay": "Created by @hillaliy",
   "schema": {
@@ -29,7 +30,10 @@
       },
       "debug": {
         "title": "Enable Debug Mode",
-        "type": "boolean"
+        "description": "When checked, the plugin will produce extra logs for debugging purposes",
+        "type": "boolean",
+        "default": false,
+        "required": false
       },
       "devices": {
         "type": "array",
@@ -45,6 +49,7 @@
               "title": "Supported Swing Modes",
               "description": "None, Vertical, Horizontal, Both You have to select which type your device supports",
               "type": "string",
+              "default": "both",
               "required": true,
               "oneOf": [
                 {
