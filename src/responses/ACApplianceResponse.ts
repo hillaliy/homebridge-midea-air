@@ -27,4 +27,7 @@ export default class ACApplianceResponse extends ApplianceResponse {
         // This needs a better name, dunno what it actually means
         return (this.data[0x09] & 0x80) > 0;
     }
+    get humidity() {
+        return this.data[0x0d] & 0x7f;
+    }
 }
