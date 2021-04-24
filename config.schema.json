@@ -25,6 +25,7 @@
         "title": "Update interval in seconds",
         "description": "Time in seconds between each status polling of the Midea devices, Default is 30",
         "type": "integer",
+        "default": 30,
         "minimum": 0,
         "maximum": 600
       },
@@ -45,7 +46,7 @@
               "title": "Device ID",
               "type": "string"
             },
-            "supportedSwingModes": {
+            "supportedSwingMode": {
               "title": "Supported Swing Modes",
               "description": "None, Vertical, Horizontal, Both You have to select which type your device supports",
               "type": "string",
@@ -96,11 +97,10 @@
       "key": "devices",
       "type": "array",
       "expandable": true,
-      "orderable": false,
       "buttonText": "Add device",
       "items": [
         "devices[].deviceId",
-        "devices[].supportedSwingModes"
+        "devices[].supportedSwingMode"
       ]
     },
     {
