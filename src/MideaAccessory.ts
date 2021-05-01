@@ -12,7 +12,6 @@ export class MideaAccessory {
 	public indoorTemperature: number = 0
 	public outdoorTemperature: number = 0
 	public useFahrenheit: boolean = false
-	public targetHeaterCoolerState: number = 0
 
 	public fanSpeed: number = 0
 	public fanOnlyMode: boolean = false
@@ -22,6 +21,7 @@ export class MideaAccessory {
 	public powerState: any
 	public supportedSwingMode: MideaSwingMode = MideaSwingMode.None
 	public operationalMode: number = MideaOperationalMode.Off
+	public targetHeaterCoolerState: number = 0
 	public swingMode: number = 0
 	public ecoMode: boolean = false
 	public name: string = ''
