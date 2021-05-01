@@ -23,7 +23,7 @@ Add this to the platforms array in your config.json:
     {
         "user": "MIDEA_ACCOUNT_EMAIL",
         "password": "MIDEA_PASSWORD",
-        "interval": 1,
+        "interval": 30,
         "debug": true,
         "devices": [
         	{
