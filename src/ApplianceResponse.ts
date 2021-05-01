@@ -132,12 +132,8 @@ export default class ApplianceResponse {
         return (this.data[0x0a] & 0x40) > 0;
     }
 
-    /*
-    
-        // Byte 0x0d
-        get humidity() {
-            return this.data[0x0d] & 0x7f;
-        }
-    
-        */
+    // Byte 0x0d
+    get humidity() {
+        return this.data[0x0d] & 0x7f;
+    }
 }
