@@ -1,4 +1,4 @@
-import { Service, PlatformAccessory, CharacteristicValue, CharacteristicSetCallback, CharacteristicGetCallback, ValueWrapper } from 'homebridge';
+import { Service, PlatformAccessory, CharacteristicValue, CharacteristicSetCallback, CharacteristicGetCallback } from 'homebridge';
 import { MideaPlatform } from './MideaPlatform'
 import { MideaDeviceType } from './enums/MideaDeviceType'
 import { MideaSwingMode } from './enums/MideaSwingMode'
@@ -8,10 +8,11 @@ export class MideaAccessory {
 
 	public deviceId: string = ''
 	public deviceType: MideaDeviceType = MideaDeviceType.AirConditioner
-	public targetTemperature: number = 0
+	public targetTemperature: any = 0
 	public indoorTemperature: number = 0
 	public outdoorTemperature: number = 0
 	public useFahrenheit: boolean = false
+	public targetHeaterCoolerState: number = 0
 
 	public fanSpeed: number = 0
 	public fanOnlyMode: boolean = false
@@ -21,7 +22,6 @@ export class MideaAccessory {
 	public powerState: any
 	public supportedSwingMode: MideaSwingMode = MideaSwingMode.None
 	public operationalMode: number = MideaOperationalMode.Off
-	public currentTarget: number = 0
 	public swingMode: number = 0
 	public ecoMode: boolean = false
 	public name: string = ''
@@ -64,11 +64,6 @@ export class MideaAccessory {
 			}
 		}
 
-		// var tsteps = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'temperatureSteps');
-		// if (tsteps) {
-		// 	this.temperatureSteps = tsteps;
-		// }
-
 		this.platform.log.debug('created device', this.name, 'with id', this.deviceId, 'and type', this.deviceType)
 
 		this.accessory.getService(this.platform.Service.AccessoryInformation)!
@@ -77,23 +72,25 @@ export class MideaAccessory {
 			.setCharacteristic(this.platform.Characteristic.Model, 'Air Conditioner')
 			.setCharacteristic(this.platform.Characteristic.SerialNumber, this.deviceId)
 
+		if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'fanOnlyMode') == true) {
+			this.fanService = this.accessory.getService(this.platform.Service.Fanv2) || this.accessory.addService(this.platform.Service.Fanv2);
+			this.fanService.setCharacteristic(this.platform.Characteristic.Name, 'Fan');
+			this.fanService.getCharacteristic(this.platform.Characteristic.Active)
+				.on('get', this.handleFanActiveGet.bind(this))
+				.on('set', this.handleFanActiveSet.bind(this));
+			this.fanService.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+				.on('get', this.handleRotationSpeedGet.bind(this))
+				.on('set', this.handleRotationSpeedSet.bind(this));
+			this.fanService.getCharacteristic(this.platform.Characteristic.SwingMode)
+				.on('get', this.handleSwingModeGet.bind(this))
+				.on('set', this.handleSwingModeSet.bind(this));
+		} else {
+			let fanService = this.accessory.getService(this.platform.Service.Fanv2);
+			this.accessory.removeService(fanService);
+		};
+
 		if (this.deviceType == MideaDeviceType.AirConditioner) {
 			this.service = this.accessory.getService(this.platform.Service.HeaterCooler) || this.accessory.addService(this.platform.Service.HeaterCooler)
-			// if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'fanOnlyMode') == true) {
-			// 	this.fanService = this.accessory.getService(this.platform.Service.Fanv2) || this.accessory.addService(this.platform.Service.Fanv2);
-			// 	this.fanService.setCharacteristic(this.platform.Characteristic.Name, 'Fan');
-			// 	this.fanService.getCharacteristic(this.platform.Characteristic.Active)
-			// 		.on('get', this.handleFanActiveGet.bind(this))
-			// 		.on('set', this.handleFanActiveSet.bind(this));
-			// 	this.fanService.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-			// 		.on('get', this.handleRotationSpeedGet.bind(this))
-			// 		.on('set', this.handleRotationSpeedSet.bind(this));
-			// 	this.fanService.getCharacteristic(this.platform.Characteristic.SwingMode)
-			// 		.on('get', this.handleSwingModeGet.bind(this))
-			// 		.on('set', this.handleSwingModeSet.bind(this));
-			// } else {
-			// 	this.accessory.removeService(this.fanService);
-			// }
 			this.service.setCharacteristic(this.platform.Characteristic.Name, this.name);
 			this.service.getCharacteristic(this.platform.Characteristic.Active)
 				.on('get', this.handleActiveGet.bind(this))
@@ -117,12 +114,6 @@ export class MideaAccessory {
 					maxValue: 100,
 					minStep: 0.1
 				})
-			this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-				.on('get', this.handleRotationSpeedGet.bind(this))
-				.on('set', this.handleRotationSpeedSet.bind(this));
-			this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
-				.on('get', this.handleSwingModeGet.bind(this))
-				.on('set', this.handleSwingModeSet.bind(this));
 			this.service.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
 				.on('get', this.handleCoolingThresholdTemperatureGet.bind(this))
 				.on('set', this.handleCoolingThresholdTemperatureSet.bind(this))
@@ -139,6 +130,12 @@ export class MideaAccessory {
 					maxValue: this.maxTemperature,
 					minStep: this.temperatureSteps
 				});
+			this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+				.on('get', this.handleRotationSpeedGet.bind(this))
+				.on('set', this.handleRotationSpeedSet.bind(this));
+			this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
+				.on('get', this.handleSwingModeGet.bind(this))
+				.on('set', this.handleSwingModeSet.bind(this));
 			// this.service.getCharacteristic(this.platform.Characteristic.TemperatureDisplayUnits)
 			// 		.on('get', this.handleTemperatureDisplayUnitsGet.bind(this))
 			// 		.on('set', this.handleTemperatureDisplayUnitsSet.bind(this))
@@ -150,98 +147,123 @@ export class MideaAccessory {
 			// 		});
 		} else this.platform.log.error('Unsupported device type ', MideaDeviceType[this.deviceType]);
 	};
-
 	// Handle requests to get the current value of the "Active" characteristic
 	handleActiveGet(callback: CharacteristicGetCallback) {
-		this.platform.log.debug('<---------- Current Active State:', this.powerState, '---------->');
+		this.platform.log.debug('Triggered GET Active');
 		// set this to a valid value for Active
-		if (this.powerState == 1) {
+		if (this.powerState === 1) {
 			callback(null, this.platform.Characteristic.Active.ACTIVE);
 		} else {
 			callback(null, this.platform.Characteristic.Active.INACTIVE);
 		};
 	};
 	// Handle requests to set the "Active" characteristic
-	handleActiveSet(value: any, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Set Target Active State To:', value);
-		if (this.powerState != value) {
+	handleActiveSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		this.platform.log.debug('Triggered SET Active To:', value);
+		if (this.powerState !== value) {
 			this.powerState = value;
 			this.platform.sendUpdateToDevice(this);
+			callback(null);
 		};
-		callback(null, value);
+
 	};
-	// Handle requests to get the current value of the "Current Heater Cooler State" characteristic
-	handleCurrentHeaterCoolerStateGet(callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Current HeaterCooler State:', this.operationalMode)
+	// Handle requests to get the current value of the "CurrentHeaterCoolerState" characteristic
+	handleCurrentHeaterCoolerStateGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET Current HeaterCooler State');
 		// set this to a valid value for CurrentHeaterCoolerState
-		let currentValue;
-		if (this.powerState == MideaOperationalMode.Off) {
+		let currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE;
+		if (this.powerState === this.platform.Characteristic.Active.INACTIVE) {
 			currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE;
-		} else if (this.operationalMode == MideaOperationalMode.Cooling) {
+		} else if (this.operationalMode === MideaOperationalMode.Cooling) {
 			currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
-		} else if (this.operationalMode == MideaOperationalMode.Heating) {
+		} else if (this.operationalMode === MideaOperationalMode.Heating) {
 			currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
 		} else if (this.indoorTemperature > this.targetTemperature) {
+			currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
+		} else {
 			currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
-		} else currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
+		};
 		callback(null, currentValue);
 	};
-	// Handle requests to get the current value of the "Target Heater Cooler State" characteristic
+	// Handle requests to get the current value of the "TargetHeaterCoolerState" characteristic
 	handleTargetHeaterCoolerStateGet(callback: CharacteristicGetCallback) {
-		this.platform.log.debug('Target HeaterCooler State:', this.operationalMode)
-		// set this to a valid value for TargetHeaterCoolerState
-		if (this.operationalMode == MideaOperationalMode.Cooling) {
-			this.currentTarget = this.platform.Characteristic.TargetHeaterCoolerState.COOL;
-		} else if (this.operationalMode == MideaOperationalMode.Heating) {
-			this.currentTarget = this.platform.Characteristic.TargetHeaterCoolerState.HEAT;
-		} else if (this.operationalMode == MideaOperationalMode.Auto) {
-			this.currentTarget = this.platform.Characteristic.TargetHeaterCoolerState.AUTO;
+		this.platform.log.debug('Triggered GET Target HeaterCooler State');
+		if (this.operationalMode === MideaOperationalMode.Cooling) {
+			this.targetHeaterCoolerState = this.platform.Characteristic.TargetHeaterCoolerState.COOL;
+		} else if (this.operationalMode === MideaOperationalMode.Heating) {
+			this.targetHeaterCoolerState = this.platform.Characteristic.TargetHeaterCoolerState.HEAT;
+		} else if (this.operationalMode === MideaOperationalMode.Auto) {
+			this.targetHeaterCoolerState = this.platform.Characteristic.TargetHeaterCoolerState.AUTO;
 		};
-		callback(null, this.currentTarget);
+		callback(null, this.targetHeaterCoolerState);
 	};
-	// Handle requests to set the "Target Heater Cooler State" characteristic
+	// Handle requests to set the "TargetHeaterCoolerState" characteristic
 	handleTargetHeaterCoolerStateSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Set Target HeaterCooler State To:', value)
-		if (value != this.currentTarget) {
-			switch (value) {
-				case value = this.platform.Characteristic.TargetHeaterCoolerState.AUTO: {
-					this.operationalMode = MideaOperationalMode.Auto;
-					this.platform.sendUpdateToDevice(this);
-					break;
-				};
-				case value = this.platform.Characteristic.TargetHeaterCoolerState.HEAT: {
-					this.operationalMode = MideaOperationalMode.Heating;
-					this.platform.sendUpdateToDevice(this);
-					break;
-				};
-				case value = this.platform.Characteristic.TargetHeaterCoolerState.COOL: {
-					this.operationalMode = MideaOperationalMode.Cooling;
-					this.platform.sendUpdateToDevice(this);
-					break;
-				};
+		this.platform.log.debug('Triggered SET HeaterCooler State To:', value);
+		if (this.targetHeaterCoolerState !== value) {
+			if (value === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) {
+				this.operationalMode = MideaOperationalMode.Auto;
+			} else if (value === this.platform.Characteristic.TargetHeaterCoolerState.COOL) {
+				this.operationalMode = MideaOperationalMode.Cooling;
+			} else if (value === this.platform.Characteristic.TargetHeaterCoolerState.HEAT) {
+				this.operationalMode = MideaOperationalMode.Heating;
 			};
-			callback(null, value);
+			this.platform.sendUpdateToDevice(this);
+			callback(null);
 		};
 	};
-	// Handle requests to get the current value of the "Current Temperature" characteristic
+	// Handle requests to get the current value of the "CurrentTemperature" characteristic
 	handleCurrentTemperatureGet(callback: CharacteristicGetCallback) {
-		this.platform.log.debug('Indoor Temperature:', this.indoorTemperature + '˚C');
-		// this.platform.log.debug('Outdoor Temperature:', this.outdoorTemperature + '˚C');
-		// set this to a valid value for CurrentTemperature
-		callback(null, this.indoorTemperature);
+		this.platform.log.debug('Triggered GET CurrentTemperature');
+		// set this to a valid value for Current Temperature
+		const currentValue = this.indoorTemperature;
+		callback(null, currentValue);
+	};
+
+	// Handle requests to get the current value of the "CoolingThresholdTemperature" characteristic
+	handleCoolingThresholdTemperatureGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET CoolingThresholdTemperature');
+		// set this to a valid value for Target Temperature
+		const currentValue = this.targetTemperature;
+		callback(null, currentValue);
+	};
+	// Handle requests to set the "CoolingThresholdTemperature" characteristic
+	handleCoolingThresholdTemperatureSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		this.platform.log.debug('Triggered SET CoolingThresholdTemperature To:', value + '˚C');
+		if (this.targetTemperature !== value) {
+			this.targetTemperature = value;
+			this.platform.sendUpdateToDevice(this);
+		};
+		callback(null);
+	};
+	// Handle requests to get the current value of the "HeatingThresholdTemperature" characteristic
+	handleHeatingThresholdTemperatureGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET HeatingThresholdTemperature');
+		// set this to a valid value for Target Temperature
+		const currentValue = this.targetTemperature;
+		callback(null, currentValue);
+	};
+	// Handle requests to set the "HeatingThresholdTemperature" characteristic
+	handleHeatingThresholdTemperatureSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		this.platform.log.debug('Triggered SET HeatingThresholdTemperature To:', value + '˚C');
+		if (this.targetTemperature !== value) {
+			this.targetTemperature = value;
+			this.platform.sendUpdateToDevice(this);
+		};
+		callback(null);
 	};
 	// Handle requests to get the current value of the "RotationSpeed" characteristic
 	handleRotationSpeedGet(callback: CharacteristicGetCallback) {
-		this.platform.log.debug('Current Rotation Speed:', this.fanSpeed);
+		this.platform.log.debug('Triggered GET RotationSpeed');
 		// set this to a valid value for RotationSpeed
 		// values from device are 20.0="Silent",40.0="Low",60.0="Medium",80.0="High",102.0="Auto"
 		// convert to good usable slider in homekit in percent
-		let currentValue;
-		if (this.fanSpeed == 40) {
+		let currentValue = 0;
+		if (this.fanSpeed === 40) {
 			currentValue = 25;
-		} else if (this.fanSpeed == 60) {
+		} else if (this.fanSpeed === 60) {
 			currentValue = 50;
-		} else if (this.fanSpeed == 80) {
+		} else if (this.fanSpeed === 80) {
 			currentValue = 75;
 		} else {
 			currentValue = 100;
@@ -250,7 +272,7 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "RotationSpeed" characteristic
 	handleRotationSpeedSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Set Target Rotation Speed To:', value);
+		this.platform.log.debug('Triggered SET RotationSpeed To:', value);
 		if (this.fanSpeed != value) {
 			// transform values in percent
 			// values from device are 20.0="Silent",40.0="Low",60.0="Medium",80.0="High",102.0="Auto"
@@ -266,14 +288,14 @@ export class MideaAccessory {
 			};
 			this.platform.sendUpdateToDevice(this);
 		};
-		callback(null, value);
+		callback(null);
 	};
 	// Handle requests to get the current value of the "swingMode" characteristic
 	handleSwingModeGet(callback: CharacteristicGetCallback) {
-		this.platform.log.debug('Current Swing Mode:', this.swingMode)
+		this.platform.log.debug('Triggered GET SwingMode');
 		// set this to a valid value for swingMode
 		// values from device are 0="Off",12="Vertical",3="Horizontal",15="Both"
-		if (this.swingMode != 0) {
+		if (this.swingMode !== 0) {
 			callback(null, this.platform.Characteristic.SwingMode.SWING_ENABLED);
 		} else {
 			callback(null, this.platform.Characteristic.SwingMode.SWING_DISABLED);
@@ -281,53 +303,23 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "swingMode" characteristic
 	handleSwingModeSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Set Target Swing Mode To:', value);
+		this.platform.log.debug('Triggered SET SwingMode To:', value);
 		// convert this.swingMode to a 0/1
-		if (this.swingMode != value) {
-			if (value == 0) {
+		if (this.swingMode !== value) {
+			if (value === 0) {
 				this.swingMode = 0;
 			} else {
 				this.swingMode = this.supportedSwingMode;
 			};
 			this.platform.sendUpdateToDevice(this)
 		};
-		callback(null, value);
-	};
-	// Handle requests to get the current value of the "CoolingThresholdTemperature" characteristic
-	handleCoolingThresholdTemperatureGet(callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Current Cooling Threshold Temperature:', this.targetTemperature + '˚C');
-		// set this to a valid value for TargetTemperature
-		callback(null, this.targetTemperature);
-	};
-	// Handle requests to set the "CoolingThresholdTemperature" characteristic
-	handleCoolingThresholdTemperatureSet(value: any, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Set Target Cooling Threshold Temperature To:', value + '˚C');
-		if (this.targetTemperature != value) {
-			this.targetTemperature = value;
-			this.platform.sendUpdateToDevice(this);
-		};
-		callback(null, value);
-	};
-	// Handle requests to get the current value of the "HeatingThresholdTemperature" characteristic
-	handleHeatingThresholdTemperatureGet(callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Current Heating Threshold Temperature:', this.targetTemperature + '˚C');
-		// set this to a valid value for TargetTemperature
-		callback(null, this.targetTemperature);
-	};
-	// Handle requests to set the "HeatingThresholdTemperature" characteristic
-	handleHeatingThresholdTemperatureSet(value: any, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Set Target Heating Threshold Temperature To:', value + '˚C');
-		if (this.targetTemperature != value) {
-			this.targetTemperature = value;
-			this.platform.sendUpdateToDevice(this);
-		};
-		callback(null, value);
+		callback(null);
 	};
 	// Handle requests to get the current value of the "Temperature Display Units" characteristic
-	// handleTemperatureDisplayUnitsGet(callback: CharacteristicSetCallback) {
-	// 	this.platform.log.debug('Current Temperature Display Units', this.useFahrenheit);
+	// handleTemperatureDisplayUnitsGet(callback: CharacteristicGetCallback) {
+	// 	this.platform.log.debug('Triggered GET Temperature Display Units');
 	// 	// set this to a valid value for TemperatureDisplayUnits
-	// 	if (this.useFahrenheit == true) {
+	// 	if (this.useFahrenheit === true) {
 	// 		callback(null, this.platform.Characteristic.TemperatureDisplayUnits.FAHRENHEIT)
 	// 	} else {
 	// 		callback(null, this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS)
@@ -335,48 +327,48 @@ export class MideaAccessory {
 	// }
 	// Handle requests to set the "Temperature Display Units" characteristic
 	// handleTemperatureDisplayUnitsSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-	// 	this.platform.log.debug('Set Target Temperature Display Units To:', value);
-	// 	if (this.useFahrenheit != value) {
-	// 		if (value == true) {
+	// 	this.platform.log.debug('Triggered SET Temperature Display Units To:', value);
+	// 	if (this.useFahrenheit !== value) {
+	// 		if (value === true) {
 	// 			this.useFahrenheit = true;
 	// 		} else {
 	// 			this.useFahrenheit = false;
 	// 		}
 	// 		this.platform.sendUpdateToDevice(this);
 	// 	}
-	// 	callback(null, value);
+	// 	callback(null);
 	// }
 
 	// Fan only mode
 	// Handle requests to get the current value of the "On" characteristic
-	// handleFanActiveGet(callback: CharacteristicGetCallback) {
-	// 	this.platform.log.debug('Current Fan Mode:', this.fanOnlyMode);
-	// 	// workaround to get the "fan only mode" from device
-	// 	// device operation values are 1.0="Auto",2.0="Cool",3.0="Dry",4.0="Heat",5.0="Fan"
-	// 	// set this to a valid value for Active
-	// 	if (this.powerState == 1 && this.operationalMode == MideaOperationalMode.FanOnly) {
-	// 		callback(null, this.platform.Characteristic.Active.ACTIVE);
-	// 	} else {
-	// 		callback(null, this.platform.Characteristic.Active.INACTIVE);
-	// 	};
-	// };
+	handleFanActiveGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET FanMode');
+		// workaround to get the "fan only mode" from device
+		// device operation values are 1.0="Auto",2.0="Cool",3.0="Dry",4.0="Heat",5.0="Fan"
+		// set this to a valid value for Active
+		if (this.powerState === 1 && this.operationalMode === MideaOperationalMode.FanOnly) {
+			callback(null, this.platform.Characteristic.Active.ACTIVE);
+		} else {
+			callback(null, this.platform.Characteristic.Active.INACTIVE);
+		};
+	};
 	// Handle requests to set the "On" characteristic
-	// handleFanActiveSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-	// 	this.platform.log.debug('Set Target Fan Mode To:', value);
-	// 	// workaround to get the "fan only mode" from device
-	// 	// device operation values are 1.0="Auto",2.0="Cool",3.0="Dry",4.0="Heat",5.0="Fan"
-	// 	if (this.powerState == 1 && value == 1) {
-	// 		this.operationalMode = MideaOperationalMode.FanOnly;
-	// 		this.platform.sendUpdateToDevice(this);
-	// 	} else if (this.powerState == 0 && value == 1) {
-	// 		this.powerState = 1;
-	// 		this.operationalMode = MideaOperationalMode.FanOnly;
-	// 		this.platform.sendUpdateToDevice(this);
-	// 	} else {
-	// 		this.operationalMode = MideaOperationalMode.Off;
-	// 		this.powerState = 0;
-	// 		this.platform.sendUpdateToDevice(this);
-	// 	};
-	// 	callback(null, value);
-	// };
+	handleFanActiveSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		this.platform.log.debug('Triggered SET FanMode To:', value);
+		// workaround to get the "fan only mode" from device
+		// device operation values are 1.0="Auto",2.0="Cool",3.0="Dry",4.0="Heat",5.0="Fan"
+		if (this.powerState == 1 && value == 1) {
+			this.operationalMode = MideaOperationalMode.FanOnly;
+			this.platform.sendUpdateToDevice(this);
+		} else if (this.powerState == 0 && value == 1) {
+			this.powerState = 1;
+			this.operationalMode = MideaOperationalMode.FanOnly;
+			this.platform.sendUpdateToDevice(this);
+		} else {
+			this.operationalMode = MideaOperationalMode.Off;
+			this.powerState = 0;
+			this.platform.sendUpdateToDevice(this);
+		};
+		callback(null);
+	};
 };
