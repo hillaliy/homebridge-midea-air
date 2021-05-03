@@ -84,6 +84,12 @@
               "type": "boolean",
               "default": false,
               "required": false
+            },
+            "OutdoorTemperature":{
+              "title": "Enable Outdoor Temperture Sensor",
+              "type": "boolean",
+              "default": false,
+              "required": false
             }
           }
         }
@@ -107,7 +113,8 @@
       "items": [
         "devices[].deviceId",
         "devices[].supportedSwingMode",
-        "devices[].fanOnlyMode"
+        "devices[].fanOnlyMode",
+        "devices[].OutdoorTemperature"
       ]
     },
     {
