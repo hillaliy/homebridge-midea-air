@@ -26,10 +26,11 @@ export class MideaAccessory {
 	public ecoMode: boolean = false
 	public name: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.0.7'
+	public firmwareVersion: string = '1.0.8'
 
 	private service!: Service
 	private fanService!: Service
+	private outdoorTemperatureService!: Service
 
 	constructor(
 		private readonly platform: MideaPlatform,
@@ -87,6 +88,16 @@ export class MideaAccessory {
 		} else {
 			let fanService = this.accessory.getService(this.platform.Service.Fanv2);
 			this.accessory.removeService(fanService);
+		};
+
+		if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'OutdoorTemperature') == true) {
+			this.outdoorTemperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor) || this.accessory.addService(this.platform.Service.TemperatureSensor);
+			this.outdoorTemperatureService.setCharacteristic(this.platform.Characteristic.Name, 'Outdoor Temperature');
+			this.outdoorTemperatureService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
+				.on('get', this.handleOutdoorTemperatureGet.bind(this))
+		} else {
+			let outdoorTemperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor);
+			this.accessory.removeService(outdoorTemperatureService);
 		};
 
 		if (this.deviceType == MideaDeviceType.AirConditioner) {
@@ -369,5 +380,14 @@ export class MideaAccessory {
 			this.platform.sendUpdateToDevice(this);
 		};
 		callback(null);
+	};
+
+	// Outdoor Temperature Sensor
+	// Handle requests to get the current value of the "OutdoorTemperature" characteristic
+	handleOutdoorTemperatureGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET CurrentTemperature');
+		// set this to a valid value for Current Temperature
+		const currentValue = this.outdoorTemperature;
+		callback(null, currentValue);
 	};
 };
