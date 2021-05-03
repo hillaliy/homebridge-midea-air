@@ -28,7 +28,9 @@ Add this to the platforms array in your config.json:
         "devices": [
         	{
         		"deviceId": "DEVICE_ID",
-        		"supportedSwingMode": "Both"
+        		"supportedSwingMode": "Both",
+                "fanOnlyMode": false,
+                "OutdoorTemperature": false
         	}
         ],
         "platform": "midea-air"
@@ -57,6 +59,14 @@ Rotation Speed values are:
 
 T̶e̶m̶p̶e̶r̶a̶t̶u̶r̶e̶ ̶d̶i̶s̶p̶l̶a̶y̶ ̶u̶n̶i̶t̶s̶ ̶c̶a̶n̶ ̶s̶e̶t̶ ̶i̶n̶ ̶t̶h̶e̶ ̶h̶o̶m̶e̶k̶i̶t̶ ̶d̶e̶v̶i̶c̶e̶ ̶w̶h̶e̶n̶ ̶y̶o̶u̶ ̶s̶w̶i̶p̶e̶ ̶u̶p̶ ̶t̶o̶ ̶d̶e̶v̶i̶c̶e̶ ̶s̶e̶t̶t̶i̶n̶g̶s̶.̶
 ̶D̶i̶s̶p̶l̶a̶y̶ ̶U̶n̶i̶t̶s̶ ̶v̶a̶l̶u̶e̶s̶ ̶a̶r̶e̶:̶ ̶F̶A̶H̶R̶E̶N̶H̶E̶I̶T̶,̶ ̶C̶E̶L̶S̶I̶U̶S̶
+
+### Fan Mode
+
+This allows you to enable a Fan mode service
+
+### Outdoor Temperature Sensor
+
+This allows you to enable Outdooe Temperature service, if the AC support.
 
 ## Notes
 
