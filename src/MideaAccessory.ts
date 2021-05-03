@@ -163,9 +163,8 @@ export class MideaAccessory {
 		if (this.powerState !== value) {
 			this.powerState = value;
 			this.platform.sendUpdateToDevice(this);
-			callback(null);
 		};
-
+		callback(null);
 	};
 	// Handle requests to get the current value of the "CurrentHeaterCoolerState" characteristic
 	handleCurrentHeaterCoolerStateGet(callback: CharacteristicGetCallback) {
@@ -209,8 +208,8 @@ export class MideaAccessory {
 				this.operationalMode = MideaOperationalMode.Heating;
 			};
 			this.platform.sendUpdateToDevice(this);
-			callback(null);
 		};
+		callback(null);
 	};
 	// Handle requests to get the current value of the "CurrentTemperature" characteristic
 	handleCurrentTemperatureGet(callback: CharacteristicGetCallback) {
@@ -273,10 +272,10 @@ export class MideaAccessory {
 	// Handle requests to set the "RotationSpeed" characteristic
 	handleRotationSpeedSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		this.platform.log.debug('Triggered SET RotationSpeed To:', value);
+		// transform values in percent
+		// values from device are 20.0="Silent",40.0="Low",60.0="Medium",80.0="High",102.0="Auto"
+		// Silent are not now available in devices?
 		if (this.fanSpeed != value) {
-			// transform values in percent
-			// values from device are 20.0="Silent",40.0="Low",60.0="Medium",80.0="High",102.0="Auto"
-			// Silent are not now available in devices?
 			if (value <= 25) {
 				this.fanSpeed = 40;
 			} else if (value > 25 && value <= 50) {
