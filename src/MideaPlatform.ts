@@ -29,7 +29,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	public readonly accessories: PlatformAccessory[] = [];
 	mideaAccessories: MideaAccessory[] = []
 
-	constructor(public readonly log: Logger, public readonly config: PlatformConfig, public readonly api: API) {
+	constructor(public log: Logger, public readonly config: PlatformConfig, public readonly api: API) {
 		axiosCookieJarSupport(axios);
 		this.jar = new tough.CookieJar()
 		let agent: any;
