@@ -78,6 +78,12 @@
                   ]
                 }
               ]
+            },
+            "fanOnlyMode":{
+              "title": "Enable Fan Modes",
+              "type": "boolean",
+              "default": false,
+              "required": false
             }
           }
         }
@@ -100,7 +106,8 @@
       "buttonText": "Add device",
       "items": [
         "devices[].deviceId",
-        "devices[].supportedSwingMode"
+        "devices[].supportedSwingMode",
+        "devices[].fanOnlyMode"
       ]
     },
     {
