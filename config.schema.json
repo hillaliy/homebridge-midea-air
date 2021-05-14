@@ -47,7 +47,7 @@
               "type": "string"
             },
             "supportedSwingMode": {
-              "title": "Supported Swing Modes",
+              "title": "Supported Swing Mode",
               "description": "None, Vertical, Horizontal, Both You have to select which type your device supports",
               "type": "string",
               "default": "both",
@@ -80,7 +80,7 @@
               ]
             },
             "fanOnlyMode":{
-              "title": "Enable Fan Modes",
+              "title": "Enable Fan Mode",
               "type": "boolean",
               "default": false,
               "required": false
