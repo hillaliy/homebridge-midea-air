@@ -29,13 +29,6 @@
         "minimum": 0,
         "maximum": 600
       },
-      "debug": {
-        "title": "Enable Debug Mode",
-        "description": "When checked, the plugin will produce extra logs for debugging purposes",
-        "type": "boolean",
-        "default": false,
-        "required": false
-      },
       "devices": {
         "type": "array",
         "items": {
@@ -123,8 +116,7 @@
       "expandable": true,
       "description": "Don't change these, unless you understand what you're doing.",
       "items": [
-        "interval",
-        "debug"
+        "interval"
       ]
     }
   ]
