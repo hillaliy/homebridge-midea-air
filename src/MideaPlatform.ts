@@ -1,4 +1,4 @@
-import { API, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
+import { API, DynamicPlatformPlugin, Logging, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
 
 const axios = require('axios').default
 
@@ -29,7 +29,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	public readonly accessories: PlatformAccessory[] = [];
 	mideaAccessories: MideaAccessory[] = []
 
-	constructor(public readonly log: Logger, public readonly config: PlatformConfig, public readonly api: API) {
+	constructor(public readonly log: Logging, public readonly config: PlatformConfig, public readonly api: API) {
 		axiosCookieJarSupport(axios);
 		this.jar = new tough.CookieJar()
 		let agent: any;
@@ -176,6 +176,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 
 									var ma = new MideaAccessory(this, existingAccessory, currentElement.id, parseInt(currentElement.type), currentElement.name, currentElement.userId)
 									this.mideaAccessories.push(ma)
+									this.log.info('Accessory Device ID:', currentElement.id);
 								} else {
 									this.log.debug('Adding new device:', currentElement.name)
 									const accessory = new this.api.platformAccessory(currentElement.name, uuid)
@@ -185,6 +186,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 									var ma = new MideaAccessory(this, accessory, currentElement.id, parseInt(currentElement.type), currentElement.name, currentElement.userId)
 									this.api.registerPlatformAccessories('homebridge-midea-air', 'midea-air', [accessory])
 									this.mideaAccessories.push(ma)
+									this.log.info('Accessory Device ID:', currentElement.id);
 								};
 								// this.log.debug('mideaAccessories now contains', this.mideaAccessories)
 							} else {
