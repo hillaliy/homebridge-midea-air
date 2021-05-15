@@ -24,21 +24,23 @@ Add this to the platforms array in your config.json:
         "user": "MIDEA_ACCOUNT_EMAIL",
         "password": "MIDEA_PASSWORD",
         "interval": 30,
-        "debug": true,
         "devices": [
-        	{
-        		"deviceId": "DEVICE_ID",
-        		"supportedSwingMode": "Both",
-                "fanOnlyMode": false,
-                "OutdoorTemperature": false
-        	}
+                {
+                    "deviceId": "DeviceID",
+                    "supportedSwingMode": "Both",
+                    "fanOnlyMode": false,
+                    "OutdoorTemperature": false
+                }
         ],
         "platform": "midea-air"
     }
 
 ## Optional per-device Configuration Values
 
-To set specific per-device values, be sure to first look into the Home app to find your deviceId and use it as the key in the devices object
+To set specific per-device values, you need to add deviceId that can find in:
+
+1. Homebridge console logs.
+2. Home app in the devices object.
 
 ### Supported Swing Mode
 
@@ -54,11 +56,6 @@ Rotation Speed values are:
 -50%: Middle
 -75%: High
 -100%: Auto
-
-### T̶e̶m̶p̶e̶r̶a̶t̶u̶r̶e̶ ̶D̶i̶s̶p̶l̶a̶y̶ ̶U̶n̶i̶t̶s̶
-
-T̶e̶m̶p̶e̶r̶a̶t̶u̶r̶e̶ ̶d̶i̶s̶p̶l̶a̶y̶ ̶u̶n̶i̶t̶s̶ ̶c̶a̶n̶ ̶s̶e̶t̶ ̶i̶n̶ ̶t̶h̶e̶ ̶h̶o̶m̶e̶k̶i̶t̶ ̶d̶e̶v̶i̶c̶e̶ ̶w̶h̶e̶n̶ ̶y̶o̶u̶ ̶s̶w̶i̶p̶e̶ ̶u̶p̶ ̶t̶o̶ ̶d̶e̶v̶i̶c̶e̶ ̶s̶e̶t̶t̶i̶n̶g̶s̶.̶
-̶D̶i̶s̶p̶l̶a̶y̶ ̶U̶n̶i̶t̶s̶ ̶v̶a̶l̶u̶e̶s̶ ̶a̶r̶e̶:̶ ̶F̶A̶H̶R̶E̶N̶H̶E̶I̶T̶,̶ ̶C̶E̶L̶S̶I̶U̶S̶
 
 ### Fan Mode
 
