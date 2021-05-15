@@ -6,7 +6,7 @@
 [![Version](https://img.shields.io/npm/v/homebridge-midea-air)](https://www.npmjs.com/package/homebridge-midea-air)<br>
 <a target="blank" href="https://www.paypal.me/hillaliy"><img src="https://img.shields.io/badge/PayPal-Donate-blue.svg?logo=paypal"/></a><br>
 
-[Homebridge](https://github.com/nfarina/homebridge) plugin to control Midea AC units. Still in early development.
+[Homebridge](https://github.com/nfarina/homebridge) plugin to control Midea AC units.
 
 <img src="branding/product.jpeg" width="200px">
 
