@@ -39,27 +39,27 @@ Add this to the platforms array in your config.json:
 
 To set specific per-device values, you need to add deviceId that can find in:
 
-1. Homebridge console logs.
+1. Homebridge console log.
 2. Home app in the devices object.
 
 ### Supported Swing Mode
 
-"None", "Vertical", "Horizontal", "Both"
-You have to select which type your device supports
+"None", "Vertical", "Horizontal", "Both".
+You have to select which type your device supports.
 
 ### Rotation Speed and Swing
 
 Rotation Speed and Swing mode can set in the homekit device when you swipe up to device settings.
 Rotation Speed values are:
-0 : device off
--25%: Low
--50%: Middle
--75%: High
--100%: Auto
+0: device off
+/ 25%: Low
+/ 50%: Middle
+/ 75%: High
+/ 100%: Auto
 
 ### Fan Mode
 
-This allows you to enable a Fan mode service
+This allows you to enable a Fan mode service.
 
 ### Outdoor Temperature Sensor
 
