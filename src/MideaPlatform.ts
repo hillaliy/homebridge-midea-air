@@ -176,7 +176,6 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 
 									var ma = new MideaAccessory(this, existingAccessory, currentElement.id, parseInt(currentElement.type), currentElement.name, currentElement.userId)
 									this.mideaAccessories.push(ma)
-									this.log.info('Accessory Device ID:', currentElement.id);
 								} else {
 									this.log.debug('Adding new device:', currentElement.name)
 									const accessory = new this.api.platformAccessory(currentElement.name, uuid)
@@ -186,7 +185,6 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 									var ma = new MideaAccessory(this, accessory, currentElement.id, parseInt(currentElement.type), currentElement.name, currentElement.userId)
 									this.api.registerPlatformAccessories('homebridge-midea-air', 'midea-air', [accessory])
 									this.mideaAccessories.push(ma)
-									this.log.info('Accessory Device ID:', currentElement.id);
 								};
 								// this.log.debug('mideaAccessories now contains', this.mideaAccessories)
 							} else {
@@ -228,9 +226,19 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				//this.log.debug('sendCommand request', qs.stringify(form));
 				try {
 					const response = await this.apiClient.post(url, qs.stringify(form))
-					if (response.data.errorCode && response.data.errorCode != '0') {
+					if (response.data.errorCode && response.data.errorCode !== '0') {
+						if (response.data.errorCode === "3123") {
+							this.log.debug('Device Unreachable');
+							resolve();
+							return;
+						};
+						if (response.data.errorCode === "3176") {
+							this.log.debug('Command was not accepted by device. Command wrong or device not reachable');
+							resolve();
+							return;
+						};
 						this.log.error(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) returned error ${response.data.msg}`)
-						reject();
+						return;
 					} else {
 						this.log.debug(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) success!`);
 						let applianceResponse: any
@@ -279,7 +287,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 		let data: number[] = []
 
 		this.accessories.forEach(async (accessory: PlatformAccessory) => {
-			this.log.debug('Updating accessory', accessory.context.deviceId)
+			this.log.debug('Updating accessory:', accessory.context.deviceId)
 			let mideaAccessory = this.mideaAccessories.find(ma => ma.deviceId == accessory.context.deviceId)
 			if (mideaAccessory == undefined) {
 				this.log.warn('Could not find accessory with id', accessory.context.deviceId)
@@ -289,7 +297,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				this.log.debug(`[updateValues] Header + Command: ${data}`)
 				try {
 					await this.sendCommand(mideaAccessory, data, '[updateValues] (fetch params?) attempt 1/2')
-					this.log.debug(`[updateValues] Sent update command to ${mideaAccessory.deviceType}`)
+					this.log.debug(`[updateValues] Sent update command to: ${mideaAccessory.deviceType}`)
 				} catch (err) {
 					// TODO: this should be handled only on invalidSession error. Also all the retry logic could be done better (Promise retry instead of await?)
 					this.log.warn(`[updateValues] Error sending the command: ${err}. Trying to re-login before re-issuing command...`);
