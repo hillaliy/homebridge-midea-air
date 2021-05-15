@@ -65,7 +65,7 @@ export class MideaAccessory {
 		}
 
 		if (this.deviceType == MideaDeviceType.AirConditioner) {
-			this.platform.log.debug('created device', this.name, 'with id', this.deviceId, 'and type', this.deviceType)
+			this.platform.log.info('Created device:', this.name + ',', 'with ID:', this.deviceId + ',', 'and type:', this.deviceType)
 
 			this.accessory.getService(this.platform.Service.AccessoryInformation)!
 				.setCharacteristic(this.platform.Characteristic.Manufacturer, 'Midea')
