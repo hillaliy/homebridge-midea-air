@@ -25,7 +25,7 @@ export class MideaAccessory {
 	public ecoMode: boolean = false
 	public name: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.0.9'
+	public firmwareVersion: string = '1.0.10'
 
 	private service!: Service
 	private fanService!: Service
