@@ -345,8 +345,6 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	async sendUpdateToDevice(device?: MideaAccessory) {
 		if (device) {
 			let command: any
-			command.powerState = device.powerState;
-			command.operationalMode = device.operationalMode;
 
 			if (device.deviceType == MideaDeviceType.AirConditioner) {
 				command = new ACSetCommand();
@@ -359,7 +357,11 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				command = new DehumidifierSetCommand()
 				this.log.debug(`[sendUpdateToDevice] Generated a new command to set targetHumidity to: ${device.targetHumidity}`)
 				command.targetHumidity = device.targetHumidity
-			}
+			};
+
+			command.powerState = device.powerState;
+			command.operationalMode = device.operationalMode;
+
 			//operational mode for workaround with fan only mode on device
 			const pktBuilder = new PacketBuilder();
 			pktBuilder.command = command;
