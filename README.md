@@ -8,7 +8,7 @@
 
 [Homebridge](https://github.com/nfarina/homebridge) plugin to control Midea Air Conditioner & Dehumidifier units.
 
-<img src="branding/Air_Conditioner.jpeg" width="200px"> &nbsp;
+<img src="branding/Air_Conditioner.png" width="200px"> &nbsp;
 <img src="branding/Dehumidifier.jpeg" width="200px">
 
 ### Requirements
