@@ -23,9 +23,12 @@ export class MideaAccessory {
 	public operationalMode: number = MideaOperationalMode.Off
 	public swingMode: number = 0
 	public ecoMode: boolean = false
+	public currentHumidity: number = 0
+	public targetHumidity: any = 0
+	public waterLevel: number = 0
 	public name: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.0.10'
+	public firmwareVersion: string = '1.1.0'
 
 	private service!: Service
 	private fanService!: Service
@@ -64,14 +67,15 @@ export class MideaAccessory {
 			}
 		}
 
-		if (this.deviceType == MideaDeviceType.AirConditioner) {
-			this.platform.log.info('Created device:', this.name + ',', 'with ID:', this.deviceId + ',', 'and type:', this.deviceType)
+		this.platform.log.info('Created device:', this.name + ',', 'with ID:', this.deviceId + ',', 'and type:', this.deviceType)
 
-			this.accessory.getService(this.platform.Service.AccessoryInformation)!
-				.setCharacteristic(this.platform.Characteristic.Manufacturer, 'Midea')
-				.setCharacteristic(this.platform.Characteristic.FirmwareRevision, this.firmwareVersion)
-				.setCharacteristic(this.platform.Characteristic.Model, 'Air Conditioner')
-				.setCharacteristic(this.platform.Characteristic.SerialNumber, this.deviceId)
+		this.accessory.getService(this.platform.Service.AccessoryInformation)!
+			.setCharacteristic(this.platform.Characteristic.Manufacturer, 'Midea')
+			.setCharacteristic(this.platform.Characteristic.FirmwareRevision, this.firmwareVersion)
+			.setCharacteristic(this.platform.Characteristic.Model, this.deviceType)
+			.setCharacteristic(this.platform.Characteristic.SerialNumber, this.deviceId)
+
+		if (this.deviceType == MideaDeviceType.AirConditioner) {
 
 			this.service = this.accessory.getService(this.platform.Service.HeaterCooler) || this.accessory.addService(this.platform.Service.HeaterCooler)
 			this.service.setCharacteristic(this.platform.Characteristic.Name, this.name)
@@ -168,6 +172,54 @@ export class MideaAccessory {
 				this.service.updateCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature, this.targetTemperature);
 				this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
 				this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
+			}, 5000);
+
+		} else if (this.deviceType == MideaDeviceType.Dehumidifier) {
+			this.service = this.accessory.getService(this.platform.Service.HumidifierDehumidifier) || this.accessory.addService(this.platform.Service.HumidifierDehumidifier)
+			this.service.setCharacteristic(this.platform.Characteristic.Name, this.name)
+			this.service.getCharacteristic(this.platform.Characteristic.Active)
+				.on('get', this.handleActiveGet.bind(this))
+				.on('set', this.handleActiveSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.CurrentHumidifierDehumidifierState)
+				.on('get', this.handleCurrentHumidifierDehumidifierStateGet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.TargetHumidifierDehumidifierState)
+				.on('get', this.handleTargetHumidifierDehumidifierStateGet.bind(this))
+				.on('set', this.handleTargetHumidifierDehumidifierStateSet.bind(this))
+				.setProps({
+					validValues: [
+						this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER,
+						this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER,
+						this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER
+					]
+				})
+			this.service.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity)
+				.on('get', this.handleCurrentRelativeHumidityGet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold)
+				.on('get', this.handleRelativeHumidityDehumidifierThresholdGet.bind(this))
+				.on('set', this.handleRelativeHumidityDehumidifierThresholdSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold)
+				.on('get', this.handleRelativeHumidityHumidifierThresholdGet.bind(this))
+				.on('set', this.handleRelativeHumidityHumidifierThresholdSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+				.on('get', this.handleRotationSpeedGet.bind(this))
+				.on('set', this.handleRotationSpeedSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
+				.on('get', this.handleSwingModeGet.bind(this))
+				.on('set', this.handleSwingModeSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.WaterLevel)
+				.on('get', this.handleWaterLevelGet.bind(this))
+
+			// Update HomeKit
+			setInterval(() => {
+				this.service.updateCharacteristic(this.platform.Characteristic.Active, this.powerState);
+				this.service.updateCharacteristic(this.platform.Characteristic.CurrentHumidifierDehumidifierState, this.currentHumidifierDehumidifierState());
+				this.service.updateCharacteristic(this.platform.Characteristic.TargetHumidifierDehumidifierState, this.TargetHumidifierDehumidifierState());
+				this.service.updateCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, this.currentHumidity);
+				this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold, this.targetHumidity);
+				this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold, this.targetHumidity);
+				this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
+				this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
+				this.service.updateCharacteristic(this.platform.Characteristic.WaterLevel, this.waterLevel);
 			}, 5000);
 
 		} else this.platform.log.error('Unsupported device type: ', MideaDeviceType[this.deviceType]);
@@ -343,13 +395,12 @@ export class MideaAccessory {
 	// Handle requests to get the current value of the "Temperature Display Units" characteristic
 	// handleTemperatureDisplayUnitsGet(callback: CharacteristicGetCallback) {
 	// 	this.platform.log.debug('Triggered GET Temperature Display Units');
-	// 	// set this to a valid value for TemperatureDisplayUnits
 	// 	if (this.useFahrenheit === true) {
-	// 		callback(null, this.platform.Characteristic.TemperatureDisplayUnits.FAHRENHEIT)
+	// 		callback(null, this.platform.Characteristic.TemperatureDisplayUnits.FAHRENHEIT);
 	// 	} else {
-	// 		callback(null, this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS)
-	// 	}
-	// }
+	// 		callback(null, this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS);
+	// 	};
+	// };
 	// Handle requests to set the "Temperature Display Units" characteristic
 	// handleTemperatureDisplayUnitsSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 	// 	this.platform.log.debug('Triggered SET Temperature Display Units To:', value);
@@ -358,13 +409,13 @@ export class MideaAccessory {
 	// 			this.useFahrenheit = true;
 	// 		} else {
 	// 			this.useFahrenheit = false;
-	// 		}
+	// 		};
 	// 		this.platform.sendUpdateToDevice(this);
-	// 	}
+	// 	};
 	// 	callback(null);
-	// }
+	// };
 
-	// Fan only mode
+	// Fan mode
 	// Handle requests to get the current status of "Fan Mode" characteristic
 	handleFanActiveGet(callback: CharacteristicGetCallback) {
 		this.platform.log.debug('Triggered GET FanMode');
@@ -397,5 +448,93 @@ export class MideaAccessory {
 	handleOutdoorTemperatureGet(callback: CharacteristicGetCallback) {
 		this.platform.log.debug('Triggered GET CurrentTemperature');
 		callback(null, this.outdoorTemperature);
+	};
+
+	// HumidifierDehumidifier
+	// Get the current value of the "CurrentHumidifierDehumidifierState" characteristic
+	public currentHumidifierDehumidifierState() {
+		if (this.powerState === this.platform.Characteristic.Active.INACTIVE) {
+			return this.platform.Characteristic.CurrentHumidifierDehumidifierState.INACTIVE;
+		} else if (this.currentHumidity === 2) {
+			return this.platform.Characteristic.CurrentHumidifierDehumidifierState.HUMIDIFYING;
+		} else if (this.currentHumidity === 3) {
+			return this.platform.Characteristic.CurrentHumidifierDehumidifierState.DEHUMIDIFYING;
+		};
+	};
+	// Handle requests to get the current value of the "HumidifierDehumidifierState" characteristic
+	handleCurrentHumidifierDehumidifierStateGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET CurrentHumidifierDehumidifierState');
+		callback(null, this.currentHumidifierDehumidifierState());
+	};
+	// Get the current value of the "TargetHumidifierDehumidifierState" characteristic
+	public TargetHumidifierDehumidifierState() {
+		if (this.targetHumidity === 0) {
+			return this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER;
+		} else if (this.targetHumidity === 1) {
+			return this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER;
+		} else if (this.targetHumidity === 2) {
+			return this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER;
+		};
+	};
+	// Handle requests to get the target value of the "HumidifierDehumidifierState" characteristic
+	handleTargetHumidifierDehumidifierStateGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET TargetHumidifierDehumidifierState');
+		callback(null, this.TargetHumidifierDehumidifierState());
+	};
+
+	// Handle requests to set the target value of the "HumidifierDehumidifierState" characteristic
+	handleTargetHumidifierDehumidifierStateSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		if (this.TargetHumidifierDehumidifierState() !== value) {
+			this.platform.log.debug('Triggered SET TargetHumidifierDehumidifierState To:', value);
+			if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER) {
+				this.targetHumidity = 0;
+			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER) {
+				this.targetHumidity = 1;
+			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER) {
+				this.targetHumidity = 2;
+			};
+			this.platform.sendUpdateToDevice(this);
+		};
+		callback(null);
+	};
+
+	// Handle requests to get the current value of the "RelativeHumidity" characteristic
+	handleCurrentRelativeHumidityGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET CurrentRelativeHumidity');
+		callback(null, this.currentHumidity);
+	};
+
+	// Handle requests to get the Relative value of the "HumidityDehumidifierThreshold" characteristic
+	handleRelativeHumidityDehumidifierThresholdGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET RelativeHumidityDehumidifierThreshold');
+		callback(null, this.targetHumidity);
+	};
+
+	// Handle requests to set the Relative value of the "HumidityDehumidifierThreshold" characteristic
+	handleRelativeHumidityDehumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		this.platform.log.debug('Triggered SET RelativeHumidityDehumidifierThreshold To:', value);
+		this.targetHumidity = value;
+		this.platform.sendUpdateToDevice(this);
+		callback(null);
+	};
+
+	// Handle requests to get the Relative value of the "HumidityHumidifierThreshold" characteristic
+	handleRelativeHumidityHumidifierThresholdGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET RelativeHumidityDehumidifierThreshold');
+		callback(null, this.targetHumidity);
+	};
+
+	// Handle requests to set the Relative value of the "HumidityHumidifierThreshold" characteristic
+	handleRelativeHumidityHumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		this.platform.log.debug('Triggered SET RelativeHumidityDehumidifierThreshold', value);
+		this.targetHumidity = value;
+		this.platform.sendUpdateToDevice(this);
+		callback(null);
+	};
+
+	// Handle requests to get the current value of the "WaterLevel" characteristic
+	handleWaterLevelGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET WaterLevel');
+		callback(null, this.waterLevel);
 	};
 };
