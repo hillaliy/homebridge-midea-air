@@ -10,10 +10,16 @@ import qs from 'querystring';
 import Utils from './Utils';
 import Constants from './Constants';
 import PacketBuilder from './PacketBuilder';
+
 import ACSetCommand from './commands/ACSetCommand';
+import DehumidifierSetCommand from './commands/DehumidifierSetCommand';
+
 import ACApplianceResponse from './responses/ACApplianceResponse';
+import DehumidifierApplianceResponse from './responses/DehumidifierApplianceResponse';
+
 import { MideaAccessory } from './MideaAccessory';
 import { MideaDeviceType } from './enums/MideaDeviceType';
+
 
 export class MideaPlatform implements DynamicPlatformPlugin {
 	public readonly Service: typeof Service = this.api.hap.Service;
@@ -164,7 +170,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				} else {
 					if (response.data.result && response.data.result.list && response.data.result.list.length > 0) {
 						response.data.result.list.forEach(async (currentElement: any) => {
-							if (parseInt(currentElement.type) == MideaDeviceType.AirConditioner) {
+							if (parseInt(currentElement.type) == MideaDeviceType.AirConditioner || parseInt(currentElement.type) == MideaDeviceType.Dehumidifier) {
 								const uuid = this.api.hap.uuid.generate(currentElement.id)
 								const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid)
 								if (existingAccessory) {
@@ -242,30 +248,44 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 					} else {
 						this.log.debug(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) success!`);
 						let applianceResponse: any
+
+						device.powerState = applianceResponse.powerState ? 1 : 0;
+						device.operationalMode = applianceResponse.operationalMode;
+						device.fanSpeed = applianceResponse.fanSpeed;
+						device.ecoMode = applianceResponse.ecoMode;
+
+						this.log.debug('Power State is set to:', applianceResponse.powerState);
+						this.log.debug('Operational Mode is set to:', applianceResponse.operationalMode);
+						this.log.debug('Fan Speed is set to:', applianceResponse.fanSpeed);
+						this.log.debug('ecoMode is set to:', applianceResponse.ecoMode);
+
 						if (device.deviceType == MideaDeviceType.AirConditioner) {
 							applianceResponse = new ACApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
 
-							device.powerState = applianceResponse.powerState ? 1 : 0;
-							device.operationalMode = applianceResponse.operationalMode;
-							device.fanSpeed = applianceResponse.fanSpeed;
 							device.swingMode = applianceResponse.swingMode;
-							device.ecoMode = applianceResponse.ecoMode;
 							device.useFahrenheit = applianceResponse.tempUnit;
 							device.targetTemperature = applianceResponse.targetTemperature;
 							device.indoorTemperature = applianceResponse.indoorTemperature;
 							device.outdoorTemperature = applianceResponse.outdoorTemperature;
 
-							this.log.debug('Power State is set to:', applianceResponse.powerState);
-							this.log.debug('Operational Mode is set to:', applianceResponse.operationalMode);
-							this.log.debug('Fan Speed is set to:', applianceResponse.fanSpeed);
 							this.log.debug('Swing Mode is set to:', applianceResponse.swingMode);
-							this.log.debug('ecoMode is set to:', applianceResponse.ecoMode);
 							this.log.debug('useFahrenheit is set to:', applianceResponse.tempUnit);
 							this.log.debug('Target Temperature:', applianceResponse.targetTemperature + '˚C');
 							this.log.debug('Indoor Temperature is:', applianceResponse.indoorTemperature + '˚C');
 							if (applianceResponse.outdoorTemperature < 100) {
 								this.log.debug('Outdoor Temperature is:', applianceResponse.outdoorTemperature + '˚C');
-							}
+							};
+
+						} else if (device.deviceType == MideaDeviceType.Dehumidifier) {
+							applianceResponse = new DehumidifierApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
+
+							device.currentHumidity = applianceResponse.currentHumidity;
+							device.targetHumidity = applianceResponse.targetHumidity;
+							device.waterLevel = applianceResponse.waterLevel;
+
+							this.log.debug('[Dehumidifier] Current Humidity is', device.currentHumidity);
+							this.log.debug('[Dehumidifier] Target humidity is set to', device.targetHumidity);
+							this.log.debug('[Dehumidifier] Water level is at', device.waterLevel);
 						};
 						this.log.debug('Full data is', Utils.formatResponse(applianceResponse.data))
 						resolve();
@@ -284,6 +304,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	updateValues() {
 		// STATUS ONLY OR POWER ON/OFF HEADER
 		const ac_data_header = [90, 90, 1, 16, 89, 0, 32, 0, 80, 0, 0, 0, 169, 65, 48, 9, 14, 5, 20, 20, 213, 50, 1, 0, 0, 17, 0, 0, 0, 4, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+		const dh_data_header = [90, 90, 1, 0, 89, 0, 32, 0, 1, 0, 0, 0, 39, 36, 17, 9, 13, 10, 18, 20, 218, 73, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 		let data: number[] = []
 
 		this.accessories.forEach(async (accessory: PlatformAccessory) => {
@@ -293,7 +314,11 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				this.log.warn('Could not find accessory with id', accessory.context.deviceId)
 			} else {
 				// Setup the data payload based on deviceType
-				data = ac_data_header.concat(Constants.UpdateCommand_AirCon);
+				if (mideaAccessory.deviceType == MideaDeviceType.AirConditioner) {
+					data = ac_data_header.concat(Constants.UpdateCommand_AirCon);
+				} else if (mideaAccessory.deviceType == MideaDeviceType.Dehumidifier) {
+					data = dh_data_header.concat(Constants.UpdateCommand_Dehumidifier);
+				};
 				this.log.debug(`[updateValues] Header + Command: ${data}`)
 				try {
 					await this.sendCommand(mideaAccessory, data, '[updateValues] (fetch params?) attempt 1/2')
@@ -320,15 +345,20 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	async sendUpdateToDevice(device?: MideaAccessory) {
 		if (device) {
 			let command: any
+			command.powerState = device.powerState;
+			command.operationalMode = device.operationalMode;
+
 			if (device.deviceType == MideaDeviceType.AirConditioner) {
 				command = new ACSetCommand();
-				command.powerState = device.powerState;
-				command.operationalMode = device.operationalMode;
 				command.fanSpeed = device.fanSpeed;
 				command.swingMode = device.swingMode;
 				command.ecoMode = device.ecoMode;
 				command.useFahrenheit = device.useFahrenheit;
 				command.targetTemperature = device.targetTemperature;
+			} else if (device.deviceType == MideaDeviceType.Dehumidifier) {
+				command = new DehumidifierSetCommand()
+				this.log.debug(`[sendUpdateToDevice] Generated a new command to set targetHumidity to: ${device.targetHumidity}`)
+				command.targetHumidity = device.targetHumidity
 			}
 			//operational mode for workaround with fan only mode on device
 			const pktBuilder = new PacketBuilder();
