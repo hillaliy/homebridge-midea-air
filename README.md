@@ -6,9 +6,10 @@
 [![Version](https://img.shields.io/npm/v/homebridge-midea-air)](https://www.npmjs.com/package/homebridge-midea-air)<br>
 <a target="blank" href="https://www.paypal.me/hillaliy"><img src="https://img.shields.io/badge/PayPal-Donate-blue.svg?logo=paypal"/></a><br>
 
-[Homebridge](https://github.com/nfarina/homebridge) plugin to control Midea AC units.
+[Homebridge](https://github.com/nfarina/homebridge) plugin to control Midea Air Conditioner & Dehumidifier units.
 
-<img src="branding/product.jpeg" width="200px">
+<img src="branding/Air_Conditioner.jpeg" width="200px">
+<img src="branding/Dehumidifier.jpeg" width="200px">
 
 ### Requirements
 
