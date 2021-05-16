@@ -63,7 +63,7 @@ This allows you to enable a Fan mode service.
 
 ### Outdoor Temperature Sensor
 
-This allows you to enable Outdooe Temperature service, if the AC support.
+This allows you to enable Outdoor Temperature service, if the AC support.
 
 ## Notes
 
