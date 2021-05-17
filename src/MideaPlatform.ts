@@ -249,16 +249,6 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 						this.log.debug(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) success!`);
 						let applianceResponse: any
 
-						device.powerState = applianceResponse.powerState ? 1 : 0;
-						device.operationalMode = applianceResponse.operationalMode;
-						device.fanSpeed = applianceResponse.fanSpeed;
-						device.ecoMode = applianceResponse.ecoMode;
-
-						this.log.debug('Power State is set to:', applianceResponse.powerState);
-						this.log.debug('Operational Mode is set to:', applianceResponse.operationalMode);
-						this.log.debug('Fan Speed is set to:', applianceResponse.fanSpeed);
-						this.log.debug('ecoMode is set to:', applianceResponse.ecoMode);
-
 						if (device.deviceType == MideaDeviceType.AirConditioner) {
 							applianceResponse = new ACApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
 
@@ -287,6 +277,17 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 							this.log.debug('[Dehumidifier] Target humidity is set to', device.targetHumidity);
 							this.log.debug('[Dehumidifier] Water level is at', device.waterLevel);
 						};
+
+						device.powerState = applianceResponse.powerState ? 1 : 0;
+						device.operationalMode = applianceResponse.operationalMode;
+						device.fanSpeed = applianceResponse.fanSpeed;
+						device.ecoMode = applianceResponse.ecoMode;
+
+						this.log.debug('Power State is set to:', applianceResponse.powerState);
+						this.log.debug('Operational Mode is set to:', applianceResponse.operationalMode);
+						this.log.debug('Fan Speed is set to:', applianceResponse.fanSpeed);
+						this.log.debug('ecoMode is set to:', applianceResponse.ecoMode);
+
 						this.log.debug('Full data is', Utils.formatResponse(applianceResponse.data))
 						resolve();
 					};
