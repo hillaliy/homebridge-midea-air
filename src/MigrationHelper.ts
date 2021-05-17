@@ -66,7 +66,7 @@ export class MigrationHelper {
 	migrate(config: any) {
 		let platformObject = {
 			"platform": "midea-air",
-			"interval": 1,
+			"interval": 30,
 			"user": "",
 			"password": ""
 		}
