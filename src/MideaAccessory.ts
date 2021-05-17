@@ -13,6 +13,10 @@ export class MideaAccessory {
 	public outdoorTemperature: number = 0
 	public useFahrenheit: boolean = false
 
+	public currentHumidity: number = 0
+	public targetHumidity: any = 0
+	public waterLevel: number = 0
+
 	public fanSpeed: number = 0
 	public fanOnlyMode: boolean = false
 	public temperatureSteps: number = 1
@@ -23,10 +27,8 @@ export class MideaAccessory {
 	public operationalMode: number = MideaOperationalMode.Off
 	public swingMode: number = 0
 	public ecoMode: boolean = false
-	public currentHumidity: number = 0
-	public targetHumidity: any = 0
-	public waterLevel: number = 0
 	public name: string = ''
+	public model: string = ''
 	public userId: string = ''
 	public firmwareVersion: string = '1.1.1'
 
@@ -69,10 +71,16 @@ export class MideaAccessory {
 
 		this.platform.log.info('Created device:', this.name + ',', 'with ID:', this.deviceId + ',', 'and type:', this.deviceType)
 
+		if (this.deviceType = MideaDeviceType.AirConditioner) {
+			this.model = 'Air Conditioner';
+		} else if (this.deviceType = MideaDeviceType.Dehumidifier) {
+			this.model = 'Dehumidifier';
+		} else this.model = 'Undefined';
+
 		this.accessory.getService(this.platform.Service.AccessoryInformation)!
 			.setCharacteristic(this.platform.Characteristic.Manufacturer, 'Midea')
 			.setCharacteristic(this.platform.Characteristic.FirmwareRevision, this.firmwareVersion)
-			.setCharacteristic(this.platform.Characteristic.Model, this.deviceType)
+			.setCharacteristic(this.platform.Characteristic.Model, this.model)
 			.setCharacteristic(this.platform.Characteristic.SerialNumber, this.deviceId)
 
 		switch (this.deviceType) {
