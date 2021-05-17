@@ -1,4 +1,4 @@
-import { API, DynamicPlatformPlugin, Logging, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
+import { API, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
 
 const axios = require('axios').default
 
@@ -35,7 +35,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	public readonly accessories: PlatformAccessory[] = [];
 	mideaAccessories: MideaAccessory[] = []
 
-	constructor(public readonly log: Logging, public readonly config: PlatformConfig, public readonly api: API) {
+	constructor(public readonly log: Logger, public readonly config: PlatformConfig, public readonly api: API) {
 		axiosCookieJarSupport(axios);
 		this.jar = new tough.CookieJar()
 		let agent: any;
