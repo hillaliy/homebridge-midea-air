@@ -28,7 +28,7 @@ export class MideaAccessory {
 	public waterLevel: number = 0
 	public name: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.1.0'
+	public firmwareVersion: string = '1.1.1'
 
 	private service!: Service
 	private fanService!: Service
