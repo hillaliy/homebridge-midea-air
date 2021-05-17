@@ -84,9 +84,8 @@ export class MideaAccessory {
 			.setCharacteristic(this.platform.Characteristic.SerialNumber, this.deviceId)
 
 		switch (this.deviceType) {
-
+			// Air Conditioner
 			case MideaDeviceType.AirConditioner: {
-
 				this.service = this.accessory.getService(this.platform.Service.HeaterCooler) || this.accessory.addService(this.platform.Service.HeaterCooler)
 				this.service.setCharacteristic(this.platform.Characteristic.Name, this.name)
 				this.service.getCharacteristic(this.platform.Characteristic.Active)
@@ -185,8 +184,8 @@ export class MideaAccessory {
 				}, 5000);
 			};
 				break;
+			// Dehumidifier
 			case MideaDeviceType.Dehumidifier: {
-				this.accessory.getService(this.platform.Service.AccessoryInformation)!.setCharacteristic(this.platform.Characteristic.Model, 'Dehumidifier')
 				this.service = this.accessory.getService(this.platform.Service.HumidifierDehumidifier) || this.accessory.addService(this.platform.Service.HumidifierDehumidifier)
 				this.service.setCharacteristic(this.platform.Characteristic.Name, this.name)
 				this.service.getCharacteristic(this.platform.Characteristic.Active)
@@ -472,9 +471,9 @@ export class MideaAccessory {
 	public currentHumidifierDehumidifierState() {
 		if (this.powerState === this.platform.Characteristic.Active.INACTIVE) {
 			return this.platform.Characteristic.CurrentHumidifierDehumidifierState.INACTIVE;
-		} else if (this.currentHumidity === 2) {
+		} else if (this.operationalMode === 1) {
 			return this.platform.Characteristic.CurrentHumidifierDehumidifierState.HUMIDIFYING;
-		} else if (this.currentHumidity === 3) {
+		} else if (this.operationalMode === 2) {
 			return this.platform.Characteristic.CurrentHumidifierDehumidifierState.DEHUMIDIFYING;
 		};
 	};
@@ -485,11 +484,11 @@ export class MideaAccessory {
 	};
 	// Get the current value of the "TargetHumidifierDehumidifierState" characteristic
 	public TargetHumidifierDehumidifierState() {
-		if (this.targetHumidity === 0) {
+		if (this.operationalMode === 0) {
 			return this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER;
-		} else if (this.targetHumidity === 1) {
+		} else if (this.operationalMode === 1) {
 			return this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER;
-		} else if (this.targetHumidity === 2) {
+		} else if (this.operationalMode === 2) {
 			return this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER;
 		};
 	};
@@ -504,11 +503,11 @@ export class MideaAccessory {
 		if (this.TargetHumidifierDehumidifierState() !== value) {
 			this.platform.log.debug('Triggered SET TargetHumidifierDehumidifierState To:', value);
 			if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER) {
-				this.targetHumidity = 0;
+				this.operationalMode = 0;
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER) {
-				this.targetHumidity = 1;
+				this.operationalMode = 1;
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER) {
-				this.targetHumidity = 2;
+				this.operationalMode = 2;
 			};
 			this.platform.sendUpdateToDevice(this);
 		};
