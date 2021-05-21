@@ -30,7 +30,7 @@ export class MideaAccessory {
 	public name: string = ''
 	public model: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.1.3'
+	public firmwareVersion: string = '1.1.4'
 
 	private service!: Service
 	private fanService!: Service
@@ -71,9 +71,9 @@ export class MideaAccessory {
 
 		this.platform.log.info('Created device:', this.name + ',', 'with ID:', this.deviceId + ',', 'and type:', this.deviceType)
 
-		if (this.deviceType = MideaDeviceType.AirConditioner) {
+		if (this.deviceType === MideaDeviceType.AirConditioner) {
 			this.model = 'Air Conditioner';
-		} else if (this.deviceType = MideaDeviceType.Dehumidifier) {
+		} else if (this.deviceType === MideaDeviceType.Dehumidifier) {
 			this.model = 'Dehumidifier';
 		} else this.model = 'Undefined';
 
@@ -83,161 +83,170 @@ export class MideaAccessory {
 			.setCharacteristic(this.platform.Characteristic.Model, this.model)
 			.setCharacteristic(this.platform.Characteristic.SerialNumber, this.deviceId)
 
-		switch (this.deviceType) {
-			// Air Conditioner
-			case MideaDeviceType.AirConditioner: {
-				this.service = this.accessory.getService(this.platform.Service.HeaterCooler) || this.accessory.addService(this.platform.Service.HeaterCooler)
-				this.service.setCharacteristic(this.platform.Characteristic.Name, this.name)
-				this.service.getCharacteristic(this.platform.Characteristic.Active)
-					.on('get', this.handleActiveGet.bind(this))
-					.on('set', this.handleActiveSet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
-					.on('get', this.handleCurrentHeaterCoolerStateGet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
-					.on('get', this.handleTargetHeaterCoolerStateGet.bind(this))
-					.on('set', this.handleTargetHeaterCoolerStateSet.bind(this))
-					.setProps({
-						validValues: [
-							this.platform.Characteristic.TargetHeaterCoolerState.AUTO,
-							this.platform.Characteristic.TargetHeaterCoolerState.HEAT,
-							this.platform.Characteristic.TargetHeaterCoolerState.COOL
-						]
-					})
-				this.service.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
-					.on('get', this.handleCurrentTemperatureGet.bind(this))
-					.setProps({
-						minValue: -100,
-						maxValue: 100,
-						minStep: 0.1
-					})
-				this.service.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
-					.on('get', this.handleCoolingThresholdTemperatureGet.bind(this))
-					.on('set', this.handleCoolingThresholdTemperatureSet.bind(this))
-					.setProps({
-						minValue: this.minTemperature,
-						maxValue: this.maxTemperature,
-						minStep: this.temperatureSteps
-					})
-				this.service.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
-					.on('get', this.handleHeatingThresholdTemperatureGet.bind(this))
-					.on('set', this.handleHeatingThresholdTemperatureSet.bind(this))
-					.setProps({
-						minValue: this.minTemperature,
-						maxValue: this.maxTemperature,
-						minStep: this.temperatureSteps
-					})
-				this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+		// Air Conditioner
+		if (this.deviceType === MideaDeviceType.AirConditioner) {
+			this.service = this.accessory.getService(this.platform.Service.HeaterCooler) || this.accessory.addService(this.platform.Service.HeaterCooler)
+			this.service.setCharacteristic(this.platform.Characteristic.Name, this.name)
+			this.service.getCharacteristic(this.platform.Characteristic.Active)
+				.on('get', this.handleActiveGet.bind(this))
+				.on('set', this.handleActiveSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
+				.on('get', this.handleCurrentHeaterCoolerStateGet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
+				.on('get', this.handleTargetHeaterCoolerStateGet.bind(this))
+				.on('set', this.handleTargetHeaterCoolerStateSet.bind(this))
+				.setProps({
+					validValues: [
+						this.platform.Characteristic.TargetHeaterCoolerState.AUTO,
+						this.platform.Characteristic.TargetHeaterCoolerState.HEAT,
+						this.platform.Characteristic.TargetHeaterCoolerState.COOL
+					]
+				})
+			this.service.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
+				.on('get', this.handleCurrentTemperatureGet.bind(this))
+				.setProps({
+					minValue: -100,
+					maxValue: 100,
+					minStep: 0.1
+				})
+			this.service.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
+				.on('get', this.handleCoolingThresholdTemperatureGet.bind(this))
+				.on('set', this.handleCoolingThresholdTemperatureSet.bind(this))
+				.setProps({
+					minValue: this.minTemperature,
+					maxValue: this.maxTemperature,
+					minStep: this.temperatureSteps
+				})
+			this.service.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
+				.on('get', this.handleHeatingThresholdTemperatureGet.bind(this))
+				.on('set', this.handleHeatingThresholdTemperatureSet.bind(this))
+				.setProps({
+					minValue: this.minTemperature,
+					maxValue: this.maxTemperature,
+					minStep: this.temperatureSteps
+				})
+			this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+				.on('get', this.handleRotationSpeedGet.bind(this))
+				.on('set', this.handleRotationSpeedSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
+				.on('get', this.handleSwingModeGet.bind(this))
+				.on('set', this.handleSwingModeSet.bind(this))
+			// this.service.getCharacteristic(this.platform.Characteristic.TemperatureDisplayUnits)
+			// 		.on('get', this.handleTemperatureDisplayUnitsGet.bind(this))
+			// 		.on('set', this.handleTemperatureDisplayUnitsSet.bind(this))
+			// 		.setProps({
+			// 			validValues: [
+			// 				this.platform.Characteristic.TemperatureDisplayUnits.FAHRENHEIT,
+			// 				this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS
+			// 			]
+			// 		});
+
+			if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'fanOnlyMode') == true) {
+				this.platform.log.debug('Add Fan Mode');
+				this.fanService = this.accessory.getService(this.platform.Service.Fanv2) || this.accessory.addService(this.platform.Service.Fanv2);
+				this.fanService.setCharacteristic(this.platform.Characteristic.Name, 'Fan');
+				this.fanService.getCharacteristic(this.platform.Characteristic.Active)
+					.on('get', this.handleFanActiveGet.bind(this))
+					.on('set', this.handleFanActiveSet.bind(this));
+				this.fanService.getCharacteristic(this.platform.Characteristic.RotationSpeed)
 					.on('get', this.handleRotationSpeedGet.bind(this))
-					.on('set', this.handleRotationSpeedSet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
+					.on('set', this.handleRotationSpeedSet.bind(this));
+				this.fanService.getCharacteristic(this.platform.Characteristic.SwingMode)
 					.on('get', this.handleSwingModeGet.bind(this))
-					.on('set', this.handleSwingModeSet.bind(this))
-				// this.service.getCharacteristic(this.platform.Characteristic.TemperatureDisplayUnits)
-				// 		.on('get', this.handleTemperatureDisplayUnitsGet.bind(this))
-				// 		.on('set', this.handleTemperatureDisplayUnitsSet.bind(this))
-				// 		.setProps({
-				// 			validValues: [
-				// 				this.platform.Characteristic.TemperatureDisplayUnits.FAHRENHEIT,
-				// 				this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS
-				// 			]
-				// 		});
-
-				if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'fanOnlyMode') == true) {
-					this.platform.log.debug('Add Fan Mode');
-					this.fanService = this.accessory.getService(this.platform.Service.Fanv2) || this.accessory.addService(this.platform.Service.Fanv2);
-					this.fanService.setCharacteristic(this.platform.Characteristic.Name, 'Fan');
-					this.fanService.getCharacteristic(this.platform.Characteristic.Active)
-						.on('get', this.handleFanActiveGet.bind(this))
-						.on('set', this.handleFanActiveSet.bind(this));
-					this.fanService.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-						.on('get', this.handleRotationSpeedGet.bind(this))
-						.on('set', this.handleRotationSpeedSet.bind(this));
-					this.fanService.getCharacteristic(this.platform.Characteristic.SwingMode)
-						.on('get', this.handleSwingModeGet.bind(this))
-						.on('set', this.handleSwingModeSet.bind(this));
-				} else {
-					let fanService = this.accessory.getService(this.platform.Service.Fanv2);
-					this.accessory.removeService(fanService);
-				};
-
-				if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'OutdoorTemperature') == true) {
-					this.platform.log.debug('Add Outdoor Temperature Sensor');
-					this.outdoorTemperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor) || this.accessory.addService(this.platform.Service.TemperatureSensor);
-					this.outdoorTemperatureService.setCharacteristic(this.platform.Characteristic.Name, 'Outdoor Temperature');
-					this.outdoorTemperatureService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
-						.on('get', this.handleOutdoorTemperatureGet.bind(this))
-				} else {
-					let outdoorTemperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor);
-					this.accessory.removeService(outdoorTemperatureService);
-				};
-
-				// Update HomeKit
-				setInterval(() => {
-					this.service.updateCharacteristic(this.platform.Characteristic.Active, this.powerState);
-					this.service.updateCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState, this.currentHeaterCoolerState());
-					this.service.updateCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState, this.targetHeaterCoolerState());
-					this.service.updateCharacteristic(this.platform.Characteristic.CurrentTemperature, this.indoorTemperature);
-					this.service.updateCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature, this.targetTemperature);
-					this.service.updateCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature, this.targetTemperature);
-					this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
-					this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
-				}, 5000);
+					.on('set', this.handleSwingModeSet.bind(this));
+			} else {
+				let fanService = this.accessory.getService(this.platform.Service.Fanv2);
+				this.accessory.removeService(fanService);
 			};
-				break;
+
+			if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'OutdoorTemperature') == true) {
+				this.platform.log.debug('Add Outdoor Temperature Sensor');
+				this.outdoorTemperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor) || this.accessory.addService(this.platform.Service.TemperatureSensor);
+				this.outdoorTemperatureService.setCharacteristic(this.platform.Characteristic.Name, 'Outdoor Temperature');
+				this.outdoorTemperatureService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
+					.on('get', this.handleOutdoorTemperatureGet.bind(this))
+			} else {
+				let outdoorTemperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor);
+				this.accessory.removeService(outdoorTemperatureService);
+			};
+
+			// Update HomeKit
+			setInterval(() => {
+				this.service.updateCharacteristic(this.platform.Characteristic.Active, this.powerState);
+				this.service.updateCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState, this.currentHeaterCoolerState());
+				this.service.updateCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState, this.targetHeaterCoolerState());
+				this.service.updateCharacteristic(this.platform.Characteristic.CurrentTemperature, this.indoorTemperature);
+				this.service.updateCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature, this.targetTemperature);
+				this.service.updateCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature, this.targetTemperature);
+				this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
+				this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
+			}, 5000);
+
 			// Dehumidifier
-			case MideaDeviceType.Dehumidifier: {
-				this.service = this.accessory.getService(this.platform.Service.HumidifierDehumidifier) || this.accessory.addService(this.platform.Service.HumidifierDehumidifier)
-				this.service.setCharacteristic(this.platform.Characteristic.Name, this.name)
-				this.service.getCharacteristic(this.platform.Characteristic.Active)
-					.on('get', this.handleActiveGet.bind(this))
-					.on('set', this.handleActiveSet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.CurrentHumidifierDehumidifierState)
-					.on('get', this.handleCurrentHumidifierDehumidifierStateGet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.TargetHumidifierDehumidifierState)
-					.on('get', this.handleTargetHumidifierDehumidifierStateGet.bind(this))
-					.on('set', this.handleTargetHumidifierDehumidifierStateSet.bind(this))
-					.setProps({
-						validValues: [
-							this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER,
-							this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER,
-							this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER
-						]
-					})
-				this.service.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity)
-					.on('get', this.handleCurrentRelativeHumidityGet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold)
-					.on('get', this.handleRelativeHumidityDehumidifierThresholdGet.bind(this))
-					.on('set', this.handleRelativeHumidityDehumidifierThresholdSet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold)
-					.on('get', this.handleRelativeHumidityHumidifierThresholdGet.bind(this))
-					.on('set', this.handleRelativeHumidityHumidifierThresholdSet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-					.on('get', this.handleRotationSpeedGet.bind(this))
-					.on('set', this.handleRotationSpeedSet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
-					.on('get', this.handleSwingModeGet.bind(this))
-					.on('set', this.handleSwingModeSet.bind(this))
-				this.service.getCharacteristic(this.platform.Characteristic.WaterLevel)
-					.on('get', this.handleWaterLevelGet.bind(this))
+		} else if (this.deviceType === MideaDeviceType.Dehumidifier) {
+			this.service = this.accessory.getService(this.platform.Service.HumidifierDehumidifier) || this.accessory.addService(this.platform.Service.HumidifierDehumidifier)
+			this.service.setCharacteristic(this.platform.Characteristic.Name, this.name)
+			this.service.getCharacteristic(this.platform.Characteristic.Active)
+				.on('get', this.handleActiveGet.bind(this))
+				.on('set', this.handleActiveSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.CurrentHumidifierDehumidifierState)
+				.on('get', this.handleCurrentHumidifierDehumidifierStateGet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.TargetHumidifierDehumidifierState)
+				.on('get', this.handleTargetHumidifierDehumidifierStateGet.bind(this))
+				.on('set', this.handleTargetHumidifierDehumidifierStateSet.bind(this))
+				.setProps({
+					validValues: [
+						// this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER,
+						// this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER,
+						this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER
+					]
+				})
+			this.service.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity)
+				.on('get', this.handleCurrentRelativeHumidityGet.bind(this))
+				.setProps({
+					minValue: 0,
+					maxValue: 100,
+					minStep: 1
+				})
+			this.service.getCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold)
+				.on('get', this.handleRelativeHumidityDehumidifierThresholdGet.bind(this))
+				.on('set', this.handleRelativeHumidityDehumidifierThresholdSet.bind(this))
+				.setProps({
+					minValue: 35,
+					maxValue: 85,
+					minStep: 5
+				})
+			// this.service.getCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold)
+			// 	.on('get', this.handleRelativeHumidityHumidifierThresholdGet.bind(this))
+			// 	.on('set', this.handleRelativeHumidityHumidifierThresholdSet.bind(this))
+			// 	.setProps({
+			// 		minValue: 35,
+			// 		maxValue: 85,
+			// 		minStep: 5
+			// 	})
+			// this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+			// 	.on('get', this.handleWindSpeedGet.bind(this))
+			// 	.on('set', this.handleWindSpeedSet.bind(this))
+			// this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
+			// 	.on('get', this.handleSwingModeGet.bind(this))
+			// 	.on('set', this.handleSwingModeSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.WaterLevel)
+				.on('get', this.handleWaterLevelGet.bind(this))
 
-				// Update HomeKit
-				setInterval(() => {
-					this.service.updateCharacteristic(this.platform.Characteristic.Active, this.powerState);
-					this.service.updateCharacteristic(this.platform.Characteristic.CurrentHumidifierDehumidifierState, this.currentHumidifierDehumidifierState());
-					this.service.updateCharacteristic(this.platform.Characteristic.TargetHumidifierDehumidifierState, this.TargetHumidifierDehumidifierState());
-					this.service.updateCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, this.currentHumidity);
-					this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold, this.targetHumidity);
-					this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold, this.targetHumidity);
-					this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
-					this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
-					this.service.updateCharacteristic(this.platform.Characteristic.WaterLevel, this.waterLevel);
-				}, 5000);
-			};
-				break;
-			default: {
-				this.platform.log.error('Unsupported device type: ', MideaDeviceType[this.deviceType]);
-				return;
-			};
+			// Update HomeKit
+			setInterval(() => {
+				this.service.updateCharacteristic(this.platform.Characteristic.Active, this.powerState);
+				this.service.updateCharacteristic(this.platform.Characteristic.CurrentHumidifierDehumidifierState, this.currentHumidifierDehumidifierState());
+				this.service.updateCharacteristic(this.platform.Characteristic.TargetHumidifierDehumidifierState, this.TargetHumidifierDehumidifierState());
+				this.service.updateCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, this.currentHumidity);
+				this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold, this.targetHumidity);
+				// this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold, this.targetHumidity);
+				// this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.windSpeed());
+				// 	this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
+				this.service.updateCharacteristic(this.platform.Characteristic.WaterLevel, this.waterLevel);
+			}, 5000);
+		} else {
+			this.platform.log.error('Unsupported device type: ', MideaDeviceType[this.deviceType]);
 		};
 	};
 	// Handle requests to get the current value of the "Active" characteristic
@@ -469,11 +478,9 @@ export class MideaAccessory {
 	// HumidifierDehumidifier
 	// Get the current value of the "CurrentHumidifierDehumidifierState" characteristic
 	public currentHumidifierDehumidifierState() {
-		if (this.powerState === this.platform.Characteristic.Active.INACTIVE) {
+		if (this.powerState === 0) {
 			return this.platform.Characteristic.CurrentHumidifierDehumidifierState.INACTIVE;
-		} else if (this.operationalMode === 1) {
-			return this.platform.Characteristic.CurrentHumidifierDehumidifierState.HUMIDIFYING;
-		} else if (this.operationalMode === 2) {
+		} else if (this.operationalMode === 0) {
 			return this.platform.Characteristic.CurrentHumidifierDehumidifierState.DEHUMIDIFYING;
 		};
 	};
@@ -485,10 +492,6 @@ export class MideaAccessory {
 	// Get the current value of the "TargetHumidifierDehumidifierState" characteristic
 	public TargetHumidifierDehumidifierState() {
 		if (this.operationalMode === 0) {
-			return this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER;
-		} else if (this.operationalMode === 1) {
-			return this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER;
-		} else if (this.operationalMode === 2) {
 			return this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER;
 		};
 	};
@@ -500,8 +503,9 @@ export class MideaAccessory {
 
 	// Handle requests to set the target value of the "HumidifierDehumidifierState" characteristic
 	handleTargetHumidifierDehumidifierStateSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		this.platform.log.debug('Triggered SET TargetHumidifierDehumidifierState To:', value);
 		if (this.TargetHumidifierDehumidifierState() !== value) {
-			this.platform.log.debug('Triggered SET TargetHumidifierDehumidifierState To:', value);
+
 			if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER) {
 				this.operationalMode = 0;
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER) {
@@ -528,9 +532,11 @@ export class MideaAccessory {
 
 	// Handle requests to set the Relative value of the "HumidityDehumidifierThreshold" characteristic
 	handleRelativeHumidityDehumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET RelativeHumidityDehumidifierThreshold To:', value);
-		this.targetHumidity = value;
-		this.platform.sendUpdateToDevice(this);
+		if (this.targetHumidity !== value) {
+			this.platform.log.debug('Triggered SET RelativeHumidityDehumidifierThreshold To:', value);
+			this.targetHumidity = value;
+			this.platform.sendUpdateToDevice(this);
+		};
 		callback(null);
 	};
 
@@ -542,8 +548,45 @@ export class MideaAccessory {
 
 	// Handle requests to set the Relative value of the "HumidityHumidifierThreshold" characteristic
 	handleRelativeHumidityHumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET RelativeHumidityDehumidifierThreshold', value);
-		this.targetHumidity = value;
+		if (this.targetHumidity !== value) {
+			this.platform.log.debug('Triggered SET RelativeHumidityDehumidifierThreshold', value);
+			this.targetHumidity = value;
+			this.platform.sendUpdateToDevice(this);
+		};
+		callback(null);
+	};
+
+	// Get the current value of the "WindSpeed" characteristic
+	public windSpeed() {
+		// values from device are 40.0="Silent",60.0="Medium",80.0="High"
+		// convert to good usable slider in homekit in percent
+		let currentValue = 0;
+		if (this.fanSpeed === 40) {
+			currentValue = 30;
+		} else if (this.fanSpeed === 60) {
+			currentValue = 60;
+		} else if (this.fanSpeed = 80) {
+			currentValue = 100;
+		};
+		return currentValue;
+	};
+	// Handle requests to get the current value of the "WindSpeed" characteristic
+	handleWindSpeedGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET WindSpeed');
+		callback(null, this.windSpeed());
+	};
+	// Handle requests to set the "RotationSpeed" characteristic
+	handleWindSpeedSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		this.platform.log.debug('Triggered SET WindSpeed To:', value);
+		// transform values in percent
+		// values from device are 20.0="Silent",60.0="Medium",80.0="High"
+		if (value <= 30) {
+			this.fanSpeed = 40;
+		} else if (value > 30 && value <= 60) {
+			this.fanSpeed = 60;
+		} else if (value > 60 && value <= 100) {
+			this.fanSpeed = 80;
+		};
 		this.platform.sendUpdateToDevice(this);
 		callback(null);
 	};

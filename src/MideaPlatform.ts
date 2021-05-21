@@ -233,17 +233,17 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				try {
 					const response = await this.apiClient.post(url, qs.stringify(form))
 					if (response.data.errorCode && response.data.errorCode !== '0') {
-						if (response.data.errorCode === "3123") {
+						if (response.data.errorCode == 3123) {
 							this.log.debug('Device Unreachable');
 							resolve();
 							return;
 						};
-						if (response.data.errorCode === "3176") {
+						if (response.data.errorCode == 3176) {
 							this.log.debug('Command was not accepted by device. Command wrong or device not reachable');
 							resolve();
 							return;
 						};
-						this.log.error(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) returned error ${response.data.msg}`)
+						this.log.error(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) returned error ${response.data.msg}, ${response.data.errorCode}`)
 						return;
 					} else {
 						this.log.debug(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) success!`);
@@ -315,9 +315,9 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				this.log.warn('Could not find accessory with id', accessory.context.deviceId)
 			} else {
 				// Setup the data payload based on deviceType
-				if (mideaAccessory.deviceType == MideaDeviceType.AirConditioner) {
+				if (mideaAccessory.deviceType === MideaDeviceType.AirConditioner) {
 					data = ac_data_header.concat(Constants.UpdateCommand_AirCon);
-				} else if (mideaAccessory.deviceType == MideaDeviceType.Dehumidifier) {
+				} else if (mideaAccessory.deviceType === MideaDeviceType.Dehumidifier) {
 					data = dh_data_header.concat(Constants.UpdateCommand_Dehumidifier);
 				};
 				this.log.debug(`[updateValues] Header + Command: ${data}`)
