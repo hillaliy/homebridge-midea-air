@@ -30,7 +30,7 @@ export class MideaAccessory {
 	public name: string = ''
 	public model: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.1.4'
+	public firmwareVersion: string = '1.2.0'
 
 	private service!: Service
 	private fanService!: Service
@@ -131,15 +131,15 @@ export class MideaAccessory {
 			this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
 				.on('get', this.handleSwingModeGet.bind(this))
 				.on('set', this.handleSwingModeSet.bind(this))
-			// this.service.getCharacteristic(this.platform.Characteristic.TemperatureDisplayUnits)
-			// 		.on('get', this.handleTemperatureDisplayUnitsGet.bind(this))
-			// 		.on('set', this.handleTemperatureDisplayUnitsSet.bind(this))
-			// 		.setProps({
-			// 			validValues: [
-			// 				this.platform.Characteristic.TemperatureDisplayUnits.FAHRENHEIT,
-			// 				this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS
-			// 			]
-			// 		});
+			this.service.getCharacteristic(this.platform.Characteristic.TemperatureDisplayUnits)
+				.on('get', this.handleTemperatureDisplayUnitsGet.bind(this))
+				.on('set', this.handleTemperatureDisplayUnitsSet.bind(this))
+				.setProps({
+					validValues: [
+						this.platform.Characteristic.TemperatureDisplayUnits.FAHRENHEIT,
+						this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS
+					]
+				});
 
 			if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'fanOnlyMode') == true) {
 				this.platform.log.debug('Add Fan Mode');
@@ -180,6 +180,7 @@ export class MideaAccessory {
 				this.service.updateCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature, this.targetTemperature);
 				this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
 				this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
+				this.service.updateCharacteristic(this.platform.Characteristic.TemperatureDisplayUnits, this.useFahrenheit);
 			}, 5000);
 
 			// Dehumidifier
@@ -329,7 +330,11 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "CoolingThresholdTemperature" characteristic
 	handleCoolingThresholdTemperatureSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET CoolingThresholdTemperature To:', value + '˚C');
+		if (this.useFahrenheit == true) {
+			this.platform.log.debug('Triggered SET CoolingThresholdTemperature');
+		} else {
+			this.platform.log.debug('Triggered SET CoolingThresholdTemperature To:', value + '˚C');
+		};
 		if (this.targetTemperature !== value) {
 			this.targetTemperature = value;
 			this.platform.sendUpdateToDevice(this);
@@ -343,7 +348,11 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "HeatingThresholdTemperature" characteristic
 	handleHeatingThresholdTemperatureSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET HeatingThresholdTemperature To:', value + '˚C');
+		if (this.useFahrenheit == true) {
+			this.platform.log.debug('Triggered SET HeatingThresholdTemperature');
+		} else {
+			this.platform.log.debug('Triggered SET HeatingThresholdTemperature To:', value + '˚C');
+		};
 		if (this.targetTemperature !== value) {
 			this.targetTemperature = value;
 			this.platform.sendUpdateToDevice(this);
@@ -418,27 +427,27 @@ export class MideaAccessory {
 		callback(null);
 	};
 	// Handle requests to get the current value of the "Temperature Display Units" characteristic
-	// handleTemperatureDisplayUnitsGet(callback: CharacteristicGetCallback) {
-	// 	this.platform.log.debug('Triggered GET Temperature Display Units');
-	// 	if (this.useFahrenheit === true) {
-	// 		callback(null, this.platform.Characteristic.TemperatureDisplayUnits.FAHRENHEIT);
-	// 	} else {
-	// 		callback(null, this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS);
-	// 	};
-	// };
+	handleTemperatureDisplayUnitsGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET Temperature Display Units');
+		if (this.useFahrenheit === true) {
+			callback(null, this.platform.Characteristic.TemperatureDisplayUnits.FAHRENHEIT);
+		} else {
+			callback(null, this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS);
+		};
+	};
 	// Handle requests to set the "Temperature Display Units" characteristic
-	// handleTemperatureDisplayUnitsSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-	// 	this.platform.log.debug('Triggered SET Temperature Display Units To:', value);
-	// 	if (this.useFahrenheit !== value) {
-	// 		if (value === true) {
-	// 			this.useFahrenheit = true;
-	// 		} else {
-	// 			this.useFahrenheit = false;
-	// 		};
-	// 		this.platform.sendUpdateToDevice(this);
-	// 	};
-	// 	callback(null);
-	// };
+	handleTemperatureDisplayUnitsSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		this.platform.log.debug('Triggered SET Temperature Display Units To:', value);
+		if (this.useFahrenheit !== value) {
+			if (value === 1) {
+				this.useFahrenheit = true;
+			} else {
+				this.useFahrenheit = false;
+			};
+			this.platform.sendUpdateToDevice(this);
+		};
+		callback(null);
+	};
 
 	// Fan mode
 	// Handle requests to get the current status of "Fan Mode" characteristic

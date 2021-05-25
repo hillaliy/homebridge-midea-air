@@ -20,7 +20,6 @@ import DehumidifierApplianceResponse from './responses/DehumidifierApplianceResp
 import { MideaAccessory } from './MideaAccessory';
 import { MideaDeviceType } from './enums/MideaDeviceType';
 
-
 export class MideaPlatform implements DynamicPlatformPlugin {
 	public readonly Service: typeof Service = this.api.hap.Service;
 	public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
@@ -253,17 +252,28 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 							applianceResponse = new ACApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
 
 							device.swingMode = applianceResponse.swingMode;
-							device.useFahrenheit = applianceResponse.tempUnit;
+							if (device.useFahrenheit == true) {
+								device.useFahrenheit = applianceResponse.fahrenheitUnit;
+							} else device.useFahrenheit = applianceResponse.celsiusUnit;
 							device.targetTemperature = applianceResponse.targetTemperature;
 							device.indoorTemperature = applianceResponse.indoorTemperature;
 							device.outdoorTemperature = applianceResponse.outdoorTemperature;
 
 							this.log.debug('Swing Mode is set to:', applianceResponse.swingMode);
-							this.log.debug('useFahrenheit is set to:', applianceResponse.tempUnit);
-							this.log.debug('Target Temperature:', applianceResponse.targetTemperature + '˚C');
-							this.log.debug('Indoor Temperature is:', applianceResponse.indoorTemperature + '˚C');
+							this.log.debug('useFahrenheit is set to:', device.useFahrenheit);
+							if (device.useFahrenheit == true) {
+								this.log.debug('Target Temperature:', Math.round((applianceResponse.targetTemperature * 1.8) + 32) + '˚F');
+								this.log.debug('Indoor Temperature is:', Math.round((applianceResponse.indoorTemperature * 1.8) + 32) + '˚F');
+							} else {
+								this.log.debug('Target Temperature:', applianceResponse.targetTemperature + '˚C');
+								this.log.debug('Indoor Temperature is:', applianceResponse.indoorTemperature + '˚C');
+							};
 							if (applianceResponse.outdoorTemperature < 100) {
-								this.log.debug('Outdoor Temperature is:', applianceResponse.outdoorTemperature + '˚C');
+								if (device.useFahrenheit == true) {
+									this.log.debug('Outdoor Temperature is:', Math.round((applianceResponse.outdoorTemperature * 1.8) + 32) + '˚F');
+								} else {
+									this.log.debug('Outdoor Temperature is:', applianceResponse.outdoorTemperature + '˚C');
+								};
 							};
 
 						} else if (device.deviceType == MideaDeviceType.Dehumidifier) {
