@@ -47,8 +47,8 @@ To set specific per-device values, you need to add deviceId that can find in:
 
 ### Temperature Display Units
 
-This Plugin only support Celsius.
-It's means that the display will allways show Celsius.
+This Plugin support Celsius & Fahrenheit.
+Display Units can set in HomeKit device settings.
 
 ### Supported Swing Mode
 
@@ -57,7 +57,7 @@ You have to select which type your device supports.
 
 ### Rotation Speed and Swing
 
-Rotation Speed and Swing mode can set in the homekit device when you swipe up to device settings.
+Rotation Speed and Swing mode can set in the HomeKit device settings.
 Rotation Speed values are:
 0%: device off
 / 25%: Low
