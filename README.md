@@ -47,7 +47,7 @@ To set specific per-device values, you need to add deviceId that can find in:
 
 ### Temperature Display Units
 
-This Plugin support Celsius & Fahrenheit.
+This Plugin support Celsius & Fahrenheit (Default Temperature Unit is Celsius).
 Display Units can set in HomeKit device settings.
 
 ### Supported Swing Mode
