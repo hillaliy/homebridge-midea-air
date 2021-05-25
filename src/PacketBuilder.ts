@@ -5,35 +5,35 @@ export default class PacketBuilder {
 	constructor() {
 
 		// // Init the packet with the header data.
-		// this.packet = [
-		// // Static MSmart header
-		// 90, 90,
-		// // mMessageType
-		// 1, 16,
-		// // Packet length
-		// 92,
-		// // Unknown
-		// 0, 32, 0,
-		// // MessageID
-		// 1, 0, 0, 0,
-		// // Date and time
-		// 189, 179, 57, 14, 12, 5, 20, 20,
-		// // DeviceID
-		// 29, 129, 0, 0, 0, 16,
-		// // Payload?
-		// 0, 0, 0, 4, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+		this.packet = [
+			// // Static MSmart header
+			90, 90,
+			// // mMessageType
+			1, 16,
+			// // Packet length
+			92,
+			// // Unknown
+			0, 32, 0,
+			// // MessageID
+			1, 0, 0, 0,
+			// // Date and time
+			189, 179, 57, 14, 12, 5, 20, 20,
+			// // DeviceID
+			29, 129, 0, 0, 0, 16,
+			// // Payload?
+			0, 0, 0, 4, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0];
 
 		// From python Lib
 		// Non status commands
-		this.packet = [
-			90, 90,
-			1, 0,
-			91,
-			0, 32, 0,
-			10, 0, 0, 0, 
-			10, 10, 10, 3, 2, 11, 18, 20, 
-			218, 73, 0, 0, 0, 16, 
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		// this.packet = [
+		// 	90, 90,
+		// 	1, 0,
+		// 	91,
+		// 	0, 32, 0,
+		// 	10, 0, 0, 0, 
+		// 	10, 10, 10, 3, 2, 11, 18, 20, 
+		// 	218, 73, 0, 0, 0, 16, 
+		// 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	}
 
 	set command(command: BaseCommand) {
@@ -53,6 +53,6 @@ export default class PacketBuilder {
 	}
 
 	checksum(data: number[]) {
-		return 255 - (data.reduce((a: number, b : number) => a + b) % 256) + 1;
+		return 255 - (data.reduce((a: number, b: number) => a + b) % 256) + 1;
 	}
 }
