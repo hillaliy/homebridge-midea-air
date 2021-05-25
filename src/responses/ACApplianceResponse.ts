@@ -1,3 +1,4 @@
+import { userInfo } from 'os';
 import ApplianceResponse from '../ApplianceResponse'
 
 export default class ACApplianceResponse extends ApplianceResponse {
@@ -23,10 +24,11 @@ export default class ACApplianceResponse extends ApplianceResponse {
         // This needs a better name, dunno what it actually means
         return (this.data[0x0a] & 0x08) > 0;
     }
-    get tempUnit() {
-        // This needs a better name, dunno what it actually means
-        return (this.data[0x09] & 0x80) > 0; // CELSIUS
-        // return this.data[23] > 0; // FAHRENHEIT
+    get celsiusUnit() {
+        return (this.data[0x09] & 0x80) > 0; // CELSIUS - False
+    }
+    get fahrenheitUnit() {
+        return this.data[23] > 0; // FAHRENHEIT - True
     }
     get humidity() {
         return this.data[0x0d] & 0x7f;
