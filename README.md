@@ -38,6 +38,8 @@ Add this to the platforms array in your config.json:
         "platform": "midea-air"
     }
 
+# This plugin don't support OSK103 dongle.
+
 ## Optional per-device Configuration Values
 
 To set specific per-device values, you need to add deviceId that can find in:
