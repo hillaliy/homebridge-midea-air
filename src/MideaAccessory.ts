@@ -30,7 +30,7 @@ export class MideaAccessory {
 	public name: string = ''
 	public model: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.2.0'
+	public firmwareVersion: string = '1.2.1'
 
 	private service!: Service
 	private fanService!: Service
@@ -154,6 +154,13 @@ export class MideaAccessory {
 				this.fanService.getCharacteristic(this.platform.Characteristic.SwingMode)
 					.on('get', this.handleSwingModeGet.bind(this))
 					.on('set', this.handleSwingModeSet.bind(this));
+
+				setInterval(() => {
+					this.fanService.updateCharacteristic(this.platform.Characteristic.Active, this.fanActive());
+					this.fanService.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
+					this.fanService.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
+				}, 5000);
+
 			} else {
 				let fanService = this.accessory.getService(this.platform.Service.Fanv2);
 				this.accessory.removeService(fanService);
@@ -293,9 +300,7 @@ export class MideaAccessory {
 			return this.platform.Characteristic.TargetHeaterCoolerState.COOL;
 		} else if (this.operationalMode === MideaOperationalMode.Heating) {
 			return this.platform.Characteristic.TargetHeaterCoolerState.HEAT;
-		} else if (this.operationalMode === MideaOperationalMode.Auto) {
-			return this.platform.Characteristic.TargetHeaterCoolerState.AUTO;
-		};
+		} else return this.platform.Characteristic.TargetHeaterCoolerState.AUTO;
 	};
 	// Handle requests to get the current value of the "TargetHeaterCoolerState" characteristic
 	handleTargetHeaterCoolerStateGet(callback: CharacteristicGetCallback) {
@@ -450,28 +455,30 @@ export class MideaAccessory {
 	};
 
 	// Fan mode
+	// Get the current value of the "FanActive" characteristic
+	public fanActive() {
+		if (this.operationalMode === MideaOperationalMode.FanOnly && this.powerState === this.platform.Characteristic.Active.ACTIVE) {
+			return this.platform.Characteristic.Active.ACTIVE;
+		} else {
+			return this.platform.Characteristic.Active.INACTIVE;
+		};
+	};
 	// Handle requests to get the current status of "Fan Mode" characteristic
 	handleFanActiveGet(callback: CharacteristicGetCallback) {
 		this.platform.log.debug('Triggered GET FanMode');
-		if (this.powerState === 1 && this.operationalMode === MideaOperationalMode.FanOnly) {
-			callback(null, this.platform.Characteristic.Active.ACTIVE);
-		} else {
-			callback(null, this.platform.Characteristic.Active.INACTIVE);
-		};
+		callback(null, this.fanActive());
 	};
 	// Handle requests to set the "Fan Mode" characteristic
 	handleFanActiveSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		this.platform.log.debug('Triggered SET FanMode To:', value);
-		if (this.powerState == 1 && value == 1) {
+		if (value === 1 && this.powerState === 1) {
 			this.operationalMode = MideaOperationalMode.FanOnly;
 			this.platform.sendUpdateToDevice(this);
-		} else if (this.powerState == 0 && value == 1) {
-			this.powerState = 1;
+		} else if (value === 1 && this.powerState === 0) {
+			this.powerState = this.platform.Characteristic.Active.ACTIVE;
 			this.operationalMode = MideaOperationalMode.FanOnly;
-			this.platform.sendUpdateToDevice(this);
-		} else {
-			this.operationalMode = MideaOperationalMode.Off;
-			this.powerState = 0;
+		} else if (value === 0 && this.powerState === 1) {
+			this.powerState = this.platform.Characteristic.Active.INACTIVE;
 			this.platform.sendUpdateToDevice(this);
 		};
 		callback(null);
@@ -509,12 +516,10 @@ export class MideaAccessory {
 		this.platform.log.debug('Triggered GET TargetHumidifierDehumidifierState');
 		callback(null, this.TargetHumidifierDehumidifierState());
 	};
-
 	// Handle requests to set the target value of the "HumidifierDehumidifierState" characteristic
 	handleTargetHumidifierDehumidifierStateSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		this.platform.log.debug('Triggered SET TargetHumidifierDehumidifierState To:', value);
 		if (this.TargetHumidifierDehumidifierState() !== value) {
-
 			if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER) {
 				this.operationalMode = 0;
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER) {
@@ -526,19 +531,16 @@ export class MideaAccessory {
 		};
 		callback(null);
 	};
-
 	// Handle requests to get the current value of the "RelativeHumidity" characteristic
 	handleCurrentRelativeHumidityGet(callback: CharacteristicGetCallback) {
 		this.platform.log.debug('Triggered GET CurrentRelativeHumidity');
 		callback(null, this.currentHumidity);
 	};
-
 	// Handle requests to get the Relative value of the "HumidityDehumidifierThreshold" characteristic
 	handleRelativeHumidityDehumidifierThresholdGet(callback: CharacteristicGetCallback) {
 		this.platform.log.debug('Triggered GET RelativeHumidityDehumidifierThreshold');
 		callback(null, this.targetHumidity);
 	};
-
 	// Handle requests to set the Relative value of the "HumidityDehumidifierThreshold" characteristic
 	handleRelativeHumidityDehumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		if (this.targetHumidity !== value) {
@@ -548,13 +550,11 @@ export class MideaAccessory {
 		};
 		callback(null);
 	};
-
 	// Handle requests to get the Relative value of the "HumidityHumidifierThreshold" characteristic
 	handleRelativeHumidityHumidifierThresholdGet(callback: CharacteristicGetCallback) {
 		this.platform.log.debug('Triggered GET RelativeHumidityDehumidifierThreshold');
 		callback(null, this.targetHumidity);
 	};
-
 	// Handle requests to set the Relative value of the "HumidityHumidifierThreshold" characteristic
 	handleRelativeHumidityHumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		if (this.targetHumidity !== value) {
@@ -564,7 +564,6 @@ export class MideaAccessory {
 		};
 		callback(null);
 	};
-
 	// Get the current value of the "WindSpeed" characteristic
 	public windSpeed() {
 		// values from device are 40.0="Silent",60.0="Medium",80.0="High"
@@ -599,7 +598,6 @@ export class MideaAccessory {
 		this.platform.sendUpdateToDevice(this);
 		callback(null);
 	};
-
 	// Handle requests to get the current value of the "WaterLevel" characteristic
 	handleWaterLevelGet(callback: CharacteristicGetCallback) {
 		this.platform.log.debug('Triggered GET WaterLevel');
