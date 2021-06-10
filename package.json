@@ -9,10 +9,6 @@
     "bugs": {
         "url": "https://github.com/hillaliy/homebridge-midea-air/issues"
     },
-    "funding": {
-        "type" : "paypal",
-        "url" : "https://www.paypal.me/hillaliy"
-      },
     "main": "lib/index.js",
     "files": [
         "/lib",
@@ -53,5 +49,9 @@
     },
     "scripts": {
         "build": "tsc"
+    },
+    "funding": {
+        "type": "paypal",
+        "url": "https://www.paypal.me/hillaliy"
     }
 }
