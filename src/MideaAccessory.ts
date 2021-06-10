@@ -30,7 +30,7 @@ export class MideaAccessory {
 	public name: string = ''
 	public model: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.2.1'
+	public firmwareVersion: string = '1.2.2'
 
 	private service!: Service
 	private fanService!: Service
@@ -141,6 +141,20 @@ export class MideaAccessory {
 					]
 				});
 
+			// Update HomeKit
+			setInterval(() => {
+				this.service.updateCharacteristic(this.platform.Characteristic.Active, this.powerState);
+				this.service.updateCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState, this.currentHeaterCoolerState());
+				this.service.updateCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState, this.targetHeaterCoolerState());
+				this.service.updateCharacteristic(this.platform.Characteristic.CurrentTemperature, this.indoorTemperature);
+				this.service.updateCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature, this.targetTemperature);
+				this.service.updateCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature, this.targetTemperature);
+				this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
+				this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
+				this.service.updateCharacteristic(this.platform.Characteristic.TemperatureDisplayUnits, this.useFahrenheit);
+			}, 5000);
+
+			// Fan Mode
 			if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'fanOnlyMode') == true) {
 				this.platform.log.debug('Add Fan Mode');
 				this.fanService = this.accessory.getService(this.platform.Service.Fanv2) || this.accessory.addService(this.platform.Service.Fanv2);
@@ -166,6 +180,7 @@ export class MideaAccessory {
 				this.accessory.removeService(fanService);
 			};
 
+			// Outdoor Temperature Sensor
 			if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'OutdoorTemperature') == true) {
 				this.platform.log.debug('Add Outdoor Temperature Sensor');
 				this.outdoorTemperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor) || this.accessory.addService(this.platform.Service.TemperatureSensor);
@@ -176,19 +191,6 @@ export class MideaAccessory {
 				let outdoorTemperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor);
 				this.accessory.removeService(outdoorTemperatureService);
 			};
-
-			// Update HomeKit
-			setInterval(() => {
-				this.service.updateCharacteristic(this.platform.Characteristic.Active, this.powerState);
-				this.service.updateCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState, this.currentHeaterCoolerState());
-				this.service.updateCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState, this.targetHeaterCoolerState());
-				this.service.updateCharacteristic(this.platform.Characteristic.CurrentTemperature, this.indoorTemperature);
-				this.service.updateCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature, this.targetTemperature);
-				this.service.updateCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature, this.targetTemperature);
-				this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
-				this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
-				this.service.updateCharacteristic(this.platform.Characteristic.TemperatureDisplayUnits, this.useFahrenheit);
-			}, 5000);
 
 			// Dehumidifier
 		} else if (this.deviceType === MideaDeviceType.Dehumidifier) {
@@ -473,14 +475,13 @@ export class MideaAccessory {
 		this.platform.log.debug('Triggered SET FanMode To:', value);
 		if (value === 1 && this.powerState === 1) {
 			this.operationalMode = MideaOperationalMode.FanOnly;
-			this.platform.sendUpdateToDevice(this);
 		} else if (value === 1 && this.powerState === 0) {
 			this.powerState = this.platform.Characteristic.Active.ACTIVE;
 			this.operationalMode = MideaOperationalMode.FanOnly;
 		} else if (value === 0 && this.powerState === 1) {
 			this.powerState = this.platform.Characteristic.Active.INACTIVE;
-			this.platform.sendUpdateToDevice(this);
 		};
+		this.platform.sendUpdateToDevice(this);
 		callback(null);
 	};
 
@@ -525,7 +526,7 @@ export class MideaAccessory {
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER) {
 				this.operationalMode = 1;
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER) {
-				this.operationalMode = 2;
+				this.operationalMode = 0;
 			};
 			this.platform.sendUpdateToDevice(this);
 		};
