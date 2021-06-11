@@ -1,6 +1,6 @@
 <SPAN ALIGN="CENTER">
 
-<img src="branding/midea.png" width="250px">, <img src="branding/homebridge.png" width="200px">
+<img src="branding/midea.png" width="250px">, <img src="branding/homebridge.png" width="150">
 
 # Homebridge Midea Air
 
@@ -10,7 +10,6 @@
 
 Programming is not easy.
 If you like this plugin or want to contribute to future development, a donation will help. <a target="blank" href="https://www.paypal.me/hillaliy"><img src="https://img.shields.io/badge/PayPal-Donate-blue.svg?logo=paypal"/></a><br>
-
 
 ## [Homebridge](https://github.com/nfarina/homebridge) plugin to control Midea Air Conditioner & Dehumidifier units.
 
