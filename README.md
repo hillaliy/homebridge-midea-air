@@ -1,6 +1,8 @@
+<SPAN ALIGN="CENTER">
+
 <img src="branding/midea.png" width="200px">, <img src="branding/homebridge.png" width="150px">
 
-# Homebridge-Midea-Air
+# Homebridge Midea Air
 
 [![Downloads](https://img.shields.io/npm/dt/homebridge-midea-air.svg?color=critical)](https://www.npmjs.com/package/homebridge-midea-air)
 [![Version](https://img.shields.io/npm/v/homebridge-midea-air)](https://www.npmjs.com/package/homebridge-midea-air)<br>
