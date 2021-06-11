@@ -1,6 +1,8 @@
-<SPAN ALIGN="CENTER">
+<p ALIGN="CENTER">
+<img src="branding/Midea_logo.png" width="300px">, <img src="https://github.com/homebridge/branding/raw/master/logos/homebridge-wordmark-logo-vertical.png" width="200px">
+</p>
 
-<img src="branding/Midea_logo.png" width="200px">, <img src="https://github.com/homebridge/branding/raw/master/logos/homebridge-wordmark-logo-vertical.png" width="200px">
+<SPAN ALIGN="CENTER">
 
 # Homebridge Midea Air
 
