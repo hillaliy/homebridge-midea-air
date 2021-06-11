@@ -1,6 +1,6 @@
 <SPAN ALIGN="CENTER">
 
-<img src="branding/midea.png" width="250px">, <img src="branding/homebridge.png" width="150">
+<img src="branding/midea.png" width="250px">, <img src="branding/homebridge.png" width="200px">
 
 # Homebridge Midea Air
 
