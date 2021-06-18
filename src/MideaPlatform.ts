@@ -233,12 +233,12 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 					const response = await this.apiClient.post(url, qs.stringify(form))
 					if (response.data.errorCode && response.data.errorCode !== '0') {
 						if (response.data.errorCode == 3123) {
-							this.log.debug('Device Unreachable');
+							this.log.error(`Device: ${device.name} (${device.deviceId}) Unreachable`);
 							resolve();
 							return;
 						};
 						if (response.data.errorCode == 3176) {
-							this.log.debug('Command was not accepted by device. Command wrong or device not reachable');
+							this.log.error(`Command was not accepted by device: ${device.name} (${device.deviceId})`);
 							resolve();
 							return;
 						};
@@ -319,7 +319,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 		let data: number[] = []
 
 		this.accessories.forEach(async (accessory: PlatformAccessory) => {
-			this.log.debug('Updating accessory:', accessory.context.deviceId)
+			this.log.debug(`Updating accessory: ${accessory.context.name} (${accessory.context.deviceId})`)
 			let mideaAccessory = this.mideaAccessories.find(ma => ma.deviceId == accessory.context.deviceId)
 			if (mideaAccessory == undefined) {
 				this.log.warn('Could not find accessory with id', accessory.context.deviceId)
