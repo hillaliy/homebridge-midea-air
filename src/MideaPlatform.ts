@@ -233,17 +233,17 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 					const response = await this.apiClient.post(url, qs.stringify(form))
 					if (response.data.errorCode && response.data.errorCode !== '0') {
 						if (response.data.errorCode == 3123) {
-							this.log.error(`Device: ${device.name} (${device.deviceId}) Unreachable`);
+							this.log.debug(`Device: ${device.name} (${device.deviceId}) Unreachable`);
 							resolve();
 							return;
 						};
 						if (response.data.errorCode == 3176) {
-							this.log.error(`Command was not accepted by device: ${device.name} (${device.deviceId})`);
+							this.log.debug(`Command was not accepted by device: ${device.name} (${device.deviceId})`);
 							resolve();
 							return;
 						};
 						if (response.data.errorCode == 3106) {
-							this.log.error(`Invalid Session`);
+							this.log.debug(`Invalid Session`);
 							resolve();
 							return;
 						};
