@@ -242,6 +242,11 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 							resolve();
 							return;
 						};
+						if (response.data.errorCode == 3106) {
+							this.log.error(`Invalid Session`);
+							resolve();
+							return;
+						};
 						this.log.error(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) returned error ${response.data.msg}, ${response.data.errorCode}`)
 						return;
 					} else {
