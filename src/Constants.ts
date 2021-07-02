@@ -367,7 +367,7 @@ export default class Constants {
 	public static AppId: string = '1117'
 	public static AppKey: string = 'ff0cf6f5f0c3471de36341cab3f7a9af'
 	public static Language: string = 'en-US'
-	public static ClientType: string = '1'
-	public static RequestFormat: string = '2'
+	public static ClientType: string = '1' // Android
+	public static RequestFormat: string = '2' // JSON
 	public static RequestSource: string = '17'
 }
