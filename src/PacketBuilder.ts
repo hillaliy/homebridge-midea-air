@@ -4,9 +4,9 @@ export default class PacketBuilder {
 	packet: number[] = []
 	constructor() {
 
-		// // Init the packet with the header data.
+		// Init the packet with the header data.
 		this.packet = [
-			// // Static MSmart header
+			// Static MSmart header
 			90, 90,
 			// // mMessageType
 			1, 16,
@@ -21,7 +21,8 @@ export default class PacketBuilder {
 			// // DeviceID
 			29, 129, 0, 0, 0, 16,
 			// // Payload?
-			0, 0, 0, 4, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+			0, 0, 0, 4, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0
+		];
 
 		// From python Lib
 		// Non status commands
@@ -30,10 +31,11 @@ export default class PacketBuilder {
 		// 	1, 0,
 		// 	91,
 		// 	0, 32, 0,
-		// 	10, 0, 0, 0, 
-		// 	10, 10, 10, 3, 2, 11, 18, 20, 
-		// 	218, 73, 0, 0, 0, 16, 
-		// 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		// 	10, 0, 0, 0,
+		// 	10, 10, 10, 3, 2, 11, 18, 20,
+		// 	218, 73, 0, 0, 0, 16,
+		// 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		// ];
 	}
 
 	set command(command: BaseCommand) {
