@@ -16,38 +16,38 @@ export default class BaseCommand {
             // full = [170, 35, 172, 0, 0, 0, 0, 0, 3, 2, 64, 67, 70, 102, 127, 127, 0, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 14, 187, 137, 169, 223, 88, 121, 170, 108, 162, 36, 170, 80, 242, 143, null];
 
             this.data = [
-                170,            // 0         - ?
-                35,             // 1         - Lenght
+                170,            // 0         - Sync header
+                35,             // 1         - Message length
                 172,            // 2         - Device Type (172 for Air Conditioner)
                 0, 0, 0, 0, 0,  // 3 to 7    - ?
-                3,              // 8         - ?
-                2,              // 9
+                3,              // 8         - Message length
+                2,              // 9         - Message type identification
                 // Command Header End
                 // Data Start
                 64,             // 10
-                67,             // 11
-                70,             // 12
-                102,            // 13
-                127,            // 14
-                127,            // 15
+                129,            // 11
+                0,              // 12
+                255,            // 13
+                3,              // 14
+                255,            // 15
                 0,              // 16
                 48,             // 17
                 0,              // 18
                 0,              // 19
                 0,              // 20
                 // Padding
-                0, 0, 0, 0, 0, 0, 0, 0, 0];
+                0, 0, 0, 0, 0, 0, 0, 3, 240];
             // Data End
             this.data[0x02] = device_type;
 
         } else if (device_type == MideaDeviceType.Dehumidifier) {
             this.data = [
                 // Command Header
-                170,            // 0         - ?
-                34,             // 1         - Lenght
+                170,            // 0         - Sync header
+                34,             // 1         - Message length
                 161,            // 2         - Device Type (161 for Dehumidifier)
                 0, 0, 0, 0, 0,  // 3 to 7    - ?
-                3,              // 8         - ?
+                3,              // 8         - Message length
                 2,              // 9         - Command (2) or Query (3)
                 // Command Header End
                 // Data Start
