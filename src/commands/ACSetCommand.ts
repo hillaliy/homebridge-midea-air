@@ -44,12 +44,12 @@ export default class ACSetCommand extends SetCommand {
             return false;
         }
     }
+
     set useFahrenheit(useFahrenheit: boolean) {
         // this.flipBitOfByte(this.data[0x14], 2)
         var mask = 1 << 2
         if (useFahrenheit == true) {
             this.data[0x14] |= mask
-
         } else {
             this.data[0x14] &= ~mask;
         }
@@ -79,5 +79,4 @@ export default class ACSetCommand extends SetCommand {
         this.data[0x11] &= ~0x0f; // Clear the mode bit
         this.data[0x11] |= mode & 0x0f;
     }
-
 }
