@@ -6,4 +6,3 @@ export = (api: API) => {
   new MigrationHelper(console, api.user.configPath())
   api.registerPlatform('homebridge-midea-air', 'midea-air', MideaPlatform);
 }
-
