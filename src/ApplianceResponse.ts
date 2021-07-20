@@ -6,7 +6,6 @@ export default class ApplianceResponse {
         // The response data from the appliance includes a packet header which we don't want
         this.data = data.slice(0x32);
     }
-
     // Byte 0x01
     get powerState() {
         return (this.data[0x01] & 0x1) > 0;
@@ -27,12 +26,10 @@ export default class ApplianceResponse {
     get operationalMode(): number {
         return (this.data[0x02] & 0xe0) >> 5;
     }
-
     // Byte 0x03
     get fanSpeed(): number {
         return this.data[0x03] & 0x7f;
     }
-
     // Byte 0x04 + 0x06
     get onTimer(): any {
         const on_timer_value = this.data[0x04];
@@ -43,7 +40,6 @@ export default class ApplianceResponse {
             minutes: (on_timer_value & 0x3) | ((on_timer_minutes & 0xf0) >> 4),
         };
     }
-
     // Byte 0x05 + 0x06
     get offTimer(): any {
         const off_timer_value = this.data[0x05];
@@ -54,12 +50,10 @@ export default class ApplianceResponse {
             minutes: (off_timer_value & 0x3) | (off_timer_minutes & 0xf),
         };
     }
-
     // Byte 0x07
     get swingMode(): MideaSwingMode {
         return this.data[0x07] & 0x0f;
     }
-
     // Byte 0x08
     get cozySleep(): any {
         return this.data[0x08] & 0x03;
@@ -82,7 +76,6 @@ export default class ApplianceResponse {
         // This needs a better name, dunno what it actually means
         return (this.data[0x08] & 0x80) > 0;
     }
-
     // Byte 0x09
     get childSleepMode() {
         return (this.data[0x09] & 0x01) > 0;
@@ -97,7 +90,6 @@ export default class ApplianceResponse {
         return (this.data[0x09] & 0x04) > 0;
     }
 
-
     get ecoMode() {
         return (this.data[0x09] & 0x10) > 0;
     }
@@ -106,7 +98,6 @@ export default class ApplianceResponse {
         // This needs a better name, dunno what it actually means
         return (this.data[0x09] & 0x20) > 0;
     }
-
     // Byte 0x0a
     get sleepFunction() {
         return (this.data[0x0a] & 0x01) > 0;
@@ -115,7 +106,6 @@ export default class ApplianceResponse {
     get turboMode() {
         return (this.data[0x0a] & 0x02) > 0;
     }
-
 
     get nightLight() {
         // This needs a better name, dunno what it actually means
@@ -131,7 +121,6 @@ export default class ApplianceResponse {
         // This needs a better name, dunno what it actually means
         return (this.data[0x0a] & 0x40) > 0;
     }
-
     // Byte 0x0d
     get humidity() {
         return this.data[0x0d] & 0x7f;
