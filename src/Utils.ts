@@ -2,9 +2,8 @@
 import crypto from "crypto";
 import Constants from './Constants'
 
-
 export default class Utils {
-	static encode(data: number[]) : number[] {
+	static encode(data: number[]): number[] {
 		const normalized = [];
 		for (let b of data) {
 			if (b >= 128) {
@@ -15,11 +14,9 @@ export default class Utils {
 		return normalized;
 	}
 
-	
-	static decode(data: number[]) : number[] {
+	static decode(data: number[]): number[] {
 		const normalized = [];
 		for (let b of data) {
-			
 			if (b < 0) {
 				b = b + 256;
 			}
@@ -28,22 +25,18 @@ export default class Utils {
 		return normalized;
 	}
 	// Returns a timestamp in the format YYYYMMDDHHmmss
-	static getStamp() : string {
+	static getStamp(): string {
 		const date = new Date();
 		return date.toISOString().slice(0, 19).replace(/-/g, "").replace(/:/g, "").replace(/T/g, "");
 	}
 
 	static formatResponse(arr: any[]) {
-		let output : string[] = []
-
-		for (var i=0; i<arr.length; i++) {
+		let output: string[] = []
+		for (var i = 0; i < arr.length; i++) {
 			let intValue = parseInt(arr[i]);
-
 			output.push((intValue).toString(2))
-
 		}
 		return output;
-
 	}
 
 	static getSign(path: string, form: any) {
@@ -51,20 +44,19 @@ export default class Utils {
 			let postfix = "/v1" + path;
 			postfix = postfix.split('?')[0]
 			// Maybe this will help, should remove any query string parameters in the URL from the sign
-			const ordered : any = {};
+			const ordered: any = {};
 			Object.keys(form)
-			.sort()
-			.forEach(function (key: any) {
-				ordered[key] = form[key];
-			});
+				.sort()
+				.forEach(function (key: any) {
+					ordered[key] = form[key];
+				});
 			const query = Object.keys(ordered)
-			.map((key) => key + "=" + ordered[key])
-			.join("&");
-
+				.map((key) => key + "=" + ordered[key])
+				.join("&");
 			return crypto
-			.createHash("sha256")
-			.update(postfix + query + Constants.AppKey)
-			.digest("hex");
+				.createHash("sha256")
+				.update(postfix + query + Constants.AppKey)
+				.digest("hex");
 		} else {
 			return false;
 		}
@@ -79,7 +71,8 @@ export default class Utils {
 			return [];
 		}
 	}
-	static decryptAesString(reply: string, dataKey : string) {
+
+	static decryptAesString(reply: string, dataKey: string) {
 		if (reply && dataKey != '') {
 			const decipher = crypto.createDecipheriv("aes-128-ecb", dataKey, "");
 			const dec = decipher.update(reply, "hex", "utf8");
@@ -89,7 +82,7 @@ export default class Utils {
 		}
 	}
 
-	static encryptAes(query: number[], dataKey : string) {
+	static encryptAes(query: number[], dataKey: string) {
 		if (query && dataKey != '') {
 			const cipher = crypto.createCipheriv("aes-128-ecb", dataKey, "");
 			let ciph = cipher.update(query.join(","), "utf8", "hex");
@@ -99,6 +92,7 @@ export default class Utils {
 			return false;
 		}
 	}
+
 	static encryptAesString(query: string, dataKey: string) {
 		if (dataKey != '') {
 			const cipher = crypto.createCipheriv("aes-128-ecb", dataKey, "");
@@ -127,8 +121,4 @@ export default class Utils {
 		}
 		return '';
 	}
-
-
-
-
 }
