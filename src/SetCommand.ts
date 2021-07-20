@@ -33,7 +33,7 @@ export default class SetCommand extends BaseCommand {
         return (this.data[0x0c] & 0xe0) >> 5;
     }
 
-    set operationalMode(mode : number) {
+    set operationalMode(mode: number) {
         this.data[0x0c] &= ~0xe0; // Clear the mode bit
         this.data[0x0c] |= (mode << 5) & 0xe0;
     }
@@ -62,5 +62,4 @@ export default class SetCommand extends BaseCommand {
         this.data[0x11] &= ~0x0f; // Clear the mode bit
         this.data[0x11] |= mode & 0x0f;
     }
-
 }
