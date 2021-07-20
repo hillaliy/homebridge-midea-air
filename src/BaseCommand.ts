@@ -11,62 +11,64 @@ export default class BaseCommand {
         this.device_type = device_type
 
         if (device_type == MideaDeviceType.AirConditioner) {
-
             // More magic numbers. I'm sure each of these have a purpose, but none of it is documented in english. I might make an effort to google translate the SDK
             // full = [170, 35, 172, 0, 0, 0, 0, 0, 3, 2, 64, 67, 70, 102, 127, 127, 0, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 14, 187, 137, 169, 223, 88, 121, 170, 108, 162, 36, 170, 80, 242, 143, null];
-
             this.data = [
                 170,            // 0         - Sync header
-                35,             // 1         - Message length
-                172,            // 2         - Device Type (172 for Air Conditioner)
-                0, 0, 0, 0, 0,  // 3 to 7    - ?
-                3,              // 8         - Message length
-                2,              // 9         - Message type identification
+                35,             // 1         - Message length setting
+                172,            // 2         - Device type (172 for Air Conditioner)
+                0,              // 3         - Frame sync check (not used, 0x00)
+                0, 0,           // 4 to 5	 - Reserved 0x00
+                0,              // 6		 - Message Id
+                0,              // 7    	 - Framework protocol version
+                3,              // 8         - Device Agreement Version
+                2,              // 9         - Message type setting identification
                 // Command Header End
                 // Data Start
-                64,             // 10
-                129,            // 11
-                0,              // 12
-                255,            // 13
-                3,              // 14
-                255,            // 15
+                64,             // 10       - Data response
+                67,             // 11
+                70,             // 12       - Operational mode
+                102,            // 13
+                127,            // 14
+                127,            // 15
                 0,              // 16
                 48,             // 17
                 0,              // 18
                 0,              // 19
                 0,              // 20
                 // Padding
-                0, 0, 0, 0, 0, 0, 0, 3, 240];
+                0, 0, 0, 0, 0, 0, 0, 0, 0];
             // Data End
             this.data[0x02] = device_type;
-
         } else if (device_type == MideaDeviceType.Dehumidifier) {
             this.data = [
                 // Command Header
                 170,            // 0         - Sync header
                 34,             // 1         - Message length
-                161,            // 2         - Device Type (161 for Dehumidifier)
-                0, 0, 0, 0, 0,  // 3 to 7    - ?
-                3,              // 8         - Message length
+                161,            // 2         - Device type (161 for Dehumidifier)
+                0,              // 3		 - Frame sync check (not used, 0x00)
+                0, 0,           // 4 to 5	 - Reserved 0x00
+                0,              // 6		 - Message Id
+                0,              // 7    	 - Framework protocol version
+                3,              // 8         - Device Agreement Version
                 2,              // 9         - Command (2) or Query (3)
                 // Command Header End
                 // Data Start
-                72,             // 10 (0x0a) - Command type: Set (72), Query (65)
-                67,             // 11 (0x0b) - Settings (last bit likely turn on and off)
-                1,              // 12 (0x0c) - Mode (1: target, 2: continuous, 3: smart, 4: dry)
-                208,            // 13 (0x0d) - Timing + wind speed
-                127,            // 14 (0x0e) - Timer related?
-                127,            // 15 (0x0f) - Timer related?
-                0,              // 16 (0x10) - Timer related?
-                50,             // 17 (0x11) - Target humidity
-                0,              // 18 (0x12) - Target humidity (float)?
-                0,              // 19 (0x13) - Display and other settings
-                1,              // 20 (0x14) - Swing and other settings. In dehumidifier, matches mode
+                72,             // 10        - Command type: Set (72), Query (65)
+                67,             // 11        - Settings (last bit likely turn on and off)
+                1,              // 12        - Operational mode (1: target, 2: continuous, 3: smart, 4: dry)
+                208,            // 13        - Timing + wind speed
+                127,            // 14        - Timer related?
+                127,            // 15        - Timer related?
+                0,              // 16        - Timer related?
+                50,             // 17        - Target humidity
+                0,              // 18        - Target humidity (float)?
+                0,              // 19        - Display and other settings
+                1,              // 20        - Swing and other settings. In dehumidifier, matches mode
                 // Padding
                 0, 0, 0, 0, 0, 0, 0, 0, 0
                 // Data End
             ];
-
         } else {
             // Unknown/Unsupported: default to AirCon
             this.data = [170, 35, 172, 0, 0, 0, 0, 0, 3, 2, 64, 67, 70, 102, 127, 127, 0, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -76,10 +78,8 @@ export default class BaseCommand {
     finalize() {
         // Add the CRC8
         this.data[this.data.length - 1] = crc8.calculate(this.data.slice(16));
-
         // Set the length of the command data
         this.data[0x01] = this.data.length;
-
         return this.data;
     }
 }
