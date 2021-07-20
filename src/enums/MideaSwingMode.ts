@@ -1,6 +1,4 @@
-/*
-	MideaSwingMode enum – Contains the known swing modes
-*/
+// MideaSwingMode enum – Contains the known swing modes
 export enum MideaSwingMode {
 	Horizontal = 3,
 	Vertical = 12,
