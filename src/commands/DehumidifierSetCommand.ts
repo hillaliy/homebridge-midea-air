@@ -2,11 +2,11 @@ import SetCommand from '../SetCommand';
 import { MideaDeviceType } from '../enums/MideaDeviceType';
 
 export default class DehumidifierSetCommand extends SetCommand {
-	
+
 	constructor(device_type: MideaDeviceType = MideaDeviceType.Dehumidifier) {
 		super(device_type);
 	}
-	
+
 	get targetHumidity() {
 		return this.data[0x11] & 127
 	}
@@ -24,5 +24,4 @@ export default class DehumidifierSetCommand extends SetCommand {
 	// }
 	// set operationalMode(value: number) {
 	// }
-
 }
