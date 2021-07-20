@@ -8,34 +8,21 @@ export default class PacketBuilder {
 		this.packet = [
 			// Static MSmart header
 			90, 90,
-			// // mMessageType
-			1, 17,
-			// // Packet length
+			// mMessageType
+			1, 16,
+			// Packet length
 			92,
-			// // Unknown
+			// Unknown
 			0, 32, 0,
-			// // MessageID
-			0, 0, 0, 0,
-			// // Date and time
-			0, 0, 0, 0, 14, 3, 18, 20,
-			// // DeviceID
-			198, 121, 0, 0, 0, 5,
-			// // Payload?
-			10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0
+			// MessageID
+			1, 0, 0, 0,
+			// Date and time
+			189, 179, 57, 14, 12, 5, 20, 20,
+			// DeviceID
+			29, 129, 0, 0, 0, 16,
+			// Payload?
+			0, 0, 0, 4, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0
 		];
-
-		// From python Lib
-		// Non status commands
-		// this.packet = [
-		// 	90, 90,
-		// 	1, 0,
-		// 	91,
-		// 	0, 32, 0,
-		// 	10, 0, 0, 0,
-		// 	10, 10, 10, 3, 2, 11, 18, 20,
-		// 	218, 73, 0, 0, 0, 16,
-		// 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		// ];
 	}
 
 	set command(command: BaseCommand) {
