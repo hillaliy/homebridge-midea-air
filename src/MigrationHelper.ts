@@ -1,11 +1,7 @@
 import fs from 'fs';
-
 import { Logger } from 'homebridge'
 
-
-/*
-	MigrationHelper – Migrates the user's config.json from the old accessory to a platform
-*/
+// MigrationHelper – Migrates the user's config.json from the old accessory to a platform
 export class MigrationHelper {
 	log: Logger
 	configFilePath: string = ''
@@ -25,7 +21,6 @@ export class MigrationHelper {
 			}
 		}
 	}
-
 	// This method writes the new config file after the old accessory has been removed and the new platform added
 	writeNewConfig(config: object) {
 		let configString = JSON.stringify(config, null, '\t')
@@ -34,7 +29,6 @@ export class MigrationHelper {
 				this.log.error("Could not rewrite config file to use platform instead of accessory, please adjust your configuration manually.")
 				this.log.error(err.toString())
 				return false;
-
 			} else {
 				this.log.info("Successfully migrated configuration to platform. Killing homebridge proccess to restart it")
 				return true;
@@ -42,7 +36,6 @@ export class MigrationHelper {
 		})
 		return false
 	}
-
 	// This method creates a backup of the user's existing configuration
 	backupConfig() {
 		let file = fs.readFileSync(this.configFilePath)
@@ -52,16 +45,12 @@ export class MigrationHelper {
 					this.log.warn("Error making backup of config")
 				} else {
 					this.log.debug("Made backup of config.json")
-
 				}
 			});
-
 		} catch (e) {
 			return false;
 		}
-
 	}
-
 	// This method performs the permutation of the config object and removes the old accessory and adds the platform
 	migrate(config: any) {
 		let platformObject = {
@@ -89,7 +78,6 @@ export class MigrationHelper {
 					platformObject.user = config.accessories[i].user
 					platformObject.password = config.accessories[i].password
 					platformObject.interval = config.accessories[i].interval
-
 					// Remove accessory
 					config.accessories.splice(i, 1)
 				}
