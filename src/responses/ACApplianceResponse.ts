@@ -31,7 +31,7 @@ export default class ACApplianceResponse extends ApplianceResponse {
     get fahrenheitUnit() {
         return this.data[23] > 0; // FAHRENHEIT - True
     }
-
+    // Byte 0x0d
     get humidity() {
         return this.data[0x0d] & 0x7f;
     }
