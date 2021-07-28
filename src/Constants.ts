@@ -46,7 +46,7 @@ export default class Constants {
 		3,				// 9         - Message type request identification
 		// Command Header End
 		// Data Start
-		65,				// 10		- Data request
+		65,				// 10		- Data request/response: check status
 		129,			// 11
 		0,				// 12		- Operational mode
 		255,			// 13
