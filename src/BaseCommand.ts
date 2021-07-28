@@ -18,27 +18,29 @@ export default class BaseCommand {
                 35,             // 1         - Message length setting
                 172,            // 2         - Device type (172 for Air Conditioner)
                 0,              // 3         - Frame sync check (not used, 0x00)
-                0, 0,           // 4 to 5	 - Reserved 0x00
+                0,              // 4         - Reserved 0x00
+                0,              // 4    	 - Reserved 0x00
                 0,              // 6		 - Message Id
                 0,              // 7    	 - Framework protocol version
                 3,              // 8         - Device Agreement Version
                 2,              // 9         - Message type setting identification
                 // Command Header End
                 // Data Start
-                64,             // 10       - Data response
-                67,             // 11
-                70,             // 12       - Operational mode
-                102,            // 13
-                127,            // 14
-                127,            // 15
+                64,             // 10       - Data request/response: Set up
+                129,            // 11
+                0,              // 12       - Operational mode
+                255,            // 13       - Fan speed 20/40/60/80/102
+                3,              // 14
+                255,            // 15
                 0,              // 16
-                48,             // 17
+                48,             // 17       - Swing mode
                 0,              // 18
-                0,              // 19
-                0,              // 20
+                0,              // 19       - Eco mode
+                0,              // 20       - Turbo mode/Screen display/Fahrenheit
                 // Padding
-                0, 0, 0, 0, 0, 0, 0, 0, 0];
-            // Data End
+                0, 0, 0, 0, 0, 0, 0, 0, 0
+                // Data End
+            ];
             this.data[0x02] = device_type;
         } else if (device_type == MideaDeviceType.Dehumidifier) {
             this.data = [
@@ -47,7 +49,8 @@ export default class BaseCommand {
                 34,             // 1         - Message length
                 161,            // 2         - Device type (161 for Dehumidifier)
                 0,              // 3		 - Frame sync check (not used, 0x00)
-                0, 0,           // 4 to 5	 - Reserved 0x00
+                0,              // 4         - Reserved 0x00
+                0,              // 5    	 - Reserved 0x00
                 0,              // 6		 - Message Id
                 0,              // 7    	 - Framework protocol version
                 3,              // 8         - Device Agreement Version
