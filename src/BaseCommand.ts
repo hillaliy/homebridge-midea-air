@@ -27,11 +27,11 @@ export default class BaseCommand {
                 // Command Header End
                 // Data Start
                 64,             // 10       - Data request/response: Set up
-                67,             // 11
-                70,             // 12       - Operational mode
-                102,            // 13       - Fan speed 20/40/60/80/102
-                127,            // 14
-                127,            // 15
+                129,            // 11
+                0,              // 12       - Operational mode
+                255,            // 13       - Fan speed 20/40/60/80/102
+                3,              // 14
+                255,            // 15
                 0,              // 16
                 48,             // 17       - Swing mode
                 0,              // 18
