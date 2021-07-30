@@ -39,7 +39,8 @@ export default class Constants {
 		32,				// 1         - Message length request
 		172,			// 2         - Device type (172 for Air Conditioner)
 		0,				// 3		 - Frame sync check (not used, 0x00)
-		0, 0,			// 4 to 5	 - Reserved 0x00
+		0,				// 4		 - Reserved 0x00
+		0,				// 5		 - Reserved 0x00
 		0,				// 6		 - Message Id
 		0,				// 7    	 - Framework protocol version
 		0,				// 8         - Device Agreement Version
@@ -75,7 +76,7 @@ export default class Constants {
 		3,				// 9         - Message type request identification
 		// Command Header End
 		// Data Start
-		65,				// 10		- Data request
+		65,				// 10		 - Data request
 		33,				// 11
 		0,				// 12        - Operational mode (1: target, 2: continuous, 3: smart, 4: dry)
 		255,			// 13
