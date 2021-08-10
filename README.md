@@ -21,7 +21,7 @@ If you like this plugin or want to contribute to future development, a donation 
 
 ## Requirements
 
-<img src="https://img.shields.io/badge/node-%3E%3D10.17-brightgreen"> &nbsp;
+<img src="https://img.shields.io/badge/node-%3E%3D12.0.0-brightgreen"> &nbsp;
 <img src="https://img.shields.io/badge/homebridge-%3E%3D1.0.0-brightgreen"> &nbsp;
 <img src="https://img.shields.io/badge/iOS-%3E%3D12.0.0-brightgreen">
 
@@ -53,12 +53,12 @@ Add this to the platforms array in your config.json:
 To set specific per-device values, you need to add deviceId that can find in:
 
 1. Homebridge console log.
-2. Home app in the devices object.
+2. HomeKit app, device settings, info.
 
 ### Temperature Display Units
 
-This Plugin support Celsius & Fahrenheit (Default Temperature Unit is Celsius).
-Display Units can set in HomeKit device settings.
+This Plugin support Celsius & Fahrenheit (Default is Celsius).
+Display Units can set in HomeKit app, device settings.
 
 ### Supported Swing Mode
 
@@ -67,7 +67,7 @@ You have to select which type your device supports.
 
 ### Rotation Speed and Swing
 
-Rotation Speed and Swing mode can set in the HomeKit device settings.
+Rotation Speed and Swing mode can set in the HomeKit app, device settings.
 Rotation Speed values are:
 0%: device off
 / 25%: Low
