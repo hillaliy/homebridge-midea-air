@@ -30,7 +30,7 @@ export class MideaAccessory {
 	public name: string = ''
 	public model: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.3.2'
+	public firmwareVersion: string = '1.3.3'
 
 	private service!: Service
 	private fanService!: Service
@@ -234,9 +234,9 @@ export class MideaAccessory {
 			// 		maxValue: 85,
 			// 		minStep: 5
 			// 	})
-			// this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-			// 	.on('get', this.handleWindSpeedGet.bind(this))
-			// 	.on('set', this.handleWindSpeedSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+				.on('get', this.handleWindSpeedGet.bind(this))
+				.on('set', this.handleWindSpeedSet.bind(this))
 			// this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
 			// 	.on('get', this.handleSwingModeGet.bind(this))
 			// 	.on('set', this.handleSwingModeSet.bind(this))
@@ -251,7 +251,7 @@ export class MideaAccessory {
 				this.service.updateCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, this.currentHumidity);
 				this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold, this.targetHumidity);
 				// this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold, this.targetHumidity);
-				// this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.windSpeed());
+				this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.windSpeed());
 				// 	this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
 				this.service.updateCharacteristic(this.platform.Characteristic.WaterLevel, this.waterLevel);
 			}, 5000);
