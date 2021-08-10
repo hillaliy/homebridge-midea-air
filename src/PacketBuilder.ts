@@ -6,22 +6,21 @@ export default class PacketBuilder {
 
 		// Init the packet with the header data.
 		this.packet = [
-			// Static MSmart header
-			90, 90,
-			// mMessageType
-			1, 16,
-			// Packet length
-			92,
-			// Unknown
-			0, 32, 0,
-			// MessageID
-			1, 0, 0, 0,
-			// Date and time
-			189, 179, 57, 14, 12, 5, 20, 20,
-			// DeviceID
-			29, 129, 0, 0, 0, 16,
-			// Payload?
-			0, 0, 0, 4, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0
+			90, 90, 						 // Byte 0-1		- Static MSmart header
+			1, 16, 							 // Byte 2-3		- mMessageType
+			92, 0,							 // Byte 4-5		- Packet length (reversed, lb first)
+			32,								 // Byte 6
+			0,								 // Byte 7
+			1, 0, 0, 0,						 // Byte 8-11		- MessageID	(rollover at 32767)
+			189, 179, 57, 14, 12, 5, 20, 20, // Byte 12-19		- Time and Date (ms/ss/mm/HH/DD/MM/YYYY)
+			29, 129, 0, 0, 0, 16,			 // Byte 20-25		- DeviceID (reversed, lb first)
+			0,								 // Byte 26
+			0,								 // Byte 27
+			0, 4, 2, 0, 0, 1,				 // Byte 28-33
+			0,								 // Byte 34
+			0,								 // Byte 35
+			0,								 // Byte 36			- sequence number
+			0, 0, 0							 // Byte 37-39
 		];
 	}
 
