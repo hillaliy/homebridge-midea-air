@@ -367,7 +367,8 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			} else if (device.deviceType == MideaDeviceType.Dehumidifier) {
 				command = new DehumidifierSetCommand()
 				this.log.debug(`[sendUpdateToDevice] Generated a new command to set targetHumidity to: ${device.targetHumidity}`)
-				command.targetHumidity = device.targetHumidity
+				command.fanSpeed = device.fanSpeed;
+				command.targetHumidity = device.targetHumidity;
 			};
 
 			command.powerState = device.powerState;
