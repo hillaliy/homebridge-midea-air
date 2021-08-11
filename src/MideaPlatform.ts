@@ -234,8 +234,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 					if (response.data.errorCode && response.data.errorCode !== '0') {
 						if (response.data.errorCode == 3123) {
 							this.log.info(`Device: ${device.name} (${device.deviceId}) Unreachable`);
-							resolve();
-							return;
+							reject();
 						};
 						if (response.data.errorCode == 3176) {
 							this.log.info(`Command was not accepted by device: ${device.name} (${device.deviceId})`);
@@ -379,7 +378,8 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			pktBuilder.command = command;
 			const data = pktBuilder.finalize();
 			// this.log.debug("[sendUpdateToDevice] Command: " + JSON.stringify(command));
-			this.log.debug("[sendUpdateToDevice]  Command + Header: " + JSON.stringify(data));
+			this.log.debug("[sendUpdateToDevice]  Header + Command: " + JSON.stringify(data));
+
 			try {
 				await this.sendCommand(device, data, '[sendUpdateToDevice] (set new params?) attempt 1/2')
 				this.log.debug('[sendUpdateToDevice] Sent update to device ' + device.name)
