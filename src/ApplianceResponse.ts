@@ -22,7 +22,7 @@ export default class ApplianceResponse {
     get applianceError() {
         return (this.data[0x01] & 0x80) > 0;
     }
-
+    // Byte 0x02
     get operationalMode(): number {
         return (this.data[0x02] & 0xe0) >> 5;
     }
