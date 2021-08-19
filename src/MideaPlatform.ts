@@ -125,7 +125,6 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 						form.sign = sign;
 						try {
 							const loginResponse = await this.apiClient.post(url, qs.stringify(form));
-							//this.log.debug(response);
 							if (loginResponse.data.errorCode && loginResponse.data.errorCode != '0') {
 								this.log.debug('Login request 2 returned error', loginResponse.data.msg);
 								reject();
@@ -250,7 +249,6 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 						if (device.deviceType == MideaDeviceType.AirConditioner) {
 							applianceResponse = new ACApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
 
-							device.swingMode = applianceResponse.swingMode;
 							if (device.useFahrenheit == true) {
 								device.useFahrenheit = applianceResponse.fahrenheitUnit;
 							} else device.useFahrenheit = applianceResponse.celsiusUnit;
@@ -258,20 +256,19 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 							device.indoorTemperature = applianceResponse.indoorTemperature;
 							device.outdoorTemperature = applianceResponse.outdoorTemperature;
 
-							this.log.debug('Swing Mode is set to:', applianceResponse.swingMode);
 							this.log.debug('useFahrenheit is set to:', device.useFahrenheit);
 							if (device.useFahrenheit == true) {
-								this.log.debug('Target Temperature:', Math.round((applianceResponse.targetTemperature * 1.8) + 32) + '˚F');
-								this.log.debug('Indoor Temperature is:', Math.round((applianceResponse.indoorTemperature * 1.8) + 32) + '˚F');
+								this.log.debug('Target Temperature:', Math.round((device.targetTemperature * 1.8) + 32) + '˚F');
+								this.log.debug('Indoor Temperature is:', Math.round((device.indoorTemperature * 1.8) + 32) + '˚F');
 							} else {
-								this.log.debug('Target Temperature:', applianceResponse.targetTemperature + '˚C');
-								this.log.debug('Indoor Temperature is:', applianceResponse.indoorTemperature + '˚C');
+								this.log.debug('Target Temperature:', device.targetTemperature + '˚C');
+								this.log.debug('Indoor Temperature is:', device.indoorTemperature + '˚C');
 							};
 							if (applianceResponse.outdoorTemperature < 100) {
 								if (device.useFahrenheit == true) {
-									this.log.debug('Outdoor Temperature is:', Math.round((applianceResponse.outdoorTemperature * 1.8) + 32) + '˚F');
+									this.log.debug('Outdoor Temperature is:', Math.round((device.outdoorTemperature * 1.8) + 32) + '˚F');
 								} else {
-									this.log.debug('Outdoor Temperature is:', applianceResponse.outdoorTemperature + '˚C');
+									this.log.debug('Outdoor Temperature is:', device.outdoorTemperature + '˚C');
 								};
 							};
 
@@ -290,12 +287,16 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 						device.powerState = applianceResponse.powerState ? 1 : 0;
 						device.operationalMode = applianceResponse.operationalMode;
 						device.fanSpeed = applianceResponse.fanSpeed;
+						device.swingMode = applianceResponse.swingMode;
 						device.ecoMode = applianceResponse.ecoMode;
+						device.turboMode = applianceResponse.turboMode;
 
 						this.log.debug('Power State is set to:', applianceResponse.powerState);
 						this.log.debug('Operational Mode is set to:', applianceResponse.operationalMode);
 						this.log.debug('Fan Speed is set to:', applianceResponse.fanSpeed);
-						this.log.debug('ecoMode is set to:', applianceResponse.ecoMode);
+						this.log.debug('Swing Mode is set to:', device.swingMode);
+						this.log.debug('Eco Mode is set to:', device.ecoMode);
+						this.log.debug('Turbo Mode is set to:', device.turboMode)
 
 						this.log.debug('Full data is', Utils.formatResponse(applianceResponse.data))
 						resolve();
@@ -358,21 +359,20 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 
 			if (device.deviceType == MideaDeviceType.AirConditioner) {
 				command = new ACSetCommand();
-				command.fanSpeed = device.fanSpeed;
-				command.swingMode = device.swingMode;
-				command.ecoMode = device.ecoMode;
 				command.useFahrenheit = device.useFahrenheit;
 				command.targetTemperature = device.targetTemperature;
 			} else if (device.deviceType == MideaDeviceType.Dehumidifier) {
 				command = new DehumidifierSetCommand()
 				this.log.debug(`[sendUpdateToDevice] Generated a new command to set targetHumidity to: ${device.targetHumidity}`)
-				command.fanSpeed = device.fanSpeed;
 				command.targetHumidity = device.targetHumidity;
 			};
 
 			command.powerState = device.powerState;
 			command.operationalMode = device.operationalMode;
-
+			command.fanSpeed = device.fanSpeed;
+			command.swingMode = device.swingMode;
+			command.ecoMode = device.ecoMode;
+			command.turboMode = device.turboMode;
 			//operational mode for workaround with fan only mode on device
 			const pktBuilder = new PacketBuilder();
 			pktBuilder.command = command;
