@@ -8,13 +8,13 @@ export class MideaAccessory {
 
 	public deviceId: string = ''
 	public deviceType: MideaDeviceType = MideaDeviceType.AirConditioner
-	public targetTemperature: any = 0
+	public targetTemperature: any = 17
 	public indoorTemperature: number = 0
 	public outdoorTemperature: number = 0
 	public useFahrenheit: boolean = false
 
 	public currentHumidity: number = 0
-	public targetHumidity: any = 0
+	public targetHumidity: any = 35
 	public waterLevel: number = 0
 
 	public fanSpeed: number = 0
@@ -22,15 +22,16 @@ export class MideaAccessory {
 	public temperatureSteps: number = 1
 	public minTemperature: number = 17
 	public maxTemperature: number = 30
-	public powerState: any
+	public powerState: any = 0
 	public supportedSwingMode: MideaSwingMode = MideaSwingMode.None
 	public operationalMode: number = MideaOperationalMode.Off
 	public swingMode: number = 0
 	public ecoMode: boolean = false
+	public turboMode: boolean = false
 	public name: string = ''
 	public model: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.3.5'
+	public firmwareVersion: string = '1.3.6'
 
 	private service!: Service
 	private fanService!: Service
@@ -237,9 +238,9 @@ export class MideaAccessory {
 			this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
 				.on('get', this.handleWindSpeedGet.bind(this))
 				.on('set', this.handleWindSpeedSet.bind(this))
-			// this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
-			// 	.on('get', this.handleSwingModeGet.bind(this))
-			// 	.on('set', this.handleSwingModeSet.bind(this))
+			this.service.getCharacteristic(this.platform.Characteristic.SwingMode)
+				.on('get', this.handleSwingModeGet.bind(this))
+				.on('set', this.handleSwingModeSet.bind(this))
 			this.service.getCharacteristic(this.platform.Characteristic.WaterLevel)
 				.on('get', this.handleWaterLevelGet.bind(this))
 
@@ -252,7 +253,7 @@ export class MideaAccessory {
 				this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold, this.targetHumidity);
 				// this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold, this.targetHumidity);
 				this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.windSpeed());
-				// 	this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
+				this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
 				this.service.updateCharacteristic(this.platform.Characteristic.WaterLevel, this.waterLevel);
 			}, 5000);
 		} else {
