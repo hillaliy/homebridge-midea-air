@@ -48,7 +48,7 @@ export default class Constants {
 		// Command Header End
 		// Data Start
 		65,				// 10		- Data request/response: check status
-		129,			// 11
+		129,			// 11		- Power state
 		0,				// 12		- Operational mode
 		255,			// 13
 		3,				// 14
