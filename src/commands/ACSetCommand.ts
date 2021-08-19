@@ -8,17 +8,17 @@ export default class ACSetCommand extends SetCommand {
         super(device_type);
     }
 
-    get audibleFeedback() {
-        if (this.data[0x0b] & 0x42) {
-            return true;
-        }
-        return false;
-    }
+    // get audibleFeedback() {
+    //     if (this.data[0x0b] & 0x42) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
-    set audibleFeedback(feedbackEnabled: boolean) {
-        this.data[0x0b] &= ~0x42; // Clear the audible bits
-        this.data[0x0b] |= feedbackEnabled ? 0x42 : 0;
-    }
+    // set audibleFeedback(feedbackEnabled: boolean) {
+    //     this.data[0x0b] &= ~0x42; // Clear the audible bits
+    //     this.data[0x0b] |= feedbackEnabled ? 0x42 : 0;
+    // }
 
     get targetTemperature() {
         return this.data[0x0c] & 0x1f;
@@ -55,28 +55,28 @@ export default class ACSetCommand extends SetCommand {
         }
     }
 
-    get fanSpeed() {
-        return this.data[0x0d];
-    }
+    // get fanSpeed() {
+    //     return this.data[0x0d];
+    // }
 
-    set fanSpeed(speed: number) {
-        this.data[0x0d] = speed;
-    }
+    // set fanSpeed(speed: number) {
+    //     this.data[0x0d] = speed;
+    // }
 
-    get ecoMode() {
-        return this.data[0x13] > 0;
-    }
+    // get ecoMode() {
+    //     return this.data[0x13] > 0;
+    // }
 
-    set ecoMode(ecoModeEnabled: boolean) {
-        this.data[0x13] = ecoModeEnabled ? 0xff : 0;
-    }
+    // set ecoMode(ecoModeEnabled: boolean) {
+    //     this.data[0x13] = ecoModeEnabled ? 0xff : 0;
+    // }
 
-    get swingMode() {
-        return this.data[0x11];
-    }
+    // get swingMode() {
+    //     return this.data[0x11];
+    // }
 
-    set swingMode(mode: MideaSwingMode) {
-        this.data[0x11] &= ~0x0f; // Clear the mode bit
-        this.data[0x11] |= mode & 0x0f;
-    }
+    // set swingMode(mode: MideaSwingMode) {
+    //     this.data[0x11] &= ~0x0f; // Clear the mode bit
+    //     this.data[0x11] |= mode & 0x0f;
+    // }
 }
