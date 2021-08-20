@@ -31,7 +31,7 @@ export class MideaAccessory {
 	public name: string = ''
 	public model: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.3.6'
+	public firmwareVersion: string = '1.3.7'
 
 	private service!: Service
 	private fanService!: Service
