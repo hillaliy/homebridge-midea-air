@@ -2,26 +2,30 @@ import { userInfo } from 'os';
 import ApplianceResponse from '../ApplianceResponse'
 
 export default class ACApplianceResponse extends ApplianceResponse {
-    // Byte 0x02
+    // Byte 2
     get targetTemperature() {
         return (this.data[0x02] & 0xf) + 16;
     }
-
+    // Byte 9
     get auxHeat() {
         return (this.data[0x09] & 0x08) > 0;
     }
-    // Byte 0x0b
-    get indoorTemperature() {
-        return (this.data[0x0b] - 50) / 2.0;
-    }
-    // Byte 0x0c
-    get outdoorTemperature() {
-        return (this.data[0x0c] - 50) / 2.0;
-    }
-
+    // Byte 10
     get catchCold() {
         // This needs a better name, dunno what it actually means
         return (this.data[0x0a] & 0x08) > 0;
+    }
+    // Byte 11
+    get indoorTemperature() {
+        return (this.data[0x0b] - 50) / 2.0;
+    }
+    // Byte 12
+    get outdoorTemperature() {
+        return (this.data[0x0c] - 50) / 2.0;
+    }
+    // Byte 13
+    get humidity() {
+        return this.data[0x0d] & 0x7f;
     }
 
     get celsiusUnit() {
@@ -30,9 +34,5 @@ export default class ACApplianceResponse extends ApplianceResponse {
 
     get fahrenheitUnit() {
         return this.data[23] > 0; // FAHRENHEIT - True
-    }
-    // Byte 0x0d
-    get humidity() {
-        return this.data[0x0d] & 0x7f;
     }
 }
