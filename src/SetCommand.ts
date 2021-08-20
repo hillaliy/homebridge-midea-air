@@ -7,7 +7,7 @@ export default class SetCommand extends BaseCommand {
     constructor(device_type: MideaDeviceType) {
         super(device_type);
     }
-
+    // Byte 11
     get audibleFeedback() {
         if (this.data[0x0b] & 0x42) {
             return true;
@@ -28,7 +28,7 @@ export default class SetCommand extends BaseCommand {
         this.data[0x0b] &= ~0x01; // Clear the power bit
         this.data[0x0b] |= state ? 0x01 : 0;
     }
-
+    // Byte 12
     get operationalMode() {
         return (this.data[0x0c] & 0xe0) >> 5;
     }
@@ -38,6 +38,15 @@ export default class SetCommand extends BaseCommand {
         this.data[0x0c] |= (mode << 5) & 0xe0;
     }
 
+    get temperatureDot5() {
+        return (this.data[0x0c] & 0x10) > 0;
+    }
+
+    set temperatureDot5(temperatureDot5Enabled: boolean) {
+        // add 0.5C to the temperature value. not intended to be called directly. target_temperature setter calls this if needed
+        this.data[0x0c] = temperatureDot5Enabled ? 0x10 : 0;
+    }
+    // Byte 13
     get fanSpeed() {
         return this.data[0x0d];
     }
@@ -45,15 +54,7 @@ export default class SetCommand extends BaseCommand {
     set fanSpeed(speed: number) {
         this.data[0x0d] = speed;
     }
-
-    get ecoMode() {
-        return this.data[0x13] > 0;
-    }
-
-    set ecoMode(ecoModeEnabled: boolean) {
-        this.data[0x13] = ecoModeEnabled ? 0xff : 0;
-    }
-
+    // Byte 17
     get swingMode() {
         return this.data[0x11];
     }
@@ -61,5 +62,30 @@ export default class SetCommand extends BaseCommand {
     set swingMode(mode: MideaSwingMode) {
         this.data[0x11] &= ~0x0f; // Clear the mode bit
         this.data[0x11] |= mode & 0x0f;
+    }
+    // Byte 19
+    get ecoMode() {
+        return this.data[0x13] > 0;
+    }
+
+    set ecoMode(ecoModeEnabled: boolean) {
+        this.data[0x13] = ecoModeEnabled ? 0xff : 0;
+    }
+    // Byte 20
+    get screenDisplay() {
+        return (this.data[0x14] & 0x10) > 0;
+    }
+
+    set screenDisplay(screenDisplayEnabled: boolean) {
+        // the LED lights on the AC. these display temperature and are often too bright during nights
+        this.data[0x14] = screenDisplayEnabled ? 0x10 : 0;
+    }
+
+    get turboMode() {
+        return this.data[0x14] > 0;
+    }
+
+    set turboMode(turboModeEnabled: boolean) {
+        this.data[0x14] = turboModeEnabled ? 0x02 : 0;
     }
 }
