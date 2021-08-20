@@ -7,76 +7,22 @@ export default class ACSetCommand extends SetCommand {
     constructor(device_type: MideaDeviceType = MideaDeviceType.AirConditioner) {
         super(device_type);
     }
-
-    // get audibleFeedback() {
-    //     if (this.data[0x0b] & 0x42) {
-    //         return true;
-    //     }
-    //     return false;
-    // }
-
-    // set audibleFeedback(feedbackEnabled: boolean) {
-    //     this.data[0x0b] &= ~0x42; // Clear the audible bits
-    //     this.data[0x0b] |= feedbackEnabled ? 0x42 : 0;
-    // }
-
+    // Byte 12
     get targetTemperature() {
         return this.data[0x0c] & 0x1f;
     }
 
     set targetTemperature(temperatureCelsius: number) {
-        this.data[0x0c] &= ~0x1f; // Clear the temperature bits
+        this.data[0x0c] &= ~0x0f; // Clear the temperature bits
         this.data[0x0c] |= (temperatureCelsius & 0xf) | ((temperatureCelsius << 4) & 0x10);
     }
-
-    get turboMode() {
-        return this.data[0x14] > 0;
-    }
-
-    set turboMode(turboModeEnabled: boolean) {
-        this.data[0x14] = turboModeEnabled ? 0x02 : 0;
-    }
-
+    // Byte 20
     get useFahrenheit() {
-        if (this.data[0x14] & (1 << 2)) {
-            return true;
-        } else {
-            return false;
-        }
+        return (this.data[0x14] & 0x04) > 0;
     }
 
-    set useFahrenheit(useFahrenheit: boolean) {
-        // this.flipBitOfByte(this.data[0x14], 2)
-        var mask = 1 << 2
-        if (useFahrenheit == true) {
-            this.data[0x14] |= mask
-        } else {
-            this.data[0x14] &= ~mask;
-        }
+    set useFahrenheit(useFahrenheitEnabled: boolean) {
+        // set the unit to fahrenheit from celcius
+        this.data[0x14] = useFahrenheitEnabled ? 0x04 : 0;
     }
-
-    // get fanSpeed() {
-    //     return this.data[0x0d];
-    // }
-
-    // set fanSpeed(speed: number) {
-    //     this.data[0x0d] = speed;
-    // }
-
-    // get ecoMode() {
-    //     return this.data[0x13] > 0;
-    // }
-
-    // set ecoMode(ecoModeEnabled: boolean) {
-    //     this.data[0x13] = ecoModeEnabled ? 0xff : 0;
-    // }
-
-    // get swingMode() {
-    //     return this.data[0x11];
-    // }
-
-    // set swingMode(mode: MideaSwingMode) {
-    //     this.data[0x11] &= ~0x0f; // Clear the mode bit
-    //     this.data[0x11] |= mode & 0x0f;
-    // }
 }
