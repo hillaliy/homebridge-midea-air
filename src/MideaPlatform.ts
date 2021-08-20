@@ -246,7 +246,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 						this.log.debug(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) success!`);
 						let applianceResponse: any
 
-						if (device.deviceType == MideaDeviceType.AirConditioner) {
+						if (device.deviceType === MideaDeviceType.AirConditioner) {
 							applianceResponse = new ACApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
 
 							if (device.useFahrenheit == true) {
@@ -272,7 +272,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 								};
 							};
 
-						} else if (device.deviceType == MideaDeviceType.Dehumidifier) {
+						} else if (device.deviceType === MideaDeviceType.Dehumidifier) {
 							applianceResponse = new DehumidifierApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
 
 							device.currentHumidity = applianceResponse.currentHumidity;
@@ -296,7 +296,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 						this.log.debug('Fan Speed is set to:', applianceResponse.fanSpeed);
 						this.log.debug('Swing Mode is set to:', device.swingMode);
 						this.log.debug('Eco Mode is set to:', device.ecoMode);
-						this.log.debug('Turbo Mode is set to:', device.turboMode)
+						this.log.debug('Turbo Mode is set to:', device.turboMode);
 
 						this.log.debug('Full data is', Utils.formatResponse(applianceResponse.data))
 						resolve();
@@ -366,13 +366,11 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				this.log.debug(`[sendUpdateToDevice] Generated a new command to set targetHumidity to: ${device.targetHumidity}`)
 				command.targetHumidity = device.targetHumidity;
 			};
-
 			command.powerState = device.powerState;
 			command.operationalMode = device.operationalMode;
 			command.fanSpeed = device.fanSpeed;
 			command.swingMode = device.swingMode;
 			command.ecoMode = device.ecoMode;
-			command.turboMode = device.turboMode;
 			//operational mode for workaround with fan only mode on device
 			const pktBuilder = new PacketBuilder();
 			pktBuilder.command = command;
