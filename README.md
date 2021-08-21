@@ -46,7 +46,18 @@ Add this to the platforms array in your config.json:
         "platform": "midea-air"
     }
 
-# This plugin don't support OSK103 dongle.
+## Supported Devices
+
+This Plugin support Midea providers dongle (OSK102)
+| Vandor | Model | Model Number |
+| --- | --- | --- |
+| Midea | ... | ... |
+| Electra | Classic+ 28 | WMD24FXC |
+| Qlima | ... | ... |
+| Artel | ... | ... |
+| Carrier | ... | ... |
+| Toshiba | ... | ... |
+| Idema | ... | ... |
 
 ## Optional per-device Configuration Values
 
@@ -69,11 +80,12 @@ You have to select which type your device supports.
 
 Rotation Speed and Swing mode can set in the HomeKit app, device settings.
 Rotation Speed values are:
-0%: device off
-/ 25%: Low
-/ 50%: Middle
-/ 75%: High
-/ 100%: Auto
+
+- 0%: device off
+- 25%: Low
+- 50%: Middle
+- 75%: High
+- 100%: Auto
 
 ### Fan Mode
 
