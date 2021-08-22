@@ -53,6 +53,7 @@ This Plugin support Midea providers dongle (OSK102)
 | --- | --- | --- |
 | Midea | ... | ... |
 | Electra | Classic+ 28 | WMD24FXC |
+| Electra | Classic+ 17 | WMD12DCC |
 | Qlima | ... | ... |
 | Artel | ... | ... |
 | Carrier | ... | ... |
