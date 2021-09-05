@@ -7,7 +7,7 @@ export default class ACSetCommand extends SetCommand {
     constructor(device_type: MideaDeviceType = MideaDeviceType.AirConditioner) {
         super(device_type);
     }
-    // Byte 12
+    // Byte 0x0c
     get targetTemperature() {
         return this.data[0x0c] & 0x1f;
     }
@@ -16,7 +16,7 @@ export default class ACSetCommand extends SetCommand {
         this.data[0x0c] &= ~0x0f; // Clear the temperature bits
         this.data[0x0c] |= (temperatureCelsius & 0xf) | ((temperatureCelsius << 4) & 0x10);
     }
-    // Byte 20
+    // Byte 0x14
     get useFahrenheit() {
         return (this.data[0x14] & 0x04) > 0;
     }
