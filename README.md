@@ -51,16 +51,16 @@ Add this to the platforms array in your config.json:
 This Plugin support Midea providers dongle (OSK102)
 | Unit | Vandor | Model | Model Number |
 | --- | --- | --- | --- |
-| --- | Midea | ... | ... |
+| ... | Midea | ... | ... |
 | Air Conditioner | Electra | Classic+ 28 | WMD24FXC |
-| Air Conditioner | Electra | Classic+ 17 | WMD12DCC |
-| --- | Inventor | ... | ... |
-| --- | Qlima | ... | ... |
-| --- | Artel | ... | ... |
-| --- | Carrier | ... | ... |
-| --- | Toshiba | ... | ... |
-| --- | Idema | ... | ... |
-| Dehumidifier | Comfee | --- | MDDF-16DEN7 WF |
+| Air Conditioner | Electra | Classic+ INV 17 | WMD12DCC |
+| ... | Inventor | ... | ... |
+| ... | Qlima | ... | ... |
+| ... | Artel | ... | ... |
+| ... | Carrier | ... | ... |
+| ... | Toshiba | ... | ... |
+| ... | Idema | ... | ... |
+| Dehumidifier | Comfee | ... | MDDF-16DEN7 WF |
 
 ## Optional per-device Configuration Values
 
