@@ -7,7 +7,7 @@ export default class SetCommand extends BaseCommand {
     constructor(device_type: MideaDeviceType) {
         super(device_type);
     }
-    // Byte 11
+    // Byte 0x0b
     get audibleFeedback() {
         if (this.data[0x0b] & 0x42) {
             return true;
@@ -28,7 +28,7 @@ export default class SetCommand extends BaseCommand {
         this.data[0x0b] &= ~0x01; // Clear the power bit
         this.data[0x0b] |= state ? 0x01 : 0;
     }
-    // Byte 12
+    // Byte 0x0c
     get operationalMode() {
         return (this.data[0x0c] & 0xe0) >> 5;
     }
@@ -46,7 +46,7 @@ export default class SetCommand extends BaseCommand {
         // add 0.5C to the temperature value. not intended to be called directly. target_temperature setter calls this if needed
         this.data[0x0c] = temperatureDot5Enabled ? 0x10 : 0;
     }
-    // Byte 13
+    // Byte 0x0d
     get fanSpeed() {
         return this.data[0x0d];
     }
@@ -54,7 +54,7 @@ export default class SetCommand extends BaseCommand {
     set fanSpeed(speed: number) {
         this.data[0x0d] = speed;
     }
-    // Byte 17
+    // Byte 0x11
     get swingMode() {
         return this.data[0x11];
     }
@@ -63,7 +63,7 @@ export default class SetCommand extends BaseCommand {
         this.data[0x11] &= ~0x0f; // Clear the mode bit
         this.data[0x11] |= mode & 0x0f;
     }
-    // Byte 19
+    // Byte 0x13
     get ecoMode() {
         return this.data[0x13] > 0;
     }
@@ -71,7 +71,7 @@ export default class SetCommand extends BaseCommand {
     set ecoMode(ecoModeEnabled: boolean) {
         this.data[0x13] = ecoModeEnabled ? 0xff : 0;
     }
-    // Byte 20
+    // Byte 0x14
     get screenDisplay() {
         return (this.data[0x14] & 0x10) > 0;
     }
