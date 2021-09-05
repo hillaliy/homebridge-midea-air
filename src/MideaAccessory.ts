@@ -8,9 +8,11 @@ export class MideaAccessory {
 
 	public deviceId: string = ''
 	public deviceType: MideaDeviceType = MideaDeviceType.AirConditioner
-	public targetTemperature: any = 17
+	public targetTemperature: any = 24
 	public indoorTemperature: number = 0
 	public outdoorTemperature: number = 0
+	// Default unit is Celcius. this is just to control the temperatue unit of the AC's display.
+	// The target temperature setter always expects a celcius temperature (resolution of 0.5C), as does the midea API
 	public useFahrenheit: boolean = false
 
 	public currentHumidity: number = 0
@@ -31,7 +33,7 @@ export class MideaAccessory {
 	public name: string = ''
 	public model: string = ''
 	public userId: string = ''
-	public firmwareVersion: string = '1.3.7'
+	public firmwareVersion = require('../package.json').version;
 
 	private service!: Service
 	private fanService!: Service
