@@ -227,7 +227,6 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				const url = "/appliance/transparent/send";
 				const sign = Utils.getSign(url, form);
 				form.sign = sign;
-				//this.log.debug('sendCommand request', qs.stringify(form));
 				try {
 					const response = await this.apiClient.post(url, qs.stringify(form))
 					if (response.data.errorCode && response.data.errorCode !== '0') {
@@ -375,7 +374,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			const pktBuilder = new PacketBuilder();
 			pktBuilder.command = command;
 			const data = pktBuilder.finalize();
-			// this.log.debug("[sendUpdateToDevice] Command: " + JSON.stringify(command));
+
 			this.log.debug("[sendUpdateToDevice]  Header + Command: " + JSON.stringify(data));
 
 			try {
