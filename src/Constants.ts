@@ -65,20 +65,21 @@ export default class Constants {
 	];
 
 	public static UpdateCommand_Dehumidifier = [
-		170,			// 0         - Sync header
-		32,				// 1         - Message length request
-		161,			// 2         - Device type (161 for Dehumidifier)
-		0,				// 3		 - Frame sync check (not used, 0x00)
-		0, 0,			// 4 to 5	 - Reserved 0x00
-		0,				// 6		 - Message Id
-		0,				// 7    	 - Framework protocol version
-		3,				// 8         - Device Agreement Version
-		3,				// 9         - Message type request identification
+		170,			// 0        - Sync header
+		32,				// 1        - Message length request
+		161,			// 2        - Device type (161 for Dehumidifier)
+		0,				// 3		- Frame sync check (not used, 0x00)
+		0,				// 4		- Reserved 0x00
+		0,				// 5	 	- Reserved 0x00
+		0,				// 6		- Message Id
+		0,				// 7    	- Framework protocol version
+		3,				// 8        - Device Agreement Version
+		3,				// 9        - Message type request identification
 		// Command Header End
 		// Data Start
-		65,				// 10		 - Data request
+		65,				// 10		- Data request
 		33,				// 11
-		0,				// 12        - Operational mode (1: target, 2: continuous, 3: smart, 4: dry)
+		0,				// 12       - Operational mode (1: target, 2: continuous, 3: smart, 4: dry)
 		255,			// 13
 		3,				// 14
 		0,				// 15
@@ -100,4 +101,4 @@ export default class Constants {
 	public static ClientType: string = '1' // 0: PC, 1: Android, 2: IOS
 	public static RequestFormat: string = '2' // JSON
 	public static RequestSource: string = '17'
-}
+};
