@@ -6,7 +6,7 @@ export default class DehumidifierSetCommand extends SetCommand {
 	constructor(device_type: MideaDeviceType = MideaDeviceType.Dehumidifier) {
 		super(device_type);
 	}
-
+	// Byte 0x11
 	get targetHumidity() {
 		return this.data[0x11] & 127
 	}
