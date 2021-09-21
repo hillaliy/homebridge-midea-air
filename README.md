@@ -21,9 +21,9 @@ If you like this plugin or want to contribute to future development, a donation 
 
 ## Requirements
 
-<img src="https://img.shields.io/badge/node-%3E%3D12.0.0-brightgreen"> &nbsp;
-<img src="https://img.shields.io/badge/homebridge-%3E%3D1.0.0-brightgreen"> &nbsp;
-<img src="https://img.shields.io/badge/iOS-%3E%3D12.0.0-brightgreen">
+<img src="https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen"> &nbsp;
+<img src="https://img.shields.io/badge/homebridge-%3E%3D1.3.0-brightgreen"> &nbsp;
+<img src="https://img.shields.io/badge/iOS-%3E%3D14.0.0-brightgreen">
 
 <SPAN ALIGN="Left">
 
