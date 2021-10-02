@@ -48,7 +48,7 @@ Add this to the platforms array in your config.json:
 
 ## Supported Devices
 
-This Plugin support Midea providers dongle (OSK102)
+This Plugin support Midea providers dongle (OSK102/OSK103)
 | Unit | Vandor | Model | Model Number |
 | --- | --- | --- | --- |
 | ... | Midea | ... | ... |
