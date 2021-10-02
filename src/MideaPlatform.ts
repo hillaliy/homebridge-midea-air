@@ -4,7 +4,8 @@ const axios = require('axios').default
 
 import tunnel from 'tunnel';
 
-const axiosCookieJarSupport = require('axios-cookiejar-support').default;
+// const axiosCookieJarSupport = require('axios-cookiejar-support').default;
+const { wrapper: axiosCookieJarSupport } = require('axios-cookiejar-support');
 import tough from 'tough-cookie';
 import qs from 'querystring';
 import Utils from './Utils';
@@ -176,6 +177,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 									existingAccessory.context.deviceId = currentElement.id
 									existingAccessory.context.deviceType = parseInt(currentElement.type)
 									existingAccessory.context.name = currentElement.name
+									existingAccessory.context.userId = currentElement.userId
 									this.api.updatePlatformAccessories([existingAccessory])
 
 									var ma = new MideaAccessory(this, existingAccessory, currentElement.id, parseInt(currentElement.type), currentElement.name, currentElement.userId)
@@ -184,8 +186,9 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 									this.log.debug('Adding new device:', currentElement.name)
 									const accessory = new this.api.platformAccessory(currentElement.name, uuid)
 									accessory.context.deviceId = currentElement.id
-									accessory.context.name = currentElement.name
 									accessory.context.deviceType = parseInt(currentElement.type)
+									accessory.context.name = currentElement.name
+									accessory.context.userId = currentElement.userId
 									var ma = new MideaAccessory(this, accessory, currentElement.id, parseInt(currentElement.type), currentElement.name, currentElement.userId)
 									this.api.registerPlatformAccessories('homebridge-midea-air', 'midea-air', [accessory])
 									this.mideaAccessories.push(ma)
@@ -257,15 +260,15 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 
 							this.log.debug('useFahrenheit is set to:', device.useFahrenheit);
 							if (device.useFahrenheit == true) {
-								this.log.debug('Target Temperature:', Math.round((device.targetTemperature * 1.8) + 32) + '˚F');
-								this.log.debug('Indoor Temperature is:', Math.round((device.indoorTemperature * 1.8) + 32) + '˚F');
+								this.log.debug('Target Temperature:', this.toFahrenheit(device.targetTemperature) + '˚F');
+								this.log.debug('Indoor Temperature is:', this.toFahrenheit(device.indoorTemperature) + '˚F');
 							} else {
 								this.log.debug('Target Temperature:', device.targetTemperature + '˚C');
 								this.log.debug('Indoor Temperature is:', device.indoorTemperature + '˚C');
 							};
 							if (applianceResponse.outdoorTemperature < 100) {
 								if (device.useFahrenheit == true) {
-									this.log.debug('Outdoor Temperature is:', Math.round((device.outdoorTemperature * 1.8) + 32) + '˚F');
+									this.log.debug('Outdoor Temperature is:', this.toFahrenheit(device.outdoorTemperature) + '˚F');
 								} else {
 									this.log.debug('Outdoor Temperature is:', device.outdoorTemperature + '˚C');
 								};
@@ -423,5 +426,9 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 		this.log.info('Loading accessory from cache:', accessory.displayName);
 		// add the restored accessory to the accessories cache so we can track if it has already been registered
 		this.accessories.push(accessory);
+	};
+
+	toFahrenheit(value: number) {
+		return Math.round((value * 1.8) + 32);
 	};
 };
