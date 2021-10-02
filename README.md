@@ -48,19 +48,7 @@ Add this to the platforms array in your config.json:
 
 ## Supported Devices
 
-This Plugin support Midea providers dongle (OSK102/OSK103)
-| Unit | Vandor | Model | Model Number |
-| --- | --- | --- | --- |
-| ... | Midea | ... | ... |
-| Air Conditioner | Electra | Classic+ 28 | WMD24FXC |
-| Air Conditioner | Electra | Classic+ INV 17 | WMD12DCC |
-| ... | Inventor | ... | ... |
-| ... | Qlima | ... | ... |
-| ... | Artel | ... | ... |
-| ... | Carrier | ... | ... |
-| ... | Toshiba | ... | ... |
-| ... | Idema | ... | ... |
-| Dehumidifier | Comfee | ... | MDDF-16DEN7 WF |
+This Plugin support Midea providers dongle - OSK102 / OSK103 (Hualing, Senville, Klimaire, AirCon, Century, Pridiom, Thermocore, Comfee, Alpine Home Air, Artel, Beko, Electrolux, Galactic, Idea, Inventor, Kaisai, Mitsui, Mr. Cool, Neoclima, Olimpia Splendid, Pioneer, QLIMA, Royal Clima, Qzen, Toshiba, Carrier, Goodman, Friedrich, Samsung, Kenmore, Trane, Lennox, LG, Electra and much more) and should be able to access all device in the user's account. However, many devices may not be supported or function incorrectly. This is due to the lack of documentation of the raw MSmart API. If you encounter any problems, please open a new issue and specify your device model.
 
 ## Optional per-device Configuration Values
 
@@ -98,10 +86,6 @@ This allows you to enable a Fan mode service.
 ### Outdoor Temperature Sensor
 
 This allows you to enable Outdoor Temperature service, if the AC support.
-
-## Notes
-
-This version of `homebridge-midea-air` is a platform and should be able to access all device in the user's account. However, many devices may not be supported or function incorrectly. This is due to the lack of documentation of the raw MSmart API. If you encounter any problems, please open a new issue and specify your device model.
 
 ## Credits
 
