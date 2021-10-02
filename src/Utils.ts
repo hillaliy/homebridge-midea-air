@@ -1,5 +1,4 @@
 // Utils – Utility functions
-import { kStringMaxLength } from "buffer";
 import crypto from "crypto";
 import Constants from './Constants';
 
@@ -28,7 +27,12 @@ export default class Utils {
 	// Returns a timestamp in the format YYYYMMDDHHmmss
 	static getStamp(): string {
 		const date = new Date();
-		return date.toISOString().slice(0, 19).replace(/-/g, "").replace(/:/g, "").replace(/T/g, "");
+		return date
+			.toISOString()
+			.slice(0, 19)
+			.replace(/-/g, "")
+			.replace(/:/g, "")
+			.replace(/T/g, "");
 	};
 
 	static formatResponse(arr: any[]) {
@@ -107,8 +111,14 @@ export default class Utils {
 
 	static getSignPassword(loginId: string, password: string) {
 		if (loginId != '' && password != '') {
-			const pw = crypto.createHash("sha256").update(password).digest("hex");
-			return crypto.createHash("sha256").update(loginId + pw + Constants.AppKey).digest("hex");
+			const pw = crypto
+				.createHash("sha256")
+				.update(password)
+				.digest("hex");
+			return crypto
+				.createHash("sha256")
+				.update(loginId + pw + Constants.AppKey)
+				.digest("hex");
 		} else {
 			return '';
 		};
@@ -116,7 +126,9 @@ export default class Utils {
 
 	static generateDataKey(accessToken: string) {
 		if (accessToken != '') {
-			const md5AppKey = crypto.createHash("md5").update(Constants.AppKey).digest("hex");
+			const md5AppKey = crypto
+				.createHash("md5")
+				.update(Constants.AppKey).digest("hex");
 			const decipher = crypto.createDecipheriv("aes-128-ecb", md5AppKey.slice(0, 16), "");
 			const dec = decipher.update(accessToken, "hex", "utf8");
 			return dec;
