@@ -4,7 +4,6 @@ const axios = require('axios').default
 
 import tunnel from 'tunnel';
 
-// const axiosCookieJarSupport = require('axios-cookiejar-support').default;
 const { wrapper: axiosCookieJarSupport } = require('axios-cookiejar-support');
 import tough from 'tough-cookie';
 import qs from 'querystring';
@@ -238,7 +237,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 							reject();
 						};
 						if (response.data.errorCode == 3176) {
-							this.log.info(`Command was not accepted by device: ${device.name} (${device.deviceId})`);
+							this.log.debug(`Command was not accepted by device: ${device.name} (${device.deviceId})`);
 							resolve();
 							return;
 						};
