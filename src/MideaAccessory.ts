@@ -11,8 +11,8 @@ export class MideaAccessory {
 	public targetTemperature: any = 24
 	public indoorTemperature: number = 0
 	public outdoorTemperature: number = 0
-	// Default unit is Celcius. this is just to control the temperatue unit of the AC's display.
-	// The target temperature setter always expects a celcius temperature (resolution of 0.5C), as does the midea API
+	// Default unit is Celsius. this is just to control the temperature unit of the AC's display.
+	// The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API
 	public useFahrenheit: boolean = false
 
 	public currentHumidity: number = 0
