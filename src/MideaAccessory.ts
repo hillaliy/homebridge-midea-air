@@ -289,9 +289,9 @@ export class MideaAccessory {
 		} else if (this.operationalMode === MideaOperationalMode.Heating) {
 			return this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
 		} else if (this.indoorTemperature > this.targetTemperature) {
-			return this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
-		} else {
 			return this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
+		} else {
+			return this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
 		};
 	};
 	// Handle requests to get the current value of the "CurrentHeaterCoolerState" characteristic
