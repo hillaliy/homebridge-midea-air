@@ -83,6 +83,24 @@ Rotation Speed values are:
 | 75% High | 100% High |
 | 100% Auto | ... |
 
+### Dehumidifier Relative Humidity
+
+There is a difference between Midea app / Homebridge to HomeKit.
+HomeKit Relative Humidity work between 0%-100% - Apple Policy.
+| App / Homebridge | HomeKit |
+| --- | --- |
+| 35% | 0% |
+| 40% | 10% |
+| 45% | 20% |
+| 50% | 30% |
+| 55% | 40% |
+| 60% | 50% |
+| 65% | 60% |
+| 70% | 70% |
+| 75% | 80% |
+| 80% | 90% |
+| 85% | 100% |
+
 ### Fan Mode
 
 This allows you to enable a Fan mode service.
