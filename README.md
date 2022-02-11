@@ -66,6 +66,11 @@ To set specific per-device values, you need to add deviceId that can find in:
 This Plugin support Celsius & Fahrenheit (Default unit is Celcius).
 Display Units can set in HomeKit app, device settings.
 
+### Temperature Steps
+
+This option change Temperature Steps on HomeKit.
+You can choose 1˚ or 0.5˚, default is: 1˚
+
 ### Supported Swing Mode
 
 "None", "Vertical", "Horizontal", "Both".
