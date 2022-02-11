@@ -72,6 +72,11 @@ export class MideaAccessory {
 			}
 		}
 
+		var tsteps = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'temperatureSteps');
+		if (tsteps) {
+			this.temperatureSteps = tsteps;
+		}
+
 		this.platform.log.info('Created device:', this.name + ',', 'with ID:', this.deviceId + ',', 'and type:', this.deviceType)
 
 		if (this.deviceType === MideaDeviceType.AirConditioner) {
