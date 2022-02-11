@@ -4,7 +4,12 @@ import ApplianceResponse from '../ApplianceResponse'
 export default class ACApplianceResponse extends ApplianceResponse {
     // Byte 0x02
     get targetTemperature() {
-        return (this.data[0x02] & 0xf) + 16;
+        // return (this.data[0x02] & 0xf) + 16;
+        if ((this.data[0x02] & 0x10) > 0) {
+            return (this.data[0x02] & 0xf) + 16.0 + 0.5
+        } else {
+            return (this.data[0x02] & 0xf) + 16.0 + 0.0
+        }
     }
     // Byte 0x09
     get auxHeat() {
@@ -17,7 +22,52 @@ export default class ACApplianceResponse extends ApplianceResponse {
     }
     // Byte 0x0b
     get indoorTemperature() {
-        return (this.data[0x0b] - 50) / 2.0;
+        let indoorTempInteger
+        let indoorTemperatureDot
+        let indoorTempDecimal
+        // return (this.data[0x0b] - 50) / 2.0;
+        if (this.data[0] == 0xc0) {
+            if (((this.data[11] - 50) / 2) < -19 || ((this.data[11] - 50) / 2) > 50) {
+                return 0xff
+            } else {
+                indoorTempInteger = ((this.data[11] - 50) / 2)
+            }
+            indoorTemperatureDot = this.getBits(this.data, 15, 0, 3)
+            indoorTempDecimal = indoorTemperatureDot * 0.1
+            if (this.data[11] > 49) {
+                return indoorTempInteger + indoorTempDecimal
+            } else {
+                return indoorTempInteger - indoorTempDecimal
+            }
+        }
+        if ((this.data[0] == 0xa0) || (this.data[0] == 0xa1)) {
+            if (this.data[0] == 0xa0) {
+                if ((this.data[1] >> 2) - 4 == 0) {
+                    indoorTempInteger = -1
+                } else {
+                    indoorTempInteger = (this.data[1] >> 2) + 12
+                }
+                if (((this.data[1] >> 1) & 0x01) == 1) {
+                    indoorTempDecimal = 0.5
+                } else {
+                    indoorTempDecimal = 0
+                }
+            }
+            if (this.data[0] == 0xa1) {
+                if ((((this.data[13] - 50) / 2) < -19) || (((this.data[13] - 50) / 2) > 50)) {
+                    return 0xff
+                } else {
+                    indoorTempInteger = ((this.data[13] - 50) / 2)
+                }
+                indoorTempDecimal = (this.data[18] & 0x0f) * 0.1
+            }
+            if ((this.data[13]) > 49) {
+                return indoorTempInteger + indoorTempDecimal
+            } else {
+                return indoorTempInteger - indoorTempDecimal
+            }
+        }
+        return 0xff
     }
     // Byte 0x0c
     get outdoorTemperature() {
@@ -30,5 +80,28 @@ export default class ACApplianceResponse extends ApplianceResponse {
 
     get fahrenheitUnit() {
         return this.data[23] > 0; // FAHRENHEIT - True
+    }
+
+    getBit(pByte: any, pIndex: any) {
+        return (pByte >> pIndex) & 0x01
+    }
+
+    getBits(pBytes: any, pIndex: any, pStartIndex: any, pEndIndex: any) {
+        let StartIndex
+        let EndIndex
+        if (pStartIndex > pEndIndex) {
+            StartIndex = pEndIndex
+            EndIndex = pStartIndex
+        } else {
+            StartIndex = pStartIndex
+            EndIndex = pEndIndex
+        }
+        let tempVal = 0x00;
+        let i = StartIndex;
+        while (i <= EndIndex) {
+            tempVal = tempVal | this.getBit(pBytes[pIndex], i) << (i - StartIndex)
+            i += 1
+        }
+        return tempVal
     }
 }

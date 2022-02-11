@@ -14,7 +14,8 @@ export default class ACSetCommand extends SetCommand {
 
     set targetTemperature(temperatureCelsius: number) {
         this.data[0x0c] &= ~0x0f; // Clear the temperature bits
-        this.data[0x0c] |= (temperatureCelsius & 0xf) | ((temperatureCelsius << 4) & 0x10);
+        this.data[0x0c] |= (temperatureCelsius & 0xf) // | ((temperatureCelsius << 4) & 0x10);
+        this.temperatureDot5 = (Math.round(temperatureCelsius * 2) % 2 != 0)
     };
     // Byte 0x14
     get useFahrenheit() {
@@ -23,6 +24,11 @@ export default class ACSetCommand extends SetCommand {
 
     set useFahrenheit(useFahrenheitEnabled: boolean) {
         // set the unit to fahrenheit from celcius
-        this.data[0x14] = useFahrenheitEnabled ? 0x04 : 0;
+        // this.data[0x14] = useFahrenheitEnabled ? 0x04 : 0;
+        if (useFahrenheitEnabled) {
+            this.data[0x14] |= 0x04
+        } else {
+            this.data[0x14] &= (~0x04)
+        }
     };
 };
