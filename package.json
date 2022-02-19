@@ -23,7 +23,7 @@
     "author": "Yossi Hillali <hillaliy@me.com>",
     "license": "MIT",
     "dependencies": {
-        "axios": "^0.25.0",
+        "axios": "^0.26.0",
         "axios-cookiejar-support": "^2.0.3",
         "node-tunnel": "^4.0.1",
         "querystring": "^0.2.1",
@@ -40,7 +40,7 @@
         "air conditioner"
     ],
     "devDependencies": {
-        "@types/node": "^17.0.17",
+        "@types/node": "^17.0.18",
         "@types/tough-cookie": "^4.0.1",
         "@types/tunnel": "0.0.3",
         "homebridge": "^1.4.0",
