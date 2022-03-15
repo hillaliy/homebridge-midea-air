@@ -4,7 +4,6 @@ import ApplianceResponse from '../ApplianceResponse'
 export default class ACApplianceResponse extends ApplianceResponse {
     // Byte 0x02
     get targetTemperature() {
-        // return (this.data[0x02] & 0xf) + 16;
         if ((this.data[0x02] & 0x10) > 0) {
             return (this.data[0x02] & 0xf) + 16.0 + 0.5
         } else {
@@ -25,7 +24,6 @@ export default class ACApplianceResponse extends ApplianceResponse {
         let indoorTempInteger
         let indoorTemperatureDot
         let indoorTempDecimal
-        // return (this.data[0x0b] - 50) / 2.0;
         if (this.data[0] == 0xc0) {
             if (((this.data[11] - 50) / 2) < -19 || ((this.data[11] - 50) / 2) > 50) {
                 return 0xff
