@@ -24,7 +24,6 @@ export default class ACSetCommand extends SetCommand {
 
     set useFahrenheit(useFahrenheitEnabled: boolean) {
         // set the unit to fahrenheit from celcius
-        // this.data[0x14] = useFahrenheitEnabled ? 0x04 : 0;
         if (useFahrenheitEnabled) {
             this.data[0x14] |= 0x04
         } else {
