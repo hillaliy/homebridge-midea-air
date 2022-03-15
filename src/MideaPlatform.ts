@@ -372,6 +372,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			command.fanSpeed = device.fanSpeed;
 			command.swingMode = device.swingMode;
 			command.ecoMode = device.ecoMode;
+			command.turboMode = device.turboMode;
 			//operational mode for workaround with fan only mode on device
 			const pktBuilder = new PacketBuilder();
 			pktBuilder.command = command;
