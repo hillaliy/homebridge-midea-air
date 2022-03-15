@@ -28,17 +28,17 @@ export default class BaseCommand {
                 // Data Start
                 64,             // 10       - Data request/response: Set up
                 1,              // 11       - power state: 0/1 + audible feedback: 66 
-                0,              // 12       - Operational mode
+                70,             // 12       - Operational mode
                 102,            // 13       - Fan speed 20/40/60/80/102
-                3,              // 14       - On timer
-                255,            // 15       - Off timer
+                127,            // 14       - On timer
+                127,            // 15       - Off timer
                 0,              // 16       - Common timer
                 48,             // 17       - Swing mode
                 0,              // 18
                 0,              // 19       - Eco mode
                 0,              // 20       - Turbo mode/Screen display/Fahrenheit
                 // Padding
-                0, 0, 0, 0, 0, 0, 0, 0, 0
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 // Data End
             ];
             this.data[0x02] = device_type;
