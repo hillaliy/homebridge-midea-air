@@ -50,10 +50,10 @@ export default class Constants {
 		65,				// 10		- Data request/response: check status
 		129,			// 11		- Power state
 		0,				// 12		- Operational mode
-		255,			// 13
-		3,				// 14
-		255,			// 15
-		0,				// 16
+		255,			// 13		
+		3,				// 14		- On timer
+		255,			// 15		- Off timer
+		0,				// 16		- Common timer
 		2,				// 17	 	- Room temperature request: 0x02 - indoor temperature, 0x03 - outdoor temperature
 		0,				// 18
 		0,				// 19
