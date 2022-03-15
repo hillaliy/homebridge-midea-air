@@ -44,7 +44,6 @@ export default class SetCommand extends BaseCommand {
 
     set temperatureDot5(temperatureDot5Enabled: boolean) {
         // add 0.5C to the temperature value. not intended to be called directly. target_temperature setter calls this if needed
-        // this.data[0x0c] = temperatureDot5Enabled ? 0x10 : 0;
         if (temperatureDot5Enabled) {
             this.data[0x0c] |= 0x10
         } else {
@@ -67,8 +66,6 @@ export default class SetCommand extends BaseCommand {
     set swingMode(mode: MideaSwingMode) {
         this.data[0x11] = 0x30; // Clear the mode bit
         this.data[0x11] |= mode & 0x3f;
-        // this.data[0x11] &= ~0x0f; // Clear the mode bit
-        // this.data[0x11] |= mode & 0x0f;
     };
     // Byte 0x13
     get ecoMode() {
@@ -85,7 +82,6 @@ export default class SetCommand extends BaseCommand {
 
     set screenDisplay(screenDisplayEnabled: boolean) {
         // the LED lights on the AC. these display temperature and are often too bright during nights
-        // this.data[0x14] = screenDisplayEnabled ? 0x10 : 0;
         if (screenDisplayEnabled) {
             this.data[0x14] |= 0x10
         } else {
@@ -103,6 +99,5 @@ export default class SetCommand extends BaseCommand {
         } else {
             this.data[0x14] &= (~0x02)
         }
-        // this.data[0x14] = turboModeEnabled ? 0x02 : 0;
     };
 };
