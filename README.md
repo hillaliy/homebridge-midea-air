@@ -50,6 +50,7 @@ Add this to the platforms array in your config.json:
 ## Notes
 
 Using the Midea app and `Homebridge Midea Air plugin` at the same time causes a login error. Try to use [NetHome Plus](https://apps.apple.com/us/app/nethome-plus/id1008001920) app instead.
+This plugin don't support `MSmartHome app`.
 
 ## Supported Devices
 
