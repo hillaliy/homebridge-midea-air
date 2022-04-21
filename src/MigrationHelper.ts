@@ -60,7 +60,7 @@ export class MigrationHelper {
 			"password": ""
 		}
 		if (config.hasOwnProperty('platforms')) {
-			for (let i = 0; i < config.platforms.length; i++) {
+			for (var i = 0; i < config.platforms.length; i++) {
 				if (config.platforms[i].platform == 'midea-air') {
 					// We already have a platform, return
 					return null
@@ -71,7 +71,7 @@ export class MigrationHelper {
 			config.platforms = []
 		}
 		if (config.hasOwnProperty('accessories')) {
-			for (let i = 0; i < config.accessories.length; i++) {
+			for (var i = 0; i < config.accessories.length; i++) {
 				if (config.accessories[i].accessory === 'midea-air') {
 					// We have an existing installation
 					this.log.warn('Found existing Midea-air accessory, migrating');
