@@ -94,7 +94,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				loginAccount: this.config['user'],
 				clientType: Constants.ClientType,
 				src: Constants.RequestSource,
-				appId: Constants.AppId,
+				appId: Constants.SupportedApps.NetHomePlus.AppId,
 				format: Constants.RequestFormat,
 				stamp: Utils.getStamp(),
 				language: Constants.Language
@@ -104,44 +104,42 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			//this.log.debug('login request', qs.stringify(form));
 			try {
 				const response = await this.apiClient.post(url, qs.stringify(form))
-				if (response.data) {
-					if (response.data.errorCode && response.data.errorCode != '0') {
-						this.log.debug('Login request failed with error', response.data.msg)
-					} else {
-						const loginId: string = response.data.result.loginId;
-						const password: string = Utils.getSignPassword(loginId, this.config.password);
-						const url = "/user/login";
-						const form: any = {
-							loginAccount: this.config['user'],
-							src: Constants.RequestSource,
-							format: Constants.RequestFormat,
-							stamp: Utils.getStamp(),
-							language: Constants.Language,
-							password: password,
-							clientType: Constants.ClientType,
-							appId: Constants.AppId,
-						};
-						const sign = Utils.getSign(url, form);
-						form.sign = sign;
-						try {
-							const loginResponse = await this.apiClient.post(url, qs.stringify(form));
-							if (loginResponse.data.errorCode && loginResponse.data.errorCode != '0') {
-								this.log.debug('Login request 2 returned error', loginResponse.data.msg);
-								reject();
-							} else {
-								this.atoken = loginResponse.data.result.accessToken;
-								this.sessionId = loginResponse.data.result.sessionId;
-								this.dataKey = Utils.generateDataKey(this.atoken);
-								resolve();
-							};
-						} catch (err) {
-							this.log.debug('Login request 2 failed with', err)
+				if (response.data?.errorCode && response.data.errorCode != '0') {
+					this.log.debug(`Login request failed with error: ${response.data.msg}`)
+				} else {
+					const loginId: string = response.data.result.loginId;
+					const password: string = Utils.getSignPassword(loginId, this.config.password);
+					const url = "/user/login";
+					const form: any = {
+						loginAccount: this.config['user'],
+						src: Constants.RequestSource,
+						format: Constants.RequestFormat,
+						stamp: Utils.getStamp(),
+						language: Constants.Language,
+						password: password,
+						clientType: Constants.ClientType,
+						appId: Constants.SupportedApps.NetHomePlus.AppId,
+					};
+					const sign = Utils.getSign(url, form);
+					form.sign = sign;
+					try {
+						const loginResponse = await this.apiClient.post(url, qs.stringify(form));
+						if (loginResponse.data.errorCode && loginResponse.data.errorCode != '0') {
+							this.log.debug(`Login request 2 returned error: ${loginResponse.data.msg}`);
 							reject();
+						} else {
+							this.atoken = loginResponse.data.result.accessToken;
+							this.sessionId = loginResponse.data.result.sessionId;
+							this.dataKey = Utils.generateDataKey(this.atoken);
+							resolve();
 						};
+					} catch (err) {
+						this.log.debug(`Login request 2 failed with: ${err}`)
+						reject();
 					};
 				};
 			} catch (err) {
-				this.log.debug('Login request failed with', err);
+				this.log.debug(`Login request failed with: ${err}`);
 				reject();
 			};
 		});
@@ -163,16 +161,16 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			try {
 				const response = await this.apiClient.post(url, qs.stringify(form))
 				if (response.data.errorCode && response.data.errorCode != '0') {
-					this.log.error('getUserList returned error', response.data.msg);
+					this.log.error(`getUserList returned error: ${response.data.msg}`);
 					reject();
 				} else {
-					if (response.data.result && response.data.result.list && response.data.result.list.length > 0) {
+					if (response.data.result?.list && response.data.result.list.length > 0) {
 						response.data.result.list.forEach(async (currentElement: any) => {
 							if (parseInt(currentElement.type) == MideaDeviceType.AirConditioner || parseInt(currentElement.type) == MideaDeviceType.Dehumidifier) {
 								const uuid = this.api.hap.uuid.generate(currentElement.id)
 								const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid)
 								if (existingAccessory) {
-									this.log.debug('Restoring cached accessory', existingAccessory.displayName)
+									this.log.debug(`Restoring cached accessory: ${existingAccessory.displayName}`)
 									existingAccessory.context.deviceId = currentElement.id
 									existingAccessory.context.deviceType = parseInt(currentElement.type)
 									existingAccessory.context.name = currentElement.name
@@ -182,7 +180,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 									var ma = new MideaAccessory(this, existingAccessory, currentElement.id, parseInt(currentElement.type), currentElement.name, currentElement.userId)
 									this.mideaAccessories.push(ma)
 								} else {
-									this.log.debug('Adding new device:', currentElement.name)
+									this.log.debug(`Adding new device: ${currentElement.name}`)
 									const accessory = new this.api.platformAccessory(currentElement.name, uuid)
 									accessory.context.deviceId = currentElement.id
 									accessory.context.deviceType = parseInt(currentElement.type)
@@ -194,7 +192,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 								};
 								// this.log.debug('mideaAccessories now contains', this.mideaAccessories)
 							} else {
-								this.log.warn('Device ' + currentElement.name + ' is of unsupported type ' + MideaDeviceType[parseInt(currentElement.type)])
+								this.log.warn(`Device: ${currentElement.name} is of unsupported type: ${MideaDeviceType[parseInt(currentElement.type)]}`)
 								this.log.warn('Please open an issue on GitHub with your specific device model')
 							};
 						});
@@ -205,7 +203,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 					};
 				};
 			} catch (err) {
-				this.log.debug('getUserList error', err);
+				this.log.debug(`getUserList error: ${err}`);
 				reject();
 			};
 		});
@@ -232,44 +230,35 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				try {
 					const response = await this.apiClient.post(url, qs.stringify(form))
 					if (response.data.errorCode && response.data.errorCode !== '0') {
-						if (response.data.errorCode == 3123) {
-							this.log.info(`Device: ${device.name} (${device.deviceId}) Unreachable`);
-							reject();
-						};
-						if (response.data.errorCode == 3176) {
-							this.log.debug(`Command was not accepted by device: ${device.name} (${device.deviceId})`);
-							resolve();
-							return;
-						};
-						this.log.info(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) returned error ${response.data.msg}, ${response.data.errorCode}`)
+						this.log.info(`SendCommand to: ${device.name} (${device.deviceId}) ${intent} returned error: ${response.data.msg}(${response.data.errorCode})`)
 						return;
 					} else {
-						this.log.debug(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) success!`);
+						this.log.debug(`SendCommand (${intent}) success!`);
 						let applianceResponse: any
 
 						if (device.deviceType === MideaDeviceType.AirConditioner) {
 							applianceResponse = new ACApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
 
-							if (device.useFahrenheit == true) {
+							if (device.useFahrenheit === true) {
 								device.useFahrenheit = applianceResponse.fahrenheitUnit;
 							} else device.useFahrenheit = applianceResponse.celsiusUnit;
 							device.targetTemperature = applianceResponse.targetTemperature;
 							device.indoorTemperature = applianceResponse.indoorTemperature;
 							device.outdoorTemperature = applianceResponse.outdoorTemperature;
 
-							this.log.debug('useFahrenheit is set to:', device.useFahrenheit);
-							if (device.useFahrenheit == true) {
-								this.log.debug('Target Temperature:', this.toFahrenheit(device.targetTemperature) + '˚F');
-								this.log.debug('Indoor Temperature is:', this.toFahrenheit(device.indoorTemperature) + '˚F');
+							this.log.debug(`useFahrenheit is set to: ${device.useFahrenheit}`);
+							if (device.useFahrenheit === true) {
+								this.log.debug(`Target Temperature: ${this.toFahrenheit(device.targetTemperature)}˚F`);
+								this.log.debug(`Indoor Temperature is: ${this.toFahrenheit(device.indoorTemperature)}˚F`);
 							} else {
-								this.log.debug('Target Temperature:', device.targetTemperature + '˚C');
-								this.log.debug('Indoor Temperature is:', device.indoorTemperature + '˚C');
+								this.log.debug(`Target Temperature: ${device.targetTemperature}˚C`);
+								this.log.debug(`Indoor Temperature is: ${device.indoorTemperature}˚C`);
 							};
 							if (applianceResponse.outdoorTemperature < 100) {
-								if (device.useFahrenheit == true) {
-									this.log.debug('Outdoor Temperature is:', this.toFahrenheit(device.outdoorTemperature) + '˚F');
+								if (device.useFahrenheit === true) {
+									this.log.debug(`Outdoor Temperature is: ${this.toFahrenheit(device.outdoorTemperature)}˚F`);
 								} else {
-									this.log.debug('Outdoor Temperature is:', device.outdoorTemperature + '˚C');
+									this.log.debug(`Outdoor Temperature is: ${device.outdoorTemperature}˚C`);
 								};
 							};
 
@@ -280,9 +269,9 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 							device.targetHumidity = applianceResponse.targetHumidity;
 							device.waterLevel = applianceResponse.waterLevel;
 
-							this.log.debug('[Dehumidifier] Current Humidity is', device.currentHumidity);
-							this.log.debug('[Dehumidifier] Target humidity is set to', device.targetHumidity);
-							this.log.debug('[Dehumidifier] Water level is at', device.waterLevel);
+							this.log.debug(`Current Humidity is: ${device.currentHumidity}`);
+							this.log.debug(`Target humidity is set to: ${device.targetHumidity}`);
+							this.log.debug(`Water level is at: ${device.waterLevel}`);
 						};
 
 						device.powerState = applianceResponse.powerState ? 1 : 0;
@@ -292,18 +281,18 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 						device.ecoMode = applianceResponse.ecoMode;
 						device.turboMode = applianceResponse.turboMode;
 
-						this.log.debug('Power State is set to:', device.powerState);
-						this.log.debug('Operational Mode is set to:', device.operationalMode);
-						this.log.debug('Fan Speed is set to:', device.fanSpeed);
-						this.log.debug('Swing Mode is set to:', device.swingMode);
-						this.log.debug('Eco Mode is set to:', device.ecoMode);
-						this.log.debug('Turbo Mode is set to:', device.turboMode);
+						this.log.debug(`Power State is set to: ${device.powerState}`);
+						this.log.debug(`Operational Mode is set to: ${device.operationalMode}`);
+						this.log.debug(`Fan Speed is set to: ${device.fanSpeed}`);
+						this.log.debug(`Swing Mode is set to: ${device.swingMode}`);
+						this.log.debug(`Eco Mode is set to: ${device.ecoMode}`);
+						this.log.debug(`Turbo Mode is set to: ${device.turboMode}`);
 
-						this.log.debug('Full data is', Utils.formatResponse(applianceResponse.data))
+						this.log.debug(`Full data is: ${Utils.formatResponse(applianceResponse.data)}`)
 						resolve();
 					};
 				} catch (err) {
-					this.log.error(`[MideaPlatform.ts] sendCommand (Intent: ${intent}) request failed ${err}`);
+					this.log.error(`SendCommand (${intent}) request failed ${err}`);
 					reject();
 				};
 			} else {
@@ -333,21 +322,21 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				};
 				this.log.debug(`[updateValues] Header + Command: ${data}`)
 				try {
-					await this.sendCommand(mideaAccessory, data, '[updateValues] (fetch params?) attempt 1/2')
-					this.log.debug(`[updateValues] Sent update command to: ${mideaAccessory.deviceType}`)
+					await this.sendCommand(mideaAccessory, data, '[updateValues] attempt 1/2')
+					this.log.debug(`Sent update command to: ${mideaAccessory.name} (${mideaAccessory.deviceId})`)
 				} catch (err) {
 					// TODO: this should be handled only on invalidSession error. Also all the retry logic could be done better (Promise retry instead of await?)
 					this.log.warn(`[updateValues] Error sending the command: ${err}. Trying to re-login before re-issuing command...`);
 					try {
 						const loginResponse = await this.login()
-						this.log.debug("[updateValues] Login successful!");
+						this.log.debug('[updateValues] Login successful!');
 						try {
-							await this.sendCommand(mideaAccessory, data, '[updateValues] (fetch params?) attempt 2/2')
+							await this.sendCommand(mideaAccessory, data, '[updateValues] attempt 2/2')
 						} catch (err) {
 							this.log.error(`[updateValues] sendCommand command still failed after retrying: ${err}`);
 						}
 					} catch (err) {
-						this.log.error("[updateValues] re-login attempt failed");
+						this.log.error('[updateValues] re-login attempt failed');
 					};
 				};
 			};
@@ -378,33 +367,33 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			pktBuilder.command = command;
 			const data = pktBuilder.finalize();
 
-			this.log.debug("[sendUpdateToDevice]  Header + Command: " + JSON.stringify(data));
+			this.log.debug(`[sendUpdateToDevice] Header + Command: ${JSON.stringify(data)}`);
 
 			try {
-				await this.sendCommand(device, data, '[sendUpdateToDevice] (set new params?) attempt 1/2')
-				this.log.debug('[sendUpdateToDevice] Sent update to device ' + device.name)
+				await this.sendCommand(device, data, '[sendUpdateToDevice] attempt 1/2')
+				this.log.debug(`Sent update to device: ${device.name}`)
 			} catch (err) {
 				// TODO: this should be handled only on invalidSession error. Also all the retry logic could be done better (Promise retry instead of await?)
-				this.log.warn(`[sendUpdateToDevice] Error sending the command: ${err}. Trying to re-login before re-issuing command...`);
-				this.log.debug("[sendUpdateToDevice] Trying to re-login first");
+				this.log.warn(`Error sending the command: ${err}. Trying to re-login before re-issuing command...`);
+				this.log.debug('[sendUpdateToDevice] Trying to re-login first');
 				try {
 					const loginResponse = await this.login();
 					this.log.debug("Login successful");
 					try {
-						await this.sendCommand(device, data, '[sendUpdateToDevice] (set new params?) attempt 2/2')
+						await this.sendCommand(device, data, '[sendUpdateToDevice] attempt 2/2')
 					} catch (err) {
-						this.log.error(`[sendUpdateToDevice] sendCommand command still failed after retrying: ${err}`);
+						this.log.error(`Send Command still failed after retrying: ${err}`);
 					};
 				} catch (err) {
-					this.log.warn("[sendUpdateToDevice] re-login attempt failed");
+					this.log.warn('[sendUpdateToDevice] re-login attempt failed');
 				};
 			};
 			//after sending, update because sometimes the api hangs
 			try {
-				this.log.debug("[sendUpdateToDevice] Fetching again the state of the device after setting new parameters...");
+				this.log.debug('[sendUpdateToDevice] Fetching again the state of the device after setting new parameters...');
 				this.updateValues();
 			} catch (err) {
-				this.log.error("[sendUpdateToDevice] something went wrong while fetching the state of the device after setting new paramenters: ", err)
+				this.log.error(`Something went wrong while fetching the state of the device after setting new paramenters: ${err}`)
 			};
 		};
 	};
@@ -423,7 +412,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	};
 
 	configureAccessory(accessory: PlatformAccessory) {
-		this.log.info('Loading accessory from cache:', accessory.displayName);
+		this.log.info(`Loading accessory from cache: ${accessory.displayName}`);
 		// add the restored accessory to the accessories cache so we can track if it has already been registered
 		this.accessories.push(accessory);
 	};

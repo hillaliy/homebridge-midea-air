@@ -60,7 +60,7 @@ export default class Utils {
 				.join("&");
 			return crypto
 				.createHash("sha256")
-				.update(postfix + query + Constants.AppKey)
+				.update(postfix + query + Constants.SupportedApps.NetHomePlus.AppKey)
 				.digest("hex");
 		} else {
 			return false;
@@ -117,7 +117,7 @@ export default class Utils {
 				.digest("hex");
 			return crypto
 				.createHash("sha256")
-				.update(loginId + pw + Constants.AppKey)
+				.update(loginId + pw + Constants.SupportedApps.NetHomePlus.AppKey)
 				.digest("hex");
 		} else {
 			return '';
@@ -128,7 +128,7 @@ export default class Utils {
 		if (accessToken != '') {
 			const md5AppKey = crypto
 				.createHash("md5")
-				.update(Constants.AppKey).digest("hex");
+				.update(Constants.SupportedApps.NetHomePlus.AppKey).digest("hex");
 			const decipher = crypto.createDecipheriv("aes-128-ecb", md5AppKey.slice(0, 16), "");
 			const dec = decipher.update(accessToken, "hex", "utf8");
 			return dec;
