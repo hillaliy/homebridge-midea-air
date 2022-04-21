@@ -229,8 +229,13 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				try {
 					const response = await this.apiClient.post(url, qs.stringify(form))
 					if (response.data.errorCode && response.data.errorCode !== '0') {
-						this.log.info(`SendCommand to: ${device.name} (${device.deviceId}) ${intent} returned error: ${response.data.msg} (${response.data.errorCode})`)
-						return;
+						if (response.data.errorCode = 3176) {
+							this.log.debug(`SendCommand to: ${device.name} (${device.deviceId}) ${intent} returned error: ${response.data.msg} (${response.data.errorCode})`)
+							return;
+						} else {
+							this.log.info(`SendCommand to: ${device.name} (${device.deviceId}) ${intent} returned error: ${response.data.msg} (${response.data.errorCode})`)
+							return;
+						}
 					} else {
 						this.log.debug(`SendCommand to: ${device.name} (${device.deviceId}) ${intent} success!`);
 						let applianceResponse: any
