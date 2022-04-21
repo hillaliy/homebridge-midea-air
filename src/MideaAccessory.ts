@@ -53,7 +53,7 @@ export class MideaAccessory {
 		this.userId = _userId
 
 		// Check for device specific overrides
-		var smode = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'supportedSwingMode');
+		let smode = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'supportedSwingMode');
 
 		if (smode) {
 			switch (smode) {
@@ -72,7 +72,7 @@ export class MideaAccessory {
 			}
 		}
 
-		var tsteps = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'temperatureSteps');
+		let tsteps = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'temperatureSteps');
 		if (tsteps) {
 			this.temperatureSteps = tsteps;
 		}
