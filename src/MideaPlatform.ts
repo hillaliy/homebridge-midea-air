@@ -166,7 +166,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				} else {
 					if (response.data.result?.list && response.data.result.list.length > 0) {
 						response.data.result.list.forEach(async (currentElement: any) => {
-							if (parseInt(currentElement.type) == MideaDeviceType.AirConditioner || parseInt(currentElement.type) == MideaDeviceType.Dehumidifier) {
+							if (parseInt(currentElement.type) === MideaDeviceType.AirConditioner || parseInt(currentElement.type) === MideaDeviceType.Dehumidifier) {
 								const uuid = this.api.hap.uuid.generate(currentElement.id)
 								const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid)
 								if (existingAccessory) {
@@ -314,14 +314,14 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 
 		this.accessories.forEach(async (accessory: PlatformAccessory) => {
 			this.log.debug(`Updating accessory: ${accessory.context.name} (${accessory.context.deviceId})`)
-			let mideaAccessory = this.mideaAccessories.find(ma => ma.deviceId == accessory.context.deviceId)
+			let mideaAccessory = this.mideaAccessories.find(ma => ma.deviceId === accessory.context.deviceId)
 			if (mideaAccessory === undefined) {
 				this.log.warn(`Could not find accessory with id: ${accessory.context.deviceId}`)
 			} else {
 				// Setup the data payload based on deviceType
-				if (mideaAccessory.deviceType == MideaDeviceType.AirConditioner) {
+				if (mideaAccessory.deviceType === MideaDeviceType.AirConditioner) {
 					data = ac_data_header.concat(Constants.UpdateCommand_AirCon);
-				} else if (mideaAccessory.deviceType == MideaDeviceType.Dehumidifier) {
+				} else if (mideaAccessory.deviceType === MideaDeviceType.Dehumidifier) {
 					data = dh_data_header.concat(Constants.UpdateCommand_Dehumidifier);
 				};
 				this.log.debug(`[updateValues] Header + Command: ${data}`)
@@ -406,7 +406,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 		if (this.config) {
 			if (this.config.hasOwnProperty('devices')) {
 				for (let i = 0; i < this.config.devices.length; i++) {
-					if (this.config.devices[i].deviceId == deviceId) {
+					if (this.config.devices[i].deviceId === deviceId) {
 						return this.config.devices[i][key];
 					};
 				};
