@@ -1,6 +1,6 @@
 {
   "name": "homebridge-midea-air",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "description": "Homebridge plugin for Midea AC units",
   "repository": {
     "type": "git",
