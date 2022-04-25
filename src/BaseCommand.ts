@@ -38,7 +38,7 @@ export default class BaseCommand {
                 0,              // 19       - Eco mode
                 0,              // 20       - Turbo mode/Screen display/Fahrenheit
                 // Padding
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                0, 0, 0, 0, 0, 0, 0, 0, 0
                 // Data End
             ];
             this.data[0x02] = device_type;
