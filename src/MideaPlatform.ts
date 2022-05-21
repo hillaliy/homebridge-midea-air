@@ -230,14 +230,14 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 					const response = await this.apiClient.post(url, qs.stringify(form))
 					if (response.data.errorCode && response.data.errorCode !== '0') {
 						if (response.data.errorCode = 3176) {
-							this.log.debug(`SendCommand to: ${device.name} (${device.deviceId}) ${intent} returned error: ${response.data.msg} (${response.data.errorCode})`)
+							this.log.debug(`Send command to: ${device.name} (${device.deviceId}) ${intent} returned error: ${response.data.msg} (${response.data.errorCode})`)
 							return;
 						} else {
-							this.log.info(`SendCommand to: ${device.name} (${device.deviceId}) ${intent} returned error: ${response.data.msg} (${response.data.errorCode})`)
+							this.log.info(`Send command to: ${device.name} (${device.deviceId}) ${intent} returned error: ${response.data.msg} (${response.data.errorCode})`)
 							return;
 						}
 					} else {
-						this.log.debug(`SendCommand to: ${device.name} (${device.deviceId}) ${intent} success!`);
+						this.log.debug(`Send command to: ${device.name} (${device.deviceId}) ${intent} success!`);
 						let applianceResponse: any
 
 						if (device.deviceType === MideaDeviceType.AirConditioner) {
@@ -327,7 +327,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				this.log.debug(`[updateValues] Header + Command: ${data}`)
 				try {
 					await this.sendCommand(mideaAccessory, data, '[updateValues] attempt 1/2')
-					this.log.debug(`[updateValues] Sent update command to: ${mideaAccessory.name} (${mideaAccessory.deviceId})`)
+					this.log.debug(`[updateValues] Send update command to: ${mideaAccessory.name} (${mideaAccessory.deviceId})`)
 				} catch (err) {
 					// TODO: this should be handled only on invalidSession error. Also all the retry logic could be done better (Promise retry instead of await?)
 					this.log.warn(`[updateValues] Error sending the command: ${err}. Trying to re-login before re-issuing command...`);
@@ -375,7 +375,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 
 			try {
 				await this.sendCommand(device, data, '[sendUpdateToDevice] attempt 1/2')
-				this.log.debug(`[sendUpdateToDevice] Sent update to device: ${device.name} (${device.deviceId})`)
+				this.log.debug(`[sendUpdateToDevice] Send command to device: ${device.name} (${device.deviceId})`)
 			} catch (err) {
 				// TODO: this should be handled only on invalidSession error. Also all the retry logic could be done better (Promise retry instead of await?)
 				this.log.warn(`[sendUpdateToDevice] Error sending the command: ${err}. Trying to re-login before re-issuing command...`);
@@ -386,7 +386,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 					try {
 						await this.sendCommand(device, data, '[sendUpdateToDevice] attempt 2/2')
 					} catch (err) {
-						this.log.error(`[sendUpdateToDevice] sendCommand command still failed after retrying: ${err}`);
+						this.log.error(`[sendUpdateToDevice] Send command still failed after retrying: ${err}`);
 					};
 				} catch (err) {
 					this.log.warn('[sendUpdateToDevice] re-login attempt failed');
@@ -397,7 +397,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				this.log.debug('[sendUpdateToDevice] Fetching again the state of the device after setting new parameters...');
 				this.updateValues();
 			} catch (err) {
-				this.log.error(`[sendUpdateToDevice] something went wrong while fetching the state of the device after setting new paramenters: ${err}`)
+				this.log.error(`[sendUpdateToDevice] Something went wrong while fetching the state of the device after setting new paramenters: ${err}`)
 			};
 		};
 	};
