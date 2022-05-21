@@ -37,7 +37,7 @@ export default class Utils {
 
 	static formatResponse(arr: any[]) {
 		let output: string[] = []
-		for (var i = 0; i < arr.length; i++) {
+		for (let i = 0; i < arr.length; i++) {
 			let intValue = parseInt(arr[i]);
 			output.push((intValue).toString(2))
 		};
