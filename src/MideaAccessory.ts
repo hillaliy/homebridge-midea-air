@@ -118,16 +118,16 @@ export class MideaAccessory {
 					minStep: 0.1
 				})
 			this.service.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
-				.on('get', this.handleCoolingThresholdTemperatureGet.bind(this))
-				.on('set', this.handleCoolingThresholdTemperatureSet.bind(this))
+				.on('get', this.handleThresholdTemperatureGet.bind(this))
+				.on('set', this.handleThresholdTemperatureSet.bind(this))
 				.setProps({
 					minValue: this.minTemperature,
 					maxValue: this.maxTemperature,
 					minStep: this.temperatureSteps
 				})
 			this.service.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
-				.on('get', this.handleHeatingThresholdTemperatureGet.bind(this))
-				.on('set', this.handleHeatingThresholdTemperatureSet.bind(this))
+				.on('get', this.handleThresholdTemperatureGet.bind(this))
+				.on('set', this.handleThresholdTemperatureSet.bind(this))
 				.setProps({
 					minValue: this.minTemperature,
 					maxValue: this.maxTemperature,
@@ -279,7 +279,7 @@ export class MideaAccessory {
 	// Handle requests to set the "Active" characteristic
 	handleActiveSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		if (this.powerState !== value) {
-			this.platform.log.debug('Triggered SET Active To:', value);
+			this.platform.log.debug(`Triggered SET Active To: ${value}`);
 			this.powerState = value;
 			this.platform.sendUpdateToDevice(this);
 		};
@@ -320,7 +320,7 @@ export class MideaAccessory {
 	// Handle requests to set the "TargetHeaterCoolerState" characteristic
 	handleTargetHeaterCoolerStateSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		if (this.targetHeaterCoolerState() !== value) {
-			this.platform.log.debug('Triggered SET HeaterCooler State To:', value);
+			this.platform.log.debug(`Triggered SET HeaterCooler State To: ${value}`);
 			if (value === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) {
 				this.operationalMode = MideaOperationalMode.Auto;
 			} else if (value === this.platform.Characteristic.TargetHeaterCoolerState.COOL) {
@@ -337,36 +337,17 @@ export class MideaAccessory {
 		this.platform.log.debug('Triggered GET CurrentTemperature');
 		callback(null, this.indoorTemperature);
 	};
-
-	// Handle requests to get the current value of the "CoolingThresholdTemperature" characteristic
-	handleCoolingThresholdTemperatureGet(callback: CharacteristicGetCallback) {
-		this.platform.log.debug('Triggered GET CoolingThresholdTemperature');
+	// Handle requests to get the current value of the "ThresholdTemperature" characteristic
+	handleThresholdTemperatureGet(callback: CharacteristicGetCallback) {
+		this.platform.log.debug('Triggered GET ThresholdTemperature');
 		callback(null, this.targetTemperature);
 	};
-	// Handle requests to set the "CoolingThresholdTemperature" characteristic
-	handleCoolingThresholdTemperatureSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		if (this.useFahrenheit == true) {
-			this.platform.log.debug('Triggered SET CoolingThresholdTemperature');
+	// Handle requests to set the "ThresholdTemperature" characteristic
+	handleThresholdTemperatureSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		if (this.useFahrenheit === true) {
+			this.platform.log.debug(`Triggered SET ThresholdTemperature To: ${value}˚F`);
 		} else {
-			this.platform.log.debug('Triggered SET CoolingThresholdTemperature To:', value + '˚C');
-		};
-		if (this.targetTemperature !== value) {
-			this.targetTemperature = value;
-			this.platform.sendUpdateToDevice(this);
-		};
-		callback(null);
-	};
-	// Handle requests to get the current value of the "HeatingThresholdTemperature" characteristic
-	handleHeatingThresholdTemperatureGet(callback: CharacteristicGetCallback) {
-		this.platform.log.debug('Triggered GET HeatingThresholdTemperature');
-		callback(null, this.targetTemperature);
-	};
-	// Handle requests to set the "HeatingThresholdTemperature" characteristic
-	handleHeatingThresholdTemperatureSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		if (this.useFahrenheit == true) {
-			this.platform.log.debug('Triggered SET HeatingThresholdTemperature');
-		} else {
-			this.platform.log.debug('Triggered SET HeatingThresholdTemperature To:', value + '˚C');
+			this.platform.log.debug(`Triggered SET ThresholdTemperature To: ${value}˚C`);
 		};
 		if (this.targetTemperature !== value) {
 			this.targetTemperature = value;
@@ -397,7 +378,7 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "RotationSpeed" characteristic
 	handleRotationSpeedSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET RotationSpeed To:', value);
+		this.platform.log.debug(`Triggered SET RotationSpeed To: ${value}`);
 		// transform values in percent
 		// values from device are 20.0="Silent",40.0="Low",60.0="Medium",80.0="High",102.0="Auto"
 		if (this.fanSpeed !== value) {
@@ -429,7 +410,7 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "swingMode" characteristic
 	handleSwingModeSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET SwingMode To:', value);
+		this.platform.log.debug(`Triggered SET SwingMode To: ${value}`);
 		// convert this.swingMode to a 0/1
 		if (this.swingMode !== value) {
 			if (value === 0) {
@@ -452,7 +433,7 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "Temperature Display Units" characteristic
 	handleTemperatureDisplayUnitsSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET Temperature Display Units To:', value);
+		this.platform.log.debug(`Triggered SET Temperature Display Units To: ${value}`);
 		if (this.useFahrenheit !== value) {
 			if (value === 1) {
 				this.useFahrenheit = true;
@@ -463,7 +444,6 @@ export class MideaAccessory {
 		};
 		callback(null);
 	};
-
 	// Fan mode
 	// Get the current value of the "FanActive" characteristic
 	public fanActive() {
@@ -480,7 +460,7 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "Fan Mode" characteristic
 	handleFanActiveSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET FanMode To:', value);
+		this.platform.log.debug(`Triggered SET FanMode To: ${value}`);
 		if (value === 1 && this.powerState === 1) {
 			this.operationalMode = MideaOperationalMode.FanOnly;
 		} else if (value === 1 && this.powerState === 0) {
@@ -492,14 +472,12 @@ export class MideaAccessory {
 		this.platform.sendUpdateToDevice(this);
 		callback(null);
 	};
-
 	// Outdoor Temperature Sensor
 	// Handle requests to get the current value of the "OutdoorTemperature" characteristic
 	handleOutdoorTemperatureGet(callback: CharacteristicGetCallback) {
 		this.platform.log.debug('Triggered GET CurrentTemperature');
 		callback(null, this.outdoorTemperature);
 	};
-
 	// HumidifierDehumidifier
 	// Get the current value of the "CurrentHumidifierDehumidifierState" characteristic
 	public currentHumidifierDehumidifierState() {
@@ -527,7 +505,7 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the target value of the "HumidifierDehumidifierState" characteristic
 	handleTargetHumidifierDehumidifierStateSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET TargetHumidifierDehumidifierState To:', value);
+		this.platform.log.debug(`Triggered SET TargetHumidifierDehumidifierState To: ${value}`);
 		if (this.TargetHumidifierDehumidifierState() !== value) {
 			if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER) {
 				this.operationalMode = 0;
@@ -553,7 +531,7 @@ export class MideaAccessory {
 	// Handle requests to set the Relative value of the "HumidityDehumidifierThreshold" characteristic
 	handleRelativeHumidityDehumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		if (this.targetHumidity !== value) {
-			this.platform.log.debug('Triggered SET RelativeHumidityDehumidifierThreshold To:', value);
+			this.platform.log.debug(`Triggered SET RelativeHumidityDehumidifierThreshold To: ${value}`);
 			this.targetHumidity = value;
 			this.platform.sendUpdateToDevice(this);
 		};
@@ -567,7 +545,7 @@ export class MideaAccessory {
 	// Handle requests to set the Relative value of the "HumidityHumidifierThreshold" characteristic
 	handleRelativeHumidityHumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		if (this.targetHumidity !== value) {
-			this.platform.log.debug('Triggered SET RelativeHumidityDehumidifierThreshold', value);
+			this.platform.log.debug(`Triggered SET RelativeHumidityDehumidifierThreshold ${value}`);
 			this.targetHumidity = value;
 			this.platform.sendUpdateToDevice(this);
 		};
@@ -594,7 +572,7 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "RotationSpeed" characteristic
 	handleWindSpeedSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		this.platform.log.debug('Triggered SET WindSpeed To:', value);
+		this.platform.log.debug(`Triggered SET WindSpeed To: ${value}`);
 		// transform values in percent
 		// values from device are 20.0="Silent",60.0="Medium",80.0="High"
 		if (value <= 30) {
