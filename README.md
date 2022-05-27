@@ -41,7 +41,8 @@ Add this to the platforms array in your config.json:
                     "supportedSwingMode": "Both",
                     "temperatureSteps": 1,
                     "fanOnlyMode": false,
-                    "OutdoorTemperature": false
+                    "OutdoorTemperature": false,
+                    "useFahrenheit": false
                 }
         ],
         "platform": "midea-air"
