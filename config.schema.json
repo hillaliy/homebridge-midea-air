@@ -47,20 +47,24 @@
               "required": true,
               "oneOf": [
                 {
-                  "title": "None", "enum": ["None"]
+                  "title": "None",
+                  "enum": ["None"]
                 },
                 {
-                  "title": "Vertical", "enum": ["Vertical"]
+                  "title": "Vertical",
+                  "enum": ["Vertical"]
                 },
                 {
-                  "title": "Horizontal", "enum": ["Horizontal"]
+                  "title": "Horizontal",
+                  "enum": ["Horizontal"]
                 },
                 {
-                  "title": "Both", "enum": ["Both"]
+                  "title": "Both",
+                  "enum": ["Both"]
                 }
               ]
             },
-            "temperatureSteps":{
+            "temperatureSteps": {
               "title": "Change Temperature Steps on HomeKit",
               "description": "The options are 1˚ or 0.5˚, default is: 1˚",
               "type": "number",
@@ -68,21 +72,29 @@
               "required": false,
               "oneOf": [
                 {
-                  "title": "0.5", "enum": [0.5]
+                  "title": "0.5",
+                  "enum": [0.5]
                 },
                 {
-                  "title": "1", "enum": [1]
+                  "title": "1",
+                  "enum": [1]
                 }
-                ]
+              ]
             },
-            "fanOnlyMode":{
+            "fanOnlyMode": {
               "title": "Enable Fan Mode",
               "type": "boolean",
               "default": false,
               "required": false
             },
-            "OutdoorTemperature":{
+            "OutdoorTemperature": {
               "title": "Enable Outdoor Temperture Sensor",
+              "type": "boolean",
+              "default": false,
+              "required": false
+            },
+            "useFahrenheit": {
+              "title": "Set Fahrenheit to default",
               "type": "boolean",
               "default": false,
               "required": false
@@ -96,10 +108,7 @@
     {
       "key": "properties",
       "type": "array",
-      "items": [
-        "user",
-        "password"
-      ]
+      "items": ["user", "password"]
     },
     {
       "key": "devices",
@@ -111,7 +120,8 @@
         "devices[].supportedSwingMode",
         "devices[].temperatureSteps",
         "devices[].fanOnlyMode",
-        "devices[].OutdoorTemperature"
+        "devices[].OutdoorTemperature",
+        "devices[].useFahrenheit"
       ]
     },
     {
@@ -119,9 +129,7 @@
       "type": "fieldset",
       "expandable": true,
       "description": "Don't change these, unless you understand what you're doing.",
-      "items": [
-        "interval"
-      ]
+      "items": ["interval"]
     }
   ]
 }

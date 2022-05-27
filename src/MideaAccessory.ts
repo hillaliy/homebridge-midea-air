@@ -13,7 +13,7 @@ export class MideaAccessory {
 	public outdoorTemperature: number = 0
 	// Default unit is Celsius. this is just to control the temperature unit of the AC's display.
 	// The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API
-	public useFahrenheit: boolean = false
+	public useFahrenheit: boolean = this.platform.config['useFahrenheit'];
 
 	public currentHumidity: number = 0
 	public targetHumidity: any = 35
