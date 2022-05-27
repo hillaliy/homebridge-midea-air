@@ -66,7 +66,7 @@ To set specific per-device values, you need to add deviceId that can find in:
 
 ### Temperature Display Units
 
-This Plugin support Celsius & Fahrenheit (Default unit is Celcius).
+This Plugin support Celsius & Fahrenheit (You can set the Default unit on Homebridge config).
 Display Units can set in HomeKit app, device settings.
 
 ### Temperature Steps
