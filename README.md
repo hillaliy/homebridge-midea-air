@@ -68,6 +68,7 @@ To set specific per-device values, you need to add deviceId that can find in:
 
 This Plugin support Celsius & Fahrenheit (You can set the Default unit on Homebridge config).
 Display Units can set in HomeKit app, device settings.
+`This is just to control the temperature unit of the AC's display. The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API`
 
 ### Temperature Steps
 
