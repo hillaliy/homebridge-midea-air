@@ -11,10 +11,7 @@ export class MideaAccessory {
 	public targetTemperature: any = 24
 	public indoorTemperature: number = 0
 	public outdoorTemperature: number = 0
-	// Default unit is Celsius. this is just to control the temperature unit of the AC's display.
-	// The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API
-	public useFahrenheit: boolean = this.platform.config['useFahrenheit'];
-
+	public useFahrenheit: boolean = false; // Default unit is Celsius. this is just to control the temperature unit of the AC's display. The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API
 	public currentHumidity: number = 0
 	public targetHumidity: any = 35
 	public waterLevel: number = 0
@@ -75,6 +72,11 @@ export class MideaAccessory {
 		let tsteps = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'temperatureSteps');
 		if (tsteps) {
 			this.temperatureSteps = tsteps;
+		}
+
+		let fahrenheit = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'useFahrenheit');
+		if (fahrenheit) {
+			this.useFahrenheit = fahrenheit;
 		}
 
 		this.platform.log.info('Created device:', this.name + ',', 'with ID:', this.deviceId + ',', 'and type:', this.deviceType)
@@ -163,7 +165,7 @@ export class MideaAccessory {
 			}, 5000);
 
 			// Fan Mode
-			if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'fanOnlyMode') == true) {
+			if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'fanOnlyMode') === true) {
 				this.platform.log.debug('Add Fan Mode');
 				this.fanService = this.accessory.getService(this.platform.Service.Fanv2) || this.accessory.addService(this.platform.Service.Fanv2);
 				this.fanService.setCharacteristic(this.platform.Characteristic.Name, 'Fan Mode');
@@ -189,7 +191,7 @@ export class MideaAccessory {
 			};
 
 			// Outdoor Temperature Sensor
-			if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'OutdoorTemperature') == true) {
+			if (this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'OutdoorTemperature') === true) {
 				this.platform.log.debug('Add Outdoor Temperature Sensor');
 				this.outdoorTemperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor) || this.accessory.addService(this.platform.Service.TemperatureSensor);
 				this.outdoorTemperatureService.setCharacteristic(this.platform.Characteristic.Name, 'Outdoor Temperature');
