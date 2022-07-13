@@ -50,8 +50,8 @@ export class MideaAccessory {
 		this.userId = _userId
 
 		// Check for device specific overrides
+		// SwingMode
 		let smode = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'supportedSwingMode');
-
 		if (smode) {
 			switch (smode) {
 				case 'Vertical':
@@ -68,15 +68,25 @@ export class MideaAccessory {
 					break;
 			}
 		}
-
+		// Temperature Steps
 		let tsteps = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'temperatureSteps');
 		if (tsteps) {
 			this.temperatureSteps = tsteps;
 		}
-
+		// Fahrenheit
 		let fahrenheit = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'useFahrenheit');
 		if (fahrenheit) {
 			this.useFahrenheit = fahrenheit;
+		}
+		// Minimum Temperature
+		let minTemp = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'minTemp');
+		if (minTemp) {
+			this.minTemperature = minTemp;
+		}
+		// Maximum Temperature
+		let maxTemp = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'maxTemp');
+		if (maxTemp) {
+			this.maxTemperature = maxTemp;
 		}
 
 		this.platform.log.info('Created device:', this.name + ',', 'with ID:', this.deviceId + ',', 'and type:', this.deviceType)
