@@ -81,6 +81,22 @@
                 }
               ]
             },
+            "minTemp": {
+              "title": "Change minimum Threshold Temperature",
+              "description": "Default is: 17˚",
+              "type": "integer",
+              "default": 17,
+              "minimum": 10,
+              "maximum": 35
+            },
+            "maxTemp": {
+              "title": "Change maximum Threshold Temperature",
+              "description": "Default is: 30˚",
+              "type": "integer",
+              "default": 30,
+              "minimum": 10,
+              "maximum": 35
+            },
             "fanOnlyMode": {
               "title": "Enable Fan Mode",
               "type": "boolean",
@@ -119,6 +135,8 @@
         "devices[].deviceId",
         "devices[].supportedSwingMode",
         "devices[].temperatureSteps",
+        "devices[].minTemp",
+        "devices[].maxTemp",
         "devices[].fanOnlyMode",
         "devices[].OutdoorTemperature",
         "devices[].useFahrenheit"
