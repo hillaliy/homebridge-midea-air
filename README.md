@@ -75,6 +75,11 @@ Display Units can set in HomeKit app, device settings.
 This option change Temperature Steps on HomeKit.
 You can choose 1˚ or 0.5˚, default is: 1˚
 
+### Temperature Threshold
+
+This option change Temperature Thrashold.
+Defaults: minimum 17˚ / maximum 30˚
+
 ### Supported Swing Mode
 
 "None", "Vertical", "Horizontal", "Both".
