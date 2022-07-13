@@ -40,6 +40,8 @@ Add this to the platforms array in your config.json:
                     "deviceId": "DeviceID",
                     "supportedSwingMode": "Both",
                     "temperatureSteps": 1,
+                    "minTemp": 17,
+                    "maxTemp": 30,
                     "fanOnlyMode": false,
                     "OutdoorTemperature": false,
                     "useFahrenheit": false
