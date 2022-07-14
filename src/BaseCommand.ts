@@ -27,7 +27,7 @@ export default class BaseCommand {
                 // Command Header End
                 // Data Start
                 64,             // 10       - Data request/response: Set up
-                1,              // 11       - power state: 0/1 + audible feedback: 66 
+                67,              // 11       - power state: 0/1 + audible feedback: 66 
                 70,             // 12       - Operational mode
                 102,            // 13       - Fan speed 20/40/60/80/102
                 127,            // 14       - On timer
