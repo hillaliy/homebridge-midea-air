@@ -22,6 +22,7 @@ export class MideaAccessory {
 	public minTemperature: number = 17
 	public maxTemperature: number = 30
 	public powerState: any = 0
+	public audibleFeedback: boolean = false
 	public supportedSwingMode: MideaSwingMode = MideaSwingMode.None
 	public operationalMode: number = MideaOperationalMode.Off
 	public swingMode: number = 0
@@ -87,6 +88,11 @@ export class MideaAccessory {
 		let maxTemp = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'maxTemp');
 		if (maxTemp) {
 			this.maxTemperature = maxTemp;
+		}
+		// audibleFeedback
+		let aFeedback = this.platform.getDeviceSpecificOverrideValue(this.deviceId, 'audibleFeedback');
+		if (aFeedback) {
+			this.audibleFeedback = aFeedback;
 		}
 
 		this.platform.log.info('Created device:', this.name + ',', 'with ID:', this.deviceId + ',', 'and type:', this.deviceType)
