@@ -114,6 +114,12 @@
               "type": "boolean",
               "default": false,
               "required": false
+            },
+            "audibleFeedback": {
+              "title": "Set audibleFeedback",
+              "type": "boolean",
+              "default": false,
+              "required": false
             }
           }
         }
@@ -139,7 +145,8 @@
         "devices[].maxTemp",
         "devices[].fanOnlyMode",
         "devices[].OutdoorTemperature",
-        "devices[].useFahrenheit"
+        "devices[].useFahrenheit",
+        "devices[].audibleFeedback"
       ]
     },
     {
