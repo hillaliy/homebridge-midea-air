@@ -44,7 +44,8 @@ Add this to the platforms array in your config.json:
                     "maxTemp": 30,
                     "fanOnlyMode": false,
                     "OutdoorTemperature": false,
-                    "useFahrenheit": false
+                    "useFahrenheit": false,
+                    "audibleFeedback": false
                 }
         ],
         "platform": "midea-air"
@@ -124,6 +125,10 @@ This allows you to enable a Fan mode service.
 ### Outdoor Temperature Sensor
 
 This allows you to enable Outdoor Temperature service, if the AC support.
+
+### Audible Feedback
+
+This set the Audible Feedback (beep sound).
 
 ## Credits
 
