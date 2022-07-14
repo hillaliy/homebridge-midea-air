@@ -361,6 +361,7 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 				command.targetHumidity = device.targetHumidity;
 			};
 			command.powerState = device.powerState;
+			command.audibleFeedback = device.audibleFeedback;
 			command.operationalMode = device.operationalMode;
 			command.fanSpeed = device.fanSpeed;
 			command.swingMode = device.swingMode;
