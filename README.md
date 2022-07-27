@@ -94,11 +94,11 @@ Rotation Speed and Swing mode can set in the HomeKit app, device settings.
 Rotation Speed values are:
 | Air Conditioner | Dehumidifier |
 | --- | --- |
-| 0% Device off | 0% Device off |
+| 0% Device Auto | 0% Device Off |
 | 25% Low | 30% Silent |
 | 50% Middle | 60% Medium
 | 75% High | 100% High |
-| 100% Auto | ... |
+| 100% Turbo Fan | ... |
 
 ### Dehumidifier Relative Humidity
 
@@ -132,4 +132,4 @@ This set the Audible Feedback (beep sound).
 
 ## Credits
 
-This plugin is based on the project [ttimpe/homebridge-midea](https://github.com/ttimpe/homebridge-midea) and would not have been possible without the fundamentals that the [ioBroker.midea](https://github.com/TA2k/ioBroker.midea) plugin and all of the other Midea API clients in Ruby and Python provided.
+This plugin would not have been possible without the fundamentals of all the Midea API clients in Python provided.
