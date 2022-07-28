@@ -94,11 +94,11 @@ Rotation Speed and Swing mode can set in the HomeKit app, device settings.
 Rotation Speed values are:
 | Air Conditioner | Dehumidifier |
 | --- | --- |
-| 0% Device Auto | 0% Device Off |
+| 0% Device Off | 0% Device Off |
 | 25% Low | 30% Silent |
 | 50% Middle | 60% Medium
 | 75% High | 100% High |
-| 100% Turbo Fan | ... |
+| 100% Auto | ... |
 
 ### Dehumidifier Relative Humidity
 
