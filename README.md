@@ -53,7 +53,7 @@ Add this to the platforms array in your config.json:
 
 ## Notes
 
-This plug don't fully supported `Midea Mission II / U / Blanc / OSK105`, you can only get device status.
+This plugin don't fully supported `Midea Mission II / U / Blanc / OSK105`, you can only get device status.
 Using the Midea app and `Homebridge Midea Air plugin` at the same time causes a login error. Try to use [NetHome Plus](https://apps.apple.com/us/app/nethome-plus/id1008001920) app instead.
 This plugin don't support `MSmartHome app`.
 
