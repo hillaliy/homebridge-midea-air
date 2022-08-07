@@ -85,11 +85,6 @@ You can choose 1˚ or 0.5˚, default is: 1˚
 This option change Temperature Thrashold.
 Defaults: minimum 17˚ / maximum 30˚
 
-### Supported Swing Mode
-
-"None", "Vertical", "Horizontal", "Both".
-You have to select which type your device supports.
-
 ### Rotation Speed and Swing
 
 Rotation Speed and Swing mode can set in the HomeKit app, device settings.
