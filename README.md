@@ -39,7 +39,6 @@ Add this to the platforms array in your config.json:
         "devices": [
                 {
                     "deviceId": "DeviceID",
-                    "supportedSwingMode": "Both",
                     "temperatureSteps": 1,
                     "minTemp": 17,
                     "maxTemp": 30,
