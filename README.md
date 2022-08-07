@@ -34,6 +34,7 @@ Add this to the platforms array in your config.json:
     {
         "user": "MIDEA_ACCOUNT_EMAIL",
         "password": "MIDEA_PASSWORD",
+        "registeredApp": "NetHomePlus",
         "interval": 30,
         "devices": [
                 {
@@ -96,9 +97,10 @@ Rotation Speed values are:
 | Air Conditioner | Dehumidifier |
 | --- | --- |
 | 0% Device Off | 0% Device Off |
-| 25% Low | 30% Silent |
-| 50% Middle | 60% Medium
-| 75% High | 100% High |
+| 20% Silent | 30% Silent |
+| 40% Low | ... |
+| 60% Middle | 60% Medium |
+| 80% High | 100% High |
 | 100% Auto | ... |
 
 ### Dehumidifier Relative Humidity
