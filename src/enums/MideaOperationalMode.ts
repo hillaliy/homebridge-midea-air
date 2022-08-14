@@ -4,5 +4,6 @@ export enum MideaOperationalMode {
 	Cooling = 2,
 	Dry = 3,
 	Heating = 4,
-	FanOnly = 5
+	FanOnly = 5,
+	CustomDry = 6 // automatic dehumidification
 }
