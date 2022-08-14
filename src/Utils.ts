@@ -44,10 +44,10 @@ export default class Utils {
 		return output;
 	};
 
-	static getSign(path: string, form: any) {
-		if (path != '' && form) {
-			let postfix = "/v1" + path;
-			postfix = postfix.split('?')[0]
+	static getSign(path: string, form: any, appKey: string) {
+		if (path !== '' && form) {
+			let postfix = `/v1${path}`;
+			postfix = postfix.split('?')[0];
 			// Maybe this will help, should remove any query string parameters in the URL from the sign
 			const ordered: any = {};
 			Object.keys(form)
@@ -60,7 +60,7 @@ export default class Utils {
 				.join("&");
 			return crypto
 				.createHash("sha256")
-				.update(postfix + query + Constants.AppKey)
+				.update(postfix + query + appKey)
 				.digest("hex");
 		} else {
 			return false;
@@ -109,30 +109,57 @@ export default class Utils {
 		};
 	};
 
-	static getSignPassword(loginId: string, password: string) {
-		if (loginId != '' && password != '') {
+	static getSignPassword(loginId: string, password: string, appKey: string) {
+		if (loginId !== '' && password !== '') {
 			const pw = crypto
 				.createHash("sha256")
 				.update(password)
 				.digest("hex");
 			return crypto
 				.createHash("sha256")
-				.update(loginId + pw + Constants.AppKey)
+				.update(loginId + pw + appKey)
 				.digest("hex");
 		} else {
 			return '';
 		};
 	};
 
-	static generateDataKey(accessToken: string) {
+	static generateDataKey(accessToken: string, appKey: string) {
 		if (accessToken != '') {
 			const md5AppKey = crypto
 				.createHash("md5")
-				.update(Constants.AppKey).digest("hex");
+				.update(appKey).digest("hex");
 			const decipher = crypto.createDecipheriv("aes-128-ecb", md5AppKey.slice(0, 16), "");
 			const dec = decipher.update(accessToken, "hex", "utf8");
 			return dec;
 		};
 		return '';
 	};
+
+	static encryptIAMPassword(loginId: string, password: string, appKey: string) {
+		const passwordHash = crypto
+			.createHash('md5')
+			.update(password)
+			.digest();
+		const password2ndHash = crypto
+			.createHash('md5')
+			.update(passwordHash)
+			.digest();
+		return crypto
+			.createHash('sha256')
+			.update(loginId + password2ndHash + appKey)
+			.digest('hex');
+	};
+
+	static getSignature(form: any, random: string) {
+		const msg = `meicloud${form}${random}`;
+		return crypto
+			.createHmac('sha256', 'PROD_VnoClJI9aikS8dyy')
+			.update(msg)
+			.digest('hex');
+	};
+
+	static pushToken = crypto.randomBytes(120).toString('base64');
+	static reqId = crypto.randomBytes(16).toString('hex');
+
 };
