@@ -13,9 +13,7 @@ export default class PacketBuilder {
 			0,								 // Byte 7
 			1, 0, 0, 0,						 // Byte 8-11		- MessageID	(rollover at 32767)
 			189, 179, 57, 14, 12, 5, 20, 20, // Byte 12-19		- Time and Date (ms/ss/mm/HH/DD/MM/YYYY)
-			29, 129, 0, 0, 0, 16,			 // Byte 20-25		- DeviceID (reversed, lb first)
-			0,								 // Byte 26
-			0,								 // Byte 27
+			29, 129, 0, 0, 0, 16, 0, 0,		 // Byte 20-27		- DeviceID (reversed, lb first)
 			0, 4, 2, 0, 0, 1,				 // Byte 28-33
 			0,								 // Byte 34
 			0,								 // Byte 35
