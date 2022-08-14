@@ -7,25 +7,26 @@ export default class ApplianceResponse {
         this.data = data.slice(0x32);
     }
     // Byte 0x01
+    get applianceError() {
+        return (this.data[0x01] & 0x80) !== 0;
+    }
+
     get powerState() {
-        return (this.data[0x01] & 0x1) > 0;
+        return (this.data[0x01] & 0x1) !== 0;
     }
 
     get imodeResume() {
-        return (this.data[0x01] & 0x4) > 0;
+        return (this.data[0x01] & 0x4) !== 0;
     }
 
     get timerMode() {
-        return (this.data[0x01] & 0x10) > 0;
+        return (this.data[0x01] & 0x10) !== 0;
     }
 
-    get applianceError() {
-        return (this.data[0x01] & 0x80) > 0;
+    get quickChech() {
+        return (this.data[0x01] & 0x20) !== 0;
     }
-    // Byte 0x02
-    get operationalMode(): number {
-        return (this.data[0x02] & 0xe0) >> 5;
-    }
+
     // Byte 0x03
     get fanSpeed(): number {
         return this.data[0x03] & 0x7f;
@@ -54,57 +55,15 @@ export default class ApplianceResponse {
     get swingMode(): MideaSwingMode {
         return this.data[0x07] & 0x0f;
     }
-    // Byte 0x08
-    get cozySleep(): any {
-        return this.data[0x08] & 0x03;
-    }
 
-    get save(): any {
-        // This needs a better name, dunno what it actually means
-        return (this.data[0x08] & 0x08) > 0;
-    }
-
-    get lowFrequencyFan() {
-        return (this.data[0x08] & 0x10) > 0;
-    }
-
-    get superFan() {
-        return (this.data[0x08] & 0x20) > 0;
-    }
-
-    get feelOwn() {
-        // This needs a better name, dunno what it actually means
-        return (this.data[0x08] & 0x80) > 0;
-    }
     // Byte 0x09
     get childSleepMode() {
         return (this.data[0x09] & 0x01) > 0;
     }
 
-    get exchangeAir() {
-        return (this.data[0x09] & 0x02) > 0;
-    }
-
-    get dryClean() {
-        // This actually means 13°C(55°F)~35°C(95°F) according to my manual. Also dehumidifying.
-        return (this.data[0x09] & 0x04) > 0;
-    }
-
-    get ecoMode() {
-        return (this.data[0x09] & 0x10) > 0;
-    }
-
-    get cleanUp() {
-        // This needs a better name, dunno what it actually means
-        return (this.data[0x09] & 0x20) > 0;
-    }
     // Byte 0x0a
     get sleepFunction() {
         return (this.data[0x0a] & 0x01) > 0;
-    }
-
-    get turboMode() {
-        return (this.data[0x0a] & 0x02) > 0;
     }
 
     get nightLight() {
