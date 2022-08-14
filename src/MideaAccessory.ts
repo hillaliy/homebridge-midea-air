@@ -8,26 +8,38 @@ export class MideaAccessory {
 
 	public deviceId: string = ''
 	public deviceType: MideaDeviceType = MideaDeviceType.AirConditioner
-	public targetTemperature: any = 24
+	// AirConditioner
+	public targetTemperature: number = 24
 	public indoorTemperature: number = 0
 	public outdoorTemperature: number = 0
 	public useFahrenheit: boolean = false; // Default unit is Celsius. this is just to control the temperature unit of the AC's display. The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API
-	public currentHumidity: number = 0
-	public targetHumidity: any = 35
-	public waterLevel: number = 0
-
-	public fanSpeed: number = 0
+	public turboFan: boolean = false
 	public fanOnlyMode: boolean = false
 	public temperatureSteps: number = 1
 	public minTemperature: number = 17
 	public maxTemperature: number = 30
-	public powerState: any = 0
-	public audibleFeedback: boolean = false
-	public supportedSwingMode: MideaSwingMode = MideaSwingMode.None
-	public operationalMode: number = MideaOperationalMode.Off
-	public swingMode: number = 0
+	public acVerticalSwing: number = 0
+	public acHorizontalSwing: number = 0
 	public ecoMode: boolean = false
 	public turboMode: boolean = false
+	public comfortSleep: boolean = false
+	public dryer: boolean = false
+	public purifier: boolean = false
+	public screenDisplay: boolean = true
+	// Dehumidifier
+	public currentHumidity: number = 0
+	public targetHumidity: number = 35
+	public waterLevel: number = 0
+	public waterLevelWarningLevel: any = 0
+	public dhVerticalSwing: number = 0
+	// Common
+	public powerState: number = 0
+	public audibleFeedback: boolean = false
+	public operationalMode: number = MideaOperationalMode.Off
+	public fanSpeed: number = 0
+	public swingMode: number = 0
+	public supportedSwingMode: MideaSwingMode = MideaSwingMode.None
+
 	public name: string = ''
 	public model: string = ''
 	public userId: string = ''
@@ -166,7 +178,6 @@ export class MideaAccessory {
 						this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS
 					]
 				});
-
 			// Update HomeKit
 			setInterval(() => {
 				this.service.updateCharacteristic(this.platform.Characteristic.Active, this.powerState);
@@ -194,7 +205,7 @@ export class MideaAccessory {
 				this.fanService.getCharacteristic(this.platform.Characteristic.SwingMode)
 					.on('get', this.handleSwingModeGet.bind(this))
 					.on('set', this.handleSwingModeSet.bind(this));
-
+				// Update HomeKit
 				setInterval(() => {
 					this.fanService.updateCharacteristic(this.platform.Characteristic.Active, this.fanActive());
 					this.fanService.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.rotationSpeed());
@@ -232,8 +243,6 @@ export class MideaAccessory {
 				.on('set', this.handleTargetHumidifierDehumidifierStateSet.bind(this))
 				.setProps({
 					validValues: [
-						// this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER_OR_DEHUMIDIFIER,
-						// this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER,
 						this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER
 					]
 				})
@@ -245,21 +254,13 @@ export class MideaAccessory {
 					minStep: 1
 				})
 			this.service.getCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold)
-				.on('get', this.handleRelativeHumidityDehumidifierThresholdGet.bind(this))
-				.on('set', this.handleRelativeHumidityDehumidifierThresholdSet.bind(this))
+				.on('get', this.handleRelativeHumidityThresholdGet.bind(this))
+				.on('set', this.handleRelativeHumidityThresholdSet.bind(this))
 				.setProps({
 					minValue: 35,
 					maxValue: 85,
 					minStep: 5
 				})
-			// this.service.getCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold)
-			// 	.on('get', this.handleRelativeHumidityHumidifierThresholdGet.bind(this))
-			// 	.on('set', this.handleRelativeHumidityHumidifierThresholdSet.bind(this))
-			// 	.setProps({
-			// 		minValue: 35,
-			// 		maxValue: 85,
-			// 		minStep: 5
-			// 	})
 			this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
 				.on('get', this.handleWindSpeedGet.bind(this))
 				.on('set', this.handleWindSpeedSet.bind(this))
@@ -268,7 +269,6 @@ export class MideaAccessory {
 				.on('set', this.handleSwingModeSet.bind(this))
 			this.service.getCharacteristic(this.platform.Characteristic.WaterLevel)
 				.on('get', this.handleWaterLevelGet.bind(this))
-
 			// Update HomeKit
 			setInterval(() => {
 				this.service.updateCharacteristic(this.platform.Characteristic.Active, this.powerState);
@@ -276,7 +276,6 @@ export class MideaAccessory {
 				this.service.updateCharacteristic(this.platform.Characteristic.TargetHumidifierDehumidifierState, this.TargetHumidifierDehumidifierState());
 				this.service.updateCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, this.currentHumidity);
 				this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityDehumidifierThreshold, this.targetHumidity);
-				// this.service.updateCharacteristic(this.platform.Characteristic.RelativeHumidityHumidifierThreshold, this.targetHumidity);
 				this.service.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.windSpeed());
 				this.service.updateCharacteristic(this.platform.Characteristic.SwingMode, this.SwingMode());
 				this.service.updateCharacteristic(this.platform.Characteristic.WaterLevel, this.waterLevel);
@@ -296,9 +295,9 @@ export class MideaAccessory {
 	};
 	// Handle requests to set the "Active" characteristic
 	handleActiveSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		if (this.powerState !== value) {
+		if (this.powerState !== Number(value)) {
 			this.platform.log.debug(`Triggered SET Active To: ${value}`);
-			this.powerState = value;
+			this.powerState = Number(value);
 			this.platform.sendUpdateToDevice(this);
 		};
 		callback(null);
@@ -367,8 +366,8 @@ export class MideaAccessory {
 		} else {
 			this.platform.log.debug(`Triggered SET ThresholdTemperature To: ${value}˚C`);
 		};
-		if (this.targetTemperature !== value) {
-			this.targetTemperature = value;
+		if (this.targetTemperature !== Number(value)) {
+			this.targetTemperature = Number(value);
 			this.platform.sendUpdateToDevice(this);
 		};
 		callback(null);
@@ -376,6 +375,7 @@ export class MideaAccessory {
 	// Get the current value of the "RotationSpeed" characteristic
 	public rotationSpeed() {
 		// values from device are 20.0="Silent",40.0="Low",60.0="Medium",80.0="High",102.0="Auto"
+		// New Midea devices has slider between 1%-100% 
 		// convert to good usable slider in homekit in percent
 		let currentValue = 0;
 		if (this.fanSpeed === 40) {
@@ -386,7 +386,7 @@ export class MideaAccessory {
 			currentValue = 75;
 		} else {
 			currentValue = 100;
-		};
+		}
 		return currentValue;
 	};
 	// Handle requests to get the current value of the "RotationSpeed" characteristic
@@ -400,16 +400,18 @@ export class MideaAccessory {
 		// transform values in percent
 		// values from device are 20.0="Silent",40.0="Low",60.0="Medium",80.0="High",102.0="Auto"
 		if (this.fanSpeed !== value) {
-			if (value <= 25) {
-				this.fanSpeed = 40;
-			} else if (value > 25 && value <= 50) {
-				this.fanSpeed = 60;
-			} else if (value > 50 && value <= 75) {
-				this.fanSpeed = 80;
-			} else {
-				this.fanSpeed = 102;
+			if (this.fanSpeed !== value) {
+				if (value <= 25) {
+					this.fanSpeed = 40;
+				} else if (value > 25 && value <= 50) {
+					this.fanSpeed = 60;
+				} else if (value > 50 && value <= 75) {
+					this.fanSpeed = 80;
+				} else {
+					this.fanSpeed = 102;
+				};
+				this.platform.sendUpdateToDevice(this);
 			};
-			this.platform.sendUpdateToDevice(this);
 		};
 		callback(null);
 	};
@@ -512,7 +514,7 @@ export class MideaAccessory {
 	};
 	// Get the current value of the "TargetHumidifierDehumidifierState" characteristic
 	public TargetHumidifierDehumidifierState() {
-		if (this.operationalMode === 0) {
+		if (this.operationalMode === 4) {
 			return this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER;
 		};
 	};
@@ -530,7 +532,7 @@ export class MideaAccessory {
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER) {
 				this.operationalMode = 1;
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER) {
-				this.operationalMode = 0;
+				this.operationalMode = 4;
 			};
 			this.platform.sendUpdateToDevice(this);
 		};
@@ -542,29 +544,15 @@ export class MideaAccessory {
 		callback(null, this.currentHumidity);
 	};
 	// Handle requests to get the Relative value of the "HumidityDehumidifierThreshold" characteristic
-	handleRelativeHumidityDehumidifierThresholdGet(callback: CharacteristicGetCallback) {
+	handleRelativeHumidityThresholdGet(callback: CharacteristicGetCallback) {
 		this.platform.log.debug('Triggered GET RelativeHumidityDehumidifierThreshold');
 		callback(null, this.targetHumidity);
 	};
 	// Handle requests to set the Relative value of the "HumidityDehumidifierThreshold" characteristic
-	handleRelativeHumidityDehumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		if (this.targetHumidity !== value) {
-			this.platform.log.debug(`Triggered SET RelativeHumidityDehumidifierThreshold To: ${value}`);
-			this.targetHumidity = value;
-			this.platform.sendUpdateToDevice(this);
-		};
-		callback(null);
-	};
-	// Handle requests to get the Relative value of the "HumidityHumidifierThreshold" characteristic
-	handleRelativeHumidityHumidifierThresholdGet(callback: CharacteristicGetCallback) {
-		this.platform.log.debug('Triggered GET RelativeHumidityDehumidifierThreshold');
-		callback(null, this.targetHumidity);
-	};
-	// Handle requests to set the Relative value of the "HumidityHumidifierThreshold" characteristic
-	handleRelativeHumidityHumidifierThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
-		if (this.targetHumidity !== value) {
-			this.platform.log.debug(`Triggered SET RelativeHumidityDehumidifierThreshold ${value}`);
-			this.targetHumidity = value;
+	handleRelativeHumidityThresholdSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+		if (this.targetHumidity !== Number(value)) {
+			this.platform.log.debug(`Triggered SET RelativeHumidityThreshold To: ${value}`);
+			this.targetHumidity = Number(value);
 			this.platform.sendUpdateToDevice(this);
 		};
 		callback(null);
@@ -578,7 +566,7 @@ export class MideaAccessory {
 			currentValue = 30;
 		} else if (this.fanSpeed === 60) {
 			currentValue = 60;
-		} else if (this.fanSpeed = 80) {
+		} else if (this.fanSpeed === 80) {
 			currentValue = 100;
 		};
 		return currentValue;
@@ -593,14 +581,16 @@ export class MideaAccessory {
 		this.platform.log.debug(`Triggered SET WindSpeed To: ${value}`);
 		// transform values in percent
 		// values from device are 20.0="Silent",60.0="Medium",80.0="High"
-		if (value <= 30) {
-			this.fanSpeed = 40;
-		} else if (value > 30 && value <= 60) {
-			this.fanSpeed = 60;
-		} else if (value > 60 && value <= 100) {
-			this.fanSpeed = 80;
+		if (this.fanSpeed !== value) {
+			if (value <= 30) {
+				this.fanSpeed = 40;
+			} else if (value > 30 && value <= 60) {
+				this.fanSpeed = 60;
+			} else if (value > 60 && value <= 100) {
+				this.fanSpeed = 80;
+			};
+			this.platform.sendUpdateToDevice(this);
 		};
-		this.platform.sendUpdateToDevice(this);
 		callback(null);
 	};
 	// Handle requests to get the current value of the "WaterLevel" characteristic
