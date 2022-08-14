@@ -80,7 +80,7 @@ export default class Constants {
 		65,				// 10		- Data request
 		33,				// 11
 		0,				// 12       - Operational mode (1: target, 2: continuous, 3: smart, 4: dry)
-		255,			// 13
+		50,	// 255		// 13
 		3,				// 14
 		0,				// 15
 		0,				// 16
@@ -93,31 +93,31 @@ export default class Constants {
 		11, 36, 164, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	];
 
-	public static UserAgent: string = 'Dalvik/2.1.0 (Linux; U; Android 7.0; SM-G935F Build/NRD90M)'
+	public static UserAgent: string = 'Dalvik/2.22.0 (Linux; U; Android 9.0; SM-G935F Build/NRD90M)'
 	// These values are from the official Midea Air app, adjust if you want to use different credentials
 	public static AppId: string = '1117'
 	public static AppKey: string = 'ff0cf6f5f0c3471de36341cab3f7a9af'
 	public static Language: string = 'en-US'
 	public static ClientType: string = '1' // 0: PC, 1: Android, 2: IOS
 	public static RequestFormat: string = '2' // JSON
-	public static RequestSource: string = '17'
+	public static RequestSource: string = '1010' // '17'
 
-	public static SupportedApps = {
-		NetHomePlus: {
+	public static SupportedApps: {
+		'NetHomePlus': {
 			AppKey: '3742e9e5842d4ad59c2db887e12449f9',
 			AppId: '1017',
 			ApiURL: 'https://mapp.appsmb.com',
 			SignKey: 'xhdiwjnchekd4d512chdjx5d8e4c394D2D7S',
 			Proxied: '',
 		},
-		MideaAir: {
+		'MideaAir': {
 			AppKey: 'ff0cf6f5f0c3471de36341cab3f7a9af',
 			AppId: '1117',
 			ApiURL: 'https://mapp.appsmb.com',
 			SignKey: 'xhdiwjnchekd4d512chdjx5d8e4c394D2D7S',
 			Proxied: '',
 		},
-		MSmartHome: {
+		'MSmartHome': {
 			AppKey: 'ac21b9f9cbfe4ca5a88562ef25e2b768',
 			AppId: '1010',
 			ApiURL: 'https://mp-prod.appsmb.com/mas/v5/app/proxy?alias=',
