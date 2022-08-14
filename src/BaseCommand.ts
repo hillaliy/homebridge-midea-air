@@ -22,30 +22,30 @@ export default class BaseCommand {
                 0,              // 4    	 - Reserved 0x00
                 0,              // 6		 - Message Id
                 0,              // 7    	 - Framework protocol version
-                3,              // 8         - Device Agreement Version
+                3,              // 8         - Home appliance protocol
                 2,              // 9         - Message type setting identification
                 // Command Header End
                 // Data Start
                 64,             // 10       - Data request/response: Set up
-                67,              // 11       - power state: 0/1 + audible feedback: 66 
+                65,             // 11       - power state: 0/1 + audible feedback: 64 
                 70,             // 12       - Operational mode
                 102,            // 13       - Fan speed 20/40/60/80/102
                 127,            // 14       - On timer
                 127,            // 15       - Off timer
                 0,              // 16       - Common timer
                 48,             // 17       - Swing mode
-                0,              // 18
-                0,              // 19       - Eco mode
-                0,              // 20       - Turbo mode/Screen display/Fahrenheit
+                0,              // 18       - Turbo fan
+                0,              // 19       - Eco mode / Dryer / Purifier
+                0,              // 20       - TurboMode / Screen display / Fahrenheit
                 // Padding
-                0, 0, 0, 0, 0, 0, 0, 0, 0
+                0, 0, 0, 0, 0, 0, 0, 0, 0 //, 0, 0, 0, 0, 0, 0
                 // Data End
             ];
             this.data[0x02] = device_type;
         } else if (device_type == MideaDeviceType.Dehumidifier) {
             this.data = [
                 // Command Header
-                170,            // 0         - Sync header
+                170,            // 0         - Sync header setting
                 34,             // 1         - Message length
                 161,            // 2         - Device type (161 for Dehumidifier)
                 0,              // 3		 - Frame sync check (not used, 0x00)
@@ -58,12 +58,12 @@ export default class BaseCommand {
                 // Command Header End
                 // Data Start
                 72,             // 10        - Command type: Set (72), Query (65)
-                67,             // 11        - Settings (last bit likely turn on and off)
+                65,             // 11        - power state: 0/1 + audible feedback: 64
                 1,              // 12        - Operational mode (1: target, 2: continuous, 3: smart, 4: dry)
-                208,            // 13        - Timing + wind speed
-                127,            // 14        - Timer related?
-                127,            // 15        - Timer related?
-                0,              // 16        - Timer related?
+                208,            // 13        - Timing + wind speed 40/60/80
+                127,            // 14        - On timer
+                127,            // 15        - Off timer
+                0,              // 16        - Common timer
                 50,             // 17        - Target humidity
                 0,              // 18        - Target humidity (float)?
                 0,              // 19        - Display and other settings
