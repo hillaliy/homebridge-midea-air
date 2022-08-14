@@ -140,14 +140,6 @@ export default class ACApplianceResponse extends ApplianceResponse {
         return (this.data[0x0c] - 50) / 2.0;
     }
 
-    // get celsiusUnit() {
-    //     return (this.data[0x09] & 0x80) > 0; // CELSIUS - False
-    // }
-
-    // get fahrenheitUnit() {
-    //     return this.data[23] > 0; // FAHRENHEIT - True
-    // }
-
     getBit(pByte: any, pIndex: any) {
         return (pByte >> pIndex) & 0x01
     }
