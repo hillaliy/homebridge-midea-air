@@ -102,29 +102,29 @@ export default class Constants {
 	public static RequestFormat: string = '2' // JSON
 	public static RequestSource: string = '1010' // '17'
 
-	public static SupportedApps: {
+	public static supportedApps: {
 		NetHomePlus: {
-			AppKey: '3742e9e5842d4ad59c2db887e12449f9',
-			AppId: 1017,
-			ApiURL: 'https://mapp.appsmb.com',
-			SignKey: 'xhdiwjnchekd4d512chdjx5d8e4c394D2D7S',
-			Proxied: null,
+			appKey: '3742e9e5842d4ad59c2db887e12449f9',
+			appId: '1017',
+			apiURL: 'https://mapp.appsmb.com',
+			signKey: 'xhdiwjnchekd4d512chdjx5d8e4c394D2D7S',
+			proxied: null,
 		},
 		MideaAir: {
-			AppKey: 'ff0cf6f5f0c3471de36341cab3f7a9af',
-			AppId: 1117,
-			ApiURL: 'https://mapp.appsmb.com',
-			SignKey: 'xhdiwjnchekd4d512chdjx5d8e4c394D2D7S',
-			Proxied: null,
+			appKey: 'ff0cf6f5f0c3471de36341cab3f7a9af',
+			appId: '1117',
+			apiURL: 'https://mapp.appsmb.com',
+			signKey: 'xhdiwjnchekd4d512chdjx5d8e4c394D2D7S',
+			proxied: null,
 		},
 		MSmartHome: {
-			AppKey: 'ac21b9f9cbfe4ca5a88562ef25e2b768',
-			AppId: 1010,
-			ApiURL: 'https://mp-prod.appsmb.com/mas/v5/app/proxy?alias=',
-			SignKey: 'xhdiwjnchekd4d512chdjx5d8e4c394D2D7S',
+			appKey: 'ac21b9f9cbfe4ca5a88562ef25e2b768',
+			appId: '1010',
+			apiURL: 'https://mp-prod.appsmb.com/mas/v5/app/proxy?alias=',
+			signKey: 'xhdiwjnchekd4d512chdjx5d8e4c394D2D7S',
 			iotKey: 'meicloud',
 			hmacKey: 'PROD_VnoClJI9aikS8dyy',
-			Proxied: 'v5',
-		},
-	}
+			proxied: 'v5',
+		}
+	};
 };
