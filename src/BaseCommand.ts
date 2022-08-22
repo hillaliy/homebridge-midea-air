@@ -28,7 +28,7 @@ export default class BaseCommand {
                 // Data Start
                 64,             // 10       - Data request/response: Set up
                 65,             // 11       - power state: 0/1 + audible feedback: 64 
-                70,             // 12       - Operational mode
+                70,             // 12       - Operational mode + Target Temperature
                 102,            // 13       - Fan speed 20/40/60/80/102
                 127,            // 14       - On timer
                 127,            // 15       - Off timer
@@ -38,7 +38,9 @@ export default class BaseCommand {
                 0,              // 19       - Eco mode / Dryer / Purifier
                 0,              // 20       - TurboMode / Screen display / Fahrenheit
                 // Padding
-                0, 0, 0, 0, 0, 0, 0, 0, 0 //, 0, 0, 0, 0, 0, 0
+                0, 0, 0, 0, 0, 0, 0, 0, 0,
+                // 0, // Message ID 
+                //  0, 0, 6, 14, 187, 137, 169, 223, 88, 121, 170, 108, 162, 36, 170, 80, 242, 143,
                 // Data End
             ];
             this.data[0x02] = device_type;
