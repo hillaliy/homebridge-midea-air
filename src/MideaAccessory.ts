@@ -306,14 +306,29 @@ export class MideaAccessory {
 	public currentHeaterCoolerState() {
 		if (this.powerState === this.platform.Characteristic.Active.INACTIVE) {
 			return this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE;
-		} else if (this.operationalMode === MideaOperationalMode.Cooling) {
-			return this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
-		} else if (this.operationalMode === MideaOperationalMode.Heating) {
-			return this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
-		} else if (this.indoorTemperature > this.targetTemperature) {
-			return this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
 		} else {
-			return this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
+			switch (this.operationalMode) {
+				case MideaOperationalMode.Cooling:
+					if (this.indoorTemperature >= this.targetTemperature) {
+						return this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
+					} else {
+						return this.platform.Characteristic.CurrentHeaterCoolerState.IDLE;
+					}
+				case MideaOperationalMode.Heating:
+					if (this.indoorTemperature <= this.targetTemperature) {
+						return this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
+					} else {
+						return this.platform.Characteristic.CurrentHeaterCoolerState.IDLE;
+					}
+				case MideaOperationalMode.Auto:
+					if (this.indoorTemperature >= this.targetTemperature) {
+						return this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
+					} else if (this.indoorTemperature <= this.targetTemperature) {
+						return this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
+					} else {
+						return this.platform.Characteristic.CurrentHeaterCoolerState.IDLE;
+					};
+			};
 		};
 	};
 	// Handle requests to get the current value of the "CurrentHeaterCoolerState" characteristic
@@ -374,19 +389,23 @@ export class MideaAccessory {
 	};
 	// Get the current value of the "RotationSpeed" characteristic
 	public rotationSpeed() {
-		// values from device are 20="Silent",40="Low",60="Medium",80="High",100=Full,102="Auto"
+		// values from device are 20="Silent",40="Low",60="Medium",80="High",100="Full",101/102="Auto"
 		// New Midea devices has slider between 1%-100% 
 		// convert to good usable slider in homekit in percent
 		let currentValue = 0;
-		if (this.fanSpeed === 40) {
-			currentValue = 25;
-		} else if (this.fanSpeed === 60) {
-			currentValue = 50;
-		} else if (this.fanSpeed === 80) {
-			currentValue = 75;
-		} else {
-			currentValue = 100;
-		}
+		switch (this.fanSpeed) {
+			case 20: currentValue = 20;
+				break;
+			case 40: currentValue = 40;
+				break;
+			case 60: currentValue = 60;
+				break;
+			case 80: currentValue = 80;
+				break;
+			case 101:
+			case 102: currentValue = 100;
+				break;
+		};
 		return currentValue;
 	};
 	// Handle requests to get the current value of the "RotationSpeed" characteristic
@@ -398,14 +417,16 @@ export class MideaAccessory {
 	handleRotationSpeedSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		this.platform.log.debug(`Triggered SET RotationSpeed To: ${value}`);
 		// transform values in percent
-		// values from device are 20.0="Silent",40.0="Low",60.0="Medium",80.0="High",102.0="Auto"
+		// values from device are 20="Silent",40="Low",60="Medium",80="High",100="Full",101/102="Auto"
 		if (this.fanSpeed !== value) {
 			if (this.fanSpeed !== value) {
-				if (value <= 25) {
+				if (value <= 20) {
+					this.fanSpeed = 20;
+				} else if (value > 20 && value <= 40) {
 					this.fanSpeed = 40;
-				} else if (value > 25 && value <= 50) {
+				} else if (value > 40 && value <= 60) {
 					this.fanSpeed = 60;
-				} else if (value > 50 && value <= 75) {
+				} else if (value > 60 && value <= 80) {
 					this.fanSpeed = 80;
 				} else {
 					this.fanSpeed = 102;
@@ -514,7 +535,7 @@ export class MideaAccessory {
 	};
 	// Get the current value of the "TargetHumidifierDehumidifierState" characteristic
 	public TargetHumidifierDehumidifierState() {
-		if (this.operationalMode === 4) {
+		if (this.operationalMode === 0) {
 			return this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER;
 		};
 	};
@@ -532,7 +553,7 @@ export class MideaAccessory {
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.HUMIDIFIER) {
 				this.operationalMode = 1;
 			} else if (value === this.platform.Characteristic.TargetHumidifierDehumidifierState.DEHUMIDIFIER) {
-				this.operationalMode = 4;
+				this.operationalMode = 0;
 			};
 			this.platform.sendUpdateToDevice(this);
 		};
@@ -562,12 +583,13 @@ export class MideaAccessory {
 		// values from device are 40="Silent",60="Medium",80="High"
 		// convert to good usable slider in homekit in percent
 		let currentValue = 0;
-		if (this.fanSpeed === 40) {
-			currentValue = 30;
-		} else if (this.fanSpeed === 60) {
-			currentValue = 60;
-		} else if (this.fanSpeed === 80) {
-			currentValue = 100;
+		switch (this.fanSpeed) {
+			case 40: currentValue = 30;
+				break;
+			case 60: currentValue = 60;
+				break;
+			case 80: currentValue = 100;
+				break;
 		};
 		return currentValue;
 	};
@@ -580,7 +602,7 @@ export class MideaAccessory {
 	handleWindSpeedSet(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 		this.platform.log.debug(`Triggered SET WindSpeed To: ${value}`);
 		// transform values in percent
-		// values from device are 20.0="Silent",60.0="Medium",80.0="High"
+		// values from device are 40="Silent",60="Medium",80="High"
 		if (this.fanSpeed !== value) {
 			if (value <= 30) {
 				this.fanSpeed = 40;
