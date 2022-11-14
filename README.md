@@ -121,6 +121,7 @@ HomeKit Relative Humidity work between 0%-100% - Apple Policy.
 Dehumidifier hes 4 Operational modes. You can change modes according to the following table:
 
 | Device | HomeKit |
+| --- | --- |
 | Normal | HUMIDIFIER |
 | Continuous | --- |
 | Smart | Auto |
