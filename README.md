@@ -98,7 +98,7 @@ Rotation Speed values are:
 | 80% High | ... |
 | 100% Auto | 100% Turbo |
 
-Dehumidifier does not have an Swing mode, therefor on config.json select "None".
+Dehumidifier does not have an Swing mode, therefore in config.json select "None".
 
 ### Dehumidifier Relative Humidity
 
@@ -120,16 +120,16 @@ HomeKit Relative Humidity work between 0%-100% - Apple Policy.
 
 ### Dehumidifier Modes
 
-Dehumidifier hes 4 Operational modes. You can change modes according to the following table:
+Dehumidifier has 4 Operational modes. You can change modes according to the following table:
 
 | Device | HomeKit |
 | --- | --- |
 | Normal | HUMIDIFIER |
 | Continuous | --- |
-| Smart | Auto |
+| Smart | AUTO |
 | Dryer | DEHUMIDIFIER |
 
-Continuous mode will be considerate as Auto mode.
+Continuous mode will be considered as Auto mode.
 
 ### Fan Mode
 
