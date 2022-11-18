@@ -66,30 +66,30 @@ However, many devices may not be supported or function incorrectly. <br />
 This is due to the lack of documentation of the raw MSmart API. <br />
 If you encounter any problems, please open a new issue and specify your device model.
 
-## Optional per-device Configuration Values
+## ⚙️ Optional per-device Configuration Values
 
 To set specific per-device values, you need to add deviceId that can find in:
 
 1. Homebridge console log.
 2. HomeKit app, device settings, info.
 
-### Temperature Display Units
+### 🌡️ Temperature Display Units
 
 This Plugin support Celsius & Fahrenheit (You can set the Default unit on Homebridge config). <br />
 Display Units can set in HomeKit app, device settings. <br />
 `This is just to control the temperature unit of the AC's display. The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API`
 
-### Temperature Steps
+### 🌡️ Temperature Steps
 
 This option change Temperature Steps on HomeKit.
 You can choose 1˚ or 0.5˚, default is: 1˚
 
-### Temperature Threshold
+### 🌡️ Temperature Threshold
 
 This option change Temperature Thrashold.
 Defaults: minimum 17˚ / maximum 30˚
 
-### Rotation Speed and Swing
+### 💨 Rotation Speed and Swing
 
 Rotation Speed and Swing mode can set in the HomeKit app, device settings.
 Rotation Speed values are:
@@ -104,7 +104,7 @@ Rotation Speed values are:
 
 Dehumidifier does not have an Swing mode, therefore in config.json select "None".
 
-### Dehumidifier Relative Humidity
+### 🌡️ Dehumidifier Relative Humidity
 
 There is a difference between Midea app / Homebridge to HomeKit.
 HomeKit Relative Humidity work between 0%-100% - Apple Policy.
@@ -135,18 +135,18 @@ Dehumidifier has 4 Operational modes. You can change modes according to the foll
 
 Continuous mode will be considered as Auto mode.
 
-### Fan Mode
+### 💨 Fan Mode
 
 This allows you to enable a Fan mode service.
 
-### Outdoor Temperature Sensor
+### 🌡️ Outdoor Temperature Sensor
 
 This allows you to enable Outdoor Temperature service, if the AC support.
 
-### Audible Feedback
+### 🔈 Audible Feedback
 
 This set the Audible Feedback (beep sound).
 
-## Credits
+## 🙏 Credits
 
 This plugin would not have been possible without the fundamentals of all the Midea API clients in Python provided.
