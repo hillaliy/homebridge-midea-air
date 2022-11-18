@@ -61,7 +61,10 @@ Add this to the platforms array in your config.json:
 
 ## Supported Devices
 
-This Plugin support Midea providers dongle - OSK102 / OSK103 (Hualing, Senville, Klimaire, AirCon, Century, Pridiom, Thermocore, Comfee, Alpine Home Air, Artel, Beko, Electrolux, Galactic, Idea, Inventor, Kaisai, Mitsui, Mr. Cool, Neoclima, Olimpia Splendid, Pioneer, QLIMA, Royal Clima, Qzen, Toshiba, Carrier, Goodman, Friedrich, Samsung, Kenmore, Trane, Lennox, LG, Electra and much more) and should be able to access all device in the user's account. However, many devices may not be supported or function incorrectly. This is due to the lack of documentation of the raw MSmart API. If you encounter any problems, please open a new issue and specify your device model.
+This Plugin support Midea providers dongle - OSK102 / OSK103 (Hualing, Senville, Klimaire, AirCon, Century, Pridiom, Thermocore, Comfee, Alpine Home Air, Artel, Beko, Electrolux, Galactic, Idea, Inventor, Kaisai, Mitsui, Mr. Cool, Neoclima, Olimpia Splendid, Pioneer, QLIMA, Royal Clima, Qzen, Toshiba, Carrier, Goodman, Friedrich, Samsung, Kenmore, Trane, Lennox, LG, Electra and much more) and should be able to access all device in the user's account. <br />
+However, many devices may not be supported or function incorrectly. <br />
+This is due to the lack of documentation of the raw MSmart API. <br />
+If you encounter any problems, please open a new issue and specify your device model.
 
 ## Optional per-device Configuration Values
 
@@ -72,8 +75,8 @@ To set specific per-device values, you need to add deviceId that can find in:
 
 ### Temperature Display Units
 
-This Plugin support Celsius & Fahrenheit (You can set the Default unit on Homebridge config).
-Display Units can set in HomeKit app, device settings.
+This Plugin support Celsius & Fahrenheit (You can set the Default unit on Homebridge config). <br />
+Display Units can set in HomeKit app, device settings. <br />
 `This is just to control the temperature unit of the AC's display. The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API`
 
 ### Temperature Steps
