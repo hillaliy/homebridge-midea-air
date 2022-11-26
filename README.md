@@ -54,10 +54,9 @@ Add this to the platforms array in your config.json:
 
 ## ⚠️ Knowing Issues
 
-* This plugin don't fully supported `Midea Mission II / Blanc / OSK105`, you can only get device status. <br />
-* Using the Midea app and `Homebridge Midea Air plugin` at the same time causes a login error. Try to use [NetHome Plus](https://apps.apple.com/us/app/nethome-plus/id1008001920) app instead. <br />
-* This plugin don't support `MSmartHome app`. <br />
-* Fan Speed on Dehumidifiers don't work.
+- This plugin don't fully supported `Midea Mission II / Blanc / OSK105`, you can only get device status. <br />
+- Using the Midea app and `Homebridge Midea Air plugin` at the same time causes a login error. Try to use [NetHome Plus](https://apps.apple.com/us/app/nethome-plus/id1008001920) app instead. <br />
+- This plugin don't support `MSmartHome app`. <br />
 
 ## Supported Devices
 
@@ -126,12 +125,12 @@ HomeKit Relative Humidity work between 0%-100% - Apple Policy.
 
 Dehumidifier has 4 Operational modes. You can change modes according to the following table:
 
-| Device | HomeKit |
-| --- | --- |
-| Normal | HUMIDIFIER |
-| Continuous | --- |
-| Smart | AUTO |
-| Dryer | DEHUMIDIFIER |
+| Device     | HomeKit      |
+| ---------- | ------------ |
+| Normal     | HUMIDIFIER   |
+| Continuous | ---          |
+| Smart      | AUTO         |
+| Dryer      | DEHUMIDIFIER |
 
 Continuous mode will be considered as Auto mode.
 
