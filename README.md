@@ -58,7 +58,7 @@ Add this to the platforms array in your config.json:
 - Using the Midea app and `Homebridge Midea Air plugin` at the same time causes a login error. Try to use [NetHome Plus](https://apps.apple.com/us/app/nethome-plus/id1008001920) app instead. <br />
 - This plugin don't support `MSmartHome app`. <br />
 
-## Supported Devices
+## 🛰️ Supported Devices
 
 - This Plugin support Midea providers dongle - OSK102 / OSK103 (Hualing, Senville, Klimaire, AirCon, Century, Pridiom, Thermocore, Comfee, Alpine Home Air, Artel, Beko, Electrolux, Galactic, Idea, Inventor, Kaisai, Mitsui, Mr. Cool, Neoclima, Olimpia Splendid, Pioneer, QLIMA, Royal Clima, Qzen, Toshiba, Carrier, Goodman, Friedrich, Samsung, Kenmore, Trane, Lennox, LG, Electra and much more) and should be able to access all device in the user's account. <br />
 - However, many devices may not be supported or function incorrectly.
@@ -121,7 +121,7 @@ HomeKit Relative Humidity work between 0%-100% - Apple Policy.
 | 80% | 90% |
 | 85% | 100% |
 
-### Dehumidifier Modes
+### 💦 Dehumidifier Modes
 
 Dehumidifier has 4 Operational modes. You can change modes according to the following table:
 
