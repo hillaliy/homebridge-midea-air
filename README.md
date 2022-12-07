@@ -69,7 +69,7 @@ Add this to the platforms array in your config.json:
 
 To set specific per-device values, you need to add deviceId that can find in:
 
-1. Homebridge console log.
+1. Homebridge console log. ([midea-air] Created device: Kitchen, with ID: `XXXXXXXXXXXXXX`, and type: 172)
 2. HomeKit app, device settings, info.
 
 ### 📟 Temperature Display Units
