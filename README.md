@@ -21,13 +21,12 @@ If you like this plugin or want to contribute to future development, a donation 
 <img src="branding/Air_Conditioner.png" width="200px"> &nbsp;
 <img src="branding/Dehumidifier.jpeg" width="200px">
 
-## Requirements
+<SPAN ALIGN="Left">
 
+Requirements:
 <img src="https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen"> &nbsp;
 <img src="https://img.shields.io/badge/homebridge-%3E%3D1.5.0-brightgreen"> &nbsp;
 <img src="https://img.shields.io/badge/iOS-%3E%3D14.0.0-brightgreen">
-
-<SPAN ALIGN="Left">
 
 ## ⚠️ Knowing Issues
 
