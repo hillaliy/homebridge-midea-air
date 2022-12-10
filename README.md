@@ -18,8 +18,11 @@ If you like this plugin or want to contribute to future development, a donation 
 
 ## [Homebridge](https://github.com/nfarina/homebridge) plugin to control Midea Air Conditioner & Dehumidifier units.
 
-<img src="branding/Air_Conditioner.png" width="200px"> &nbsp;
-<img src="branding/Dehumidifier.jpeg" width="200px">
+![Air Conditioner](https://github.com/hillaliy/homebridge-midea-air/blob/main/branding/Air_Conditioner.png)
+![Dehumidifier](https://github.com/hillaliy/homebridge-midea-air/blob/main/branding/Dehumidifier.jpeg)
+
+<!-- <img src="branding/Air_Conditioner.png" width="200px"> &nbsp; -->
+<!-- <img src="branding/Dehumidifier.jpeg" width="200px"> -->
 
 <SPAN ALIGN="Left">
 
