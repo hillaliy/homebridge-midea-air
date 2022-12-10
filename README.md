@@ -8,8 +8,9 @@
 # Homebridge Midea Air
 
 [![Downloads](https://img.shields.io/npm/dt/homebridge-midea-air.svg?color=critical)](https://www.npmjs.com/package/homebridge-midea-air)
-[![Version](https://img.shields.io/npm/v/homebridge-midea-air)](https://www.npmjs.com/package/homebridge-midea-air)<br>
-[![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins) [![Homebridge Discord](https://img.shields.io/discord/432663330281226270?color=728ED5&logo=discord&label=discord)](https://discord.gg/homebridge-432663330281226270)<br>
+[![Version](https://img.shields.io/npm/v/homebridge-midea-air)](https://www.npmjs.com/package/homebridge-midea-air)
+[![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)<br>
+Homebridge Discord Channel - midea air [![Homebridge Discord](https://img.shields.io/discord/432663330281226270?color=728ED5&logo=discord&label=discord)](https://discord.gg/homebridge-432663330281226270)<br>
 
 Programming is not easy. <br />
 If you like this plugin or want to contribute to future development, a donation will help. <br /> <a target="blank" href="https://www.paypal.me/hillaliy"><img src="https://img.shields.io/badge/PayPal-Donate-blue.svg?logo=paypal"/></a><br>
@@ -27,9 +28,23 @@ If you like this plugin or want to contribute to future development, a donation 
 
 <SPAN ALIGN="Left">
 
-## Configuration
+## ⚠️ Knowing Issues
 
-Add this to the platforms array in your config.json:
+- This plugin don't fully supported `Midea Mission II / Blanc / OSK105`, you can only get device status. <br />
+- Using the Midea app and `Homebridge Midea Air plugin` at the same time causes a login error. Try to use [NetHome Plus](https://apps.apple.com/us/app/nethome-plus/id1008001920) app instead. <br />
+- This plugin don't support `MSmartHome app`. <br />
+- Audible Feedback on Dehumidifier don't work.
+
+## 🛰️ Supported Devices
+
+- This Plugin support Midea providers dongle - OSK102 / OSK103 (Hualing, Senville, Klimaire, AirCon, Century, Pridiom, Thermocore, Comfee, Alpine Home Air, Artel, Beko, Electrolux, Galactic, Idea, Inventor, Kaisai, Mitsui, Mr. Cool, Neoclima, Olimpia Splendid, Pioneer, QLIMA, Royal Clima, Qzen, Toshiba, Carrier, Goodman, Friedrich, Samsung, Kenmore, Trane, Lennox, LG, Electra and much more) and should be able to access all device in the user's account. <br />
+- However, many devices may not be supported or function incorrectly.
+  This is due to the lack of documentation of the raw MSmart API. <br />
+- If you encounter any problems, please open a new issue and specify your device model.
+
+## ⚙️ Configuration
+
+You can use the plugin settings or add this to the platforms array in your config.json:
 
     {
         "user": "MIDEA_ACCOUNT_EMAIL",
@@ -38,7 +53,18 @@ Add this to the platforms array in your config.json:
         "interval": 30,
         "devices": [
                 {
-                    "deviceId": "DeviceID",
+                    "deviceId": "DeviceID-1",
+                    "supportedSwingMode": "Both",
+                    "temperatureSteps": 1,
+                    "minTemp": 17,
+                    "maxTemp": 30,
+                    "fanOnlyMode": false,
+                    "OutdoorTemperature": false,
+                    "useFahrenheit": false,
+                    "audibleFeedback": false
+                },
+                                {
+                    "deviceId": "DeviceID-2",
                     "supportedSwingMode": "Both",
                     "temperatureSteps": 1,
                     "minTemp": 17,
@@ -52,19 +78,6 @@ Add this to the platforms array in your config.json:
         "platform": "midea-air"
     }
 
-## ⚠️ Knowing Issues
-
-- This plugin don't fully supported `Midea Mission II / Blanc / OSK105`, you can only get device status. <br />
-- Using the Midea app and `Homebridge Midea Air plugin` at the same time causes a login error. Try to use [NetHome Plus](https://apps.apple.com/us/app/nethome-plus/id1008001920) app instead. <br />
-- This plugin don't support `MSmartHome app`. <br />
-
-## 🛰️ Supported Devices
-
-- This Plugin support Midea providers dongle - OSK102 / OSK103 (Hualing, Senville, Klimaire, AirCon, Century, Pridiom, Thermocore, Comfee, Alpine Home Air, Artel, Beko, Electrolux, Galactic, Idea, Inventor, Kaisai, Mitsui, Mr. Cool, Neoclima, Olimpia Splendid, Pioneer, QLIMA, Royal Clima, Qzen, Toshiba, Carrier, Goodman, Friedrich, Samsung, Kenmore, Trane, Lennox, LG, Electra and much more) and should be able to access all device in the user's account. <br />
-- However, many devices may not be supported or function incorrectly.
-  This is due to the lack of documentation of the raw MSmart API. <br />
-- If you encounter any problems, please open a new issue and specify your device model.
-
 ## ⚙️ Optional per-device Configuration Values
 
 To set specific per-device values, you need to add deviceId that can find in:
@@ -72,18 +85,18 @@ To set specific per-device values, you need to add deviceId that can find in:
 1. Homebridge console log. ([midea-air] Created device: Kitchen, with ID: `XXXXXXXXXXXXXX`, and type: 172)
 2. HomeKit app, device settings, info.
 
-### 📟 Temperature Display Units
+### 📟 Temperature Display Units (Only AC)
 
 This Plugin support Celsius & Fahrenheit (You can set the Default unit on Homebridge config). <br />
 Display Units can set in HomeKit app, device settings. <br />
 `This is just to control the temperature unit of the AC's display. The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API`
 
-### 🎚️ Temperature Steps
+### 🎚️ Temperature Steps (Only AC)
 
 This option change Temperature Steps on HomeKit.
 You can choose 1˚ or 0.5˚, default is: 1˚
 
-### 🎚️ Temperature Threshold
+### 🎚️ Temperature Threshold (Only AC)
 
 This option change Temperature Thrashold.
 Defaults: minimum 17˚ / maximum 30˚
@@ -134,11 +147,11 @@ Dehumidifier has 4 Operational modes. You can change modes according to the foll
 
 Continuous mode will be considered as Auto mode.
 
-### 🌪️ Fan Mode
+### 🌪️ Fan Mode (only AC)
 
 This allows you to enable a Fan mode service.
 
-### 🌤️ Outdoor Temperature Sensor
+### 🌤️ Outdoor Temperature Sensor (Only AC)
 
 This allows you to enable Outdoor Temperature service, if the AC support.
 
