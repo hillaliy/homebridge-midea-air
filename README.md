@@ -85,18 +85,18 @@ To set specific per-device values, you need to add deviceId that can find in:
 1. Homebridge console log. ([midea-air] Created device: Kitchen, with ID: `XXXXXXXXXXXXXX`, and type: 172)
 2. HomeKit app, device settings, info.
 
-### 📟 Temperature Display Units (Only AC)
+### 📟 Temperature Display Units (AC Only)
 
 This Plugin support Celsius & Fahrenheit (You can set the Default unit on Homebridge config). <br />
 Display Units can set in HomeKit app, device settings. <br />
 `This is just to control the temperature unit of the AC's display. The target temperature setter always expects a celsius temperature (resolution of 0.5C), as does the midea API`
 
-### 🎚️ Temperature Steps (Only AC)
+### 🎚️ Temperature Steps (AC Only)
 
 This option change Temperature Steps on HomeKit.
 You can choose 1˚ or 0.5˚, default is: 1˚
 
-### 🎚️ Temperature Threshold (Only AC)
+### 🎚️ Temperature Threshold (AC Only)
 
 This option change Temperature Thrashold.
 Defaults: minimum 17˚ / maximum 30˚
@@ -147,11 +147,11 @@ Dehumidifier has 4 Operational modes. You can change modes according to the foll
 
 Continuous mode will be considered as Auto mode.
 
-### 🌪️ Fan Mode (only AC)
+### 🌪️ Fan Mode (AC only)
 
 This allows you to enable a Fan mode service.
 
-### 🌤️ Outdoor Temperature Sensor (Only AC)
+### 🌤️ Outdoor Temperature Sensor (AC Only)
 
 This allows you to enable Outdoor Temperature service, if the AC support.
 
