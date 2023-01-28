@@ -73,21 +73,21 @@ export default class Constants {
 		0,				// 5	 	- Reserved 0x00
 		0,				// 6		- Message Id
 		0,				// 7    	- Framework protocol version
-		3,				// 8        - Device Agreement Version
+		0,				// 8        - Device Agreement Version
 		3,				// 9        - Message type request identification
 		// Command Header End
 		// Data Start
 		65,				// 10		- Data request
-		33,				// 11
+		129,			// 11		
 		0,				// 12       - Operational mode (1: target, 2: continuous, 3: smart, 4: dry)
-		50,	// 255		// 13
-		3,				// 14
-		0,				// 15
-		0,				// 16
-		2,				// 17
+		255,			// 13		- Timing + wind speed 40/60/80
+		3,				// 14		- On timer
+		255,			// 15		- Off timer
+		0,				// 16		- Common timer
+		2,				// 17		- Target humidity
 		0,				// 18
-		0,				// 19
-		0,				// 20
+		0,				// 19		- Display and other settings
+		0,				// 20		- Swing and other settings. In dehumidifier, matches mode
 		// Padding
 		0, 0, 0, 0, 0, 0, 0, 0, 0,
 		11, 36, 164, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
