@@ -34,6 +34,10 @@
           {
             "title": "MideaAir",
             "enum": ["MideaAir"]
+          },
+          {
+            "title": "MSmartHome",
+            "enum": ["MSmartHome"]
           }
         ]
       },
@@ -56,7 +60,7 @@
               "type": "string"
             },
             "supportedSwingMode": {
-              "title": "Supported Swing Mode",
+              "title": "Supported Swing Mode (Only for AC)",
               "description": "None, Vertical, Horizontal, Both You have to select which type your device supports",
               "type": "string",
               "default": "both",
@@ -81,7 +85,7 @@
               ]
             },
             "temperatureSteps": {
-              "title": "Change Temperature Steps on HomeKit",
+              "title": "Change Temperature Steps on HomeKit (Only for AC)",
               "description": "The options are 1˚ or 0.5˚, default is: 1˚",
               "type": "number",
               "default": 1,
@@ -98,7 +102,7 @@
               ]
             },
             "minTemp": {
-              "title": "Change minimum Threshold Temperature",
+              "title": "Change minimum Threshold Temperature (Only for AC)",
               "description": "Default is: 17˚",
               "type": "integer",
               "default": 17,
@@ -106,7 +110,7 @@
               "maximum": 35
             },
             "maxTemp": {
-              "title": "Change maximum Threshold Temperature",
+              "title": "Change maximum Threshold Temperature (Only for AC)",
               "description": "Default is: 30˚",
               "type": "integer",
               "default": 30,
@@ -114,19 +118,19 @@
               "maximum": 35
             },
             "fanOnlyMode": {
-              "title": "Enable Fan Mode",
+              "title": "Enable Fan Mode (Only For AC)",
               "type": "boolean",
               "default": false,
               "required": false
             },
             "OutdoorTemperature": {
-              "title": "Enable Outdoor Temperture Sensor",
+              "title": "Enable Outdoor Temperture Sensor (Only for AC)",
               "type": "boolean",
               "default": false,
               "required": false
             },
             "useFahrenheit": {
-              "title": "Set Fahrenheit to default",
+              "title": "Set Fahrenheit to default (Only for AC)",
               "type": "boolean",
               "default": false,
               "required": false
