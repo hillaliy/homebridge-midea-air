@@ -1,4 +1,4 @@
-import SetCommand from '../SetCommand'
+import SetCommand from './SetCommand'
 import { MideaSwingMode } from '../enums/MideaSwingMode'
 import { MideaDeviceType } from '../enums/MideaDeviceType';
 
@@ -18,35 +18,34 @@ export default class ACSetCommand extends SetCommand {
     };
 
     get targetTemperature() {
-        return this.data[0x0c] & 0x0f;
-        // return (this.data[0x0c] & 0x0f) + 16 + this.temperatureDot5;
+        // return this.data[0x0c] & 0x0f;
+        return (this.data[0x0c] & 0x0f) + 16 + this.temperatureDecimal();
     };
 
     set targetTemperature(temperatureCelsius: any) {
-        this.data[0x0c] &= ~0x0f; // Clear the temperature bits
-        this.data[0x0c] |= (temperatureCelsius & 0x0f) // | ((temperatureCelsius << 4) & 0x10);
-        // this.temperatureDot5 = (Math.round(temperatureCelsius * 2) % 2 != 0);
+        // this.data[0x0c] &= ~0x0f; // Clear the temperature bits
+        // this.data[0x0c] |= (Math.trunc(temperatureCelsius) & 0x0f); // Clear the temperature bits, except the 0.5 bit, which will be set properly in all cases
+        // this.temperatureDecimal = (Math.trunc(Math.round(temperatureCelsius * 2)) % 2 !== 0); // set the +0.5 bit
 
-        // let temperatureDecimal;
-        // let temperatureInteger;
-        // if (temperatureCelsius < 16 || temperatureCelsius > 31) {
-        //     this.data[0x0c] &= ~0x0f  // Clear the temperature bits
-        //     temperatureDecimal = 0;
-        // } else {
-        //     temperatureInteger = Math.trunc(temperatureCelsius)
-        //     temperatureDecimal = temperatureCelsius - temperatureInteger;
-        //     this.data[0x0c] |= Math.trunc(temperatureInteger) & 0x0f;
-        // }
+        let temperatureInteger;
+        if (temperatureCelsius < 16 || temperatureCelsius > 31) {
+            this.data[0x0c] &= ~0x0f  // Clear the temperature bits
+            this.temperatureDecimal = 0;
+        } else {
+            temperatureInteger = Math.trunc(temperatureCelsius)
+            this.temperatureDecimal = temperatureCelsius - temperatureInteger;
+            this.data[0x0c] |= Math.trunc(temperatureInteger) & 0x0f;
+        }
     };
 
-    get temperatureDot5() {
-        return 0.5 ? (this.data[0x0c] & 0x10) !== 0 : 0;
+    get temperatureDecimal() {
+        return (this.data[0x0c] & 0x10) !== 0 ? 0.5 : 0;
     };
 
-    set temperatureDot5(temperatureDot5Enabled: any) {
+    set temperatureDecimal(temperatureDecimalEnabled: any) {
         // add 0.5C to the temperature value. not intended to be called directly. targetTemperature set calls this if needed
         this.data[0x0c] &= ~0x10;  // Clear the mode bits
-        if (temperatureDot5Enabled === 0.5) {
+        if (temperatureDecimalEnabled === 0.5) {
             this.data[0x0c] |= 0x10;
         }
     };
