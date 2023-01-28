@@ -1,4 +1,4 @@
-import SetCommand from '../SetCommand';
+import SetCommand from './SetCommand';
 import { MideaDeviceType } from '../enums/MideaDeviceType';
 
 export default class DehumidifierSetCommand extends SetCommand {
@@ -7,9 +7,6 @@ export default class DehumidifierSetCommand extends SetCommand {
 		super(device_type);
 	}
 	// Byte 0x0c
-	// TODO Idea:
-	// I can use the various Home App modes (Auto, Humi, Dehumi) to control the fan speed. 
-	// Or to switch between SMART/DRY/CONTINUOS/MANUAL?
 	get operationalMode() {
 		return this.data[0x0c] & 0x0f;
 	}
@@ -25,8 +22,9 @@ export default class DehumidifierSetCommand extends SetCommand {
 
 	set targetHumidity(humidity: number) {
 		this.data[0x11] &= ~0x7f // Clear the humidity part
-		this.data[0x12] |= humidity
+		this.data[0x11] |= humidity
 	}
+
 	// Byte 0x13
 	get ionMode() {
 		return (this.data[0x13] & 0x40) !== 0;
