@@ -1,9 +1,9 @@
 import { API, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
 
-const axios = require('axios').default
+const axios = require('axios');
 const strftime = require('strftime');
 
-import tunnel from 'tunnel';
+// import tunnel from 'tunnel';
 
 const { wrapper: axiosCookieJarSupport } = require('axios-cookiejar-support');
 import tough from 'tough-cookie';
@@ -36,7 +36,11 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 	public readonly accessories: PlatformAccessory[] = [];
 	mideaAccessories: MideaAccessory[] = []
 
-	constructor(public readonly log: Logger, public readonly config: PlatformConfig, public readonly api: API) {
+	constructor(
+		public readonly log: Logger,
+		public readonly config: PlatformConfig,
+		public readonly api: API
+	) {
 		axiosCookieJarSupport(axios);
 		this.jar = new tough.CookieJar()
 		if (this.config.registeredApp === 'MSmartHome') {
@@ -189,6 +193,11 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 									existingAccessory.context.deviceType = parseInt(currentElement.type)
 									existingAccessory.context.name = currentElement.name
 									existingAccessory.context.userId = currentElement.userId
+									existingAccessory.context.modelNumber = currentElement.modelNumber
+									existingAccessory.context.sn = Utils.decryptAesString(currentElement.sn, this.dataKey)
+									this.log.debug(`Model Number:${existingAccessory.context.modelNumber}`)
+									this.log.debug(`Serial Number:${existingAccessory.context.sn}`)
+
 									this.api.updatePlatformAccessories([existingAccessory])
 
 									var ma = new MideaAccessory(this, existingAccessory, currentElement.id, parseInt(currentElement.type), currentElement.name, currentElement.userId)
@@ -200,6 +209,11 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 									accessory.context.deviceType = parseInt(currentElement.type)
 									accessory.context.name = currentElement.name
 									accessory.context.userId = currentElement.userId
+									accessory.context.modelNumber = currentElement.modelNumber
+									accessory.context.sn = Utils.decryptAesString(currentElement.sn, this.dataKey)
+									this.log.debug(`Model Number:${accessory.context.modelNumber}`)
+									this.log.debug(`Serial Number:${accessory.context.sn}`)
+
 									var ma = new MideaAccessory(this, accessory, currentElement.id, parseInt(currentElement.type), currentElement.name, currentElement.userId)
 									this.api.registerPlatformAccessories('homebridge-midea-air', 'midea-air', [accessory])
 									this.mideaAccessories.push(ma)
@@ -253,13 +267,13 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 					} else {
 						this.log.debug(`Send command to: ${device.name} (${device.deviceId}) ${intent} success!`);
 						let applianceResponse: any
-
 						if (device.deviceType === MideaDeviceType.AirConditioner) {
 							applianceResponse = new ACApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
 
 							device.targetTemperature = applianceResponse.targetTemperature;
 							device.indoorTemperature = applianceResponse.indoorTemperature;
 							device.outdoorTemperature = applianceResponse.outdoorTemperature;
+							device.swingMode = applianceResponse.swingMode;
 							device.useFahrenheit = applianceResponse.useFahrenheit;
 							device.turboFan = applianceResponse.turboFan;
 							device.ecoMode = applianceResponse.ecoMode;
@@ -270,25 +284,26 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 
 							if (device.useFahrenheit === true) {
 								this.log.debug(`Target Temperature: ${this.toFahrenheit(device.targetTemperature)}˚F`);
-								this.log.debug(`Indoor Temperature is: ${this.toFahrenheit(device.indoorTemperature)}˚F`);
+								this.log.debug(`Indoor Temperature: ${this.toFahrenheit(device.indoorTemperature)}˚F`);
 							} else {
 								this.log.debug(`Target Temperature: ${device.targetTemperature}˚C`);
-								this.log.debug(`Indoor Temperature is: ${device.indoorTemperature}˚C`);
+								this.log.debug(`Indoor Temperature: ${device.indoorTemperature}˚C`);
 							};
 							if (applianceResponse.outdoorTemperature < 100) {
 								if (device.useFahrenheit === true) {
-									this.log.debug(`Outdoor Temperature is: ${this.toFahrenheit(device.outdoorTemperature)}˚F`);
+									this.log.debug(`Outdoor Temperature: ${this.toFahrenheit(device.outdoorTemperature)}˚F`);
 								} else {
-									this.log.debug(`Outdoor Temperature is: ${device.outdoorTemperature}˚C`);
+									this.log.debug(`Outdoor Temperature: ${device.outdoorTemperature}˚C`);
 								};
 							};
-							this.log.debug(`Fahrenheit is set to: ${device.useFahrenheit}`);
-							this.log.debug(`Turbo Fan is set to: ${device.turboFan}`);
-							this.log.debug(`Eco Mode is set to: ${device.ecoMode}`);
-							this.log.debug(`Turbo Mode is set to: ${device.turboMode}`);
-							this.log.debug(`Comfort Sleep is set to: ${device.comfortSleep}`);
-							this.log.debug(`Dryer is set to: ${device.dryer}`);
-							this.log.debug(`Purifier is set to: ${device.purifier}`);
+							this.log.debug(`Swing Mode set to: ${device.swingMode}`);
+							this.log.debug(`Fahrenheit set to: ${device.useFahrenheit}`);
+							this.log.debug(`Turbo Fan set to: ${device.turboFan}`);
+							this.log.debug(`Eco Mode set to: ${device.ecoMode}`);
+							this.log.debug(`Turbo Mode set to: ${device.turboMode}`);
+							this.log.debug(`Comfort Sleep set to: ${device.comfortSleep}`);
+							this.log.debug(`Dryer set to: ${device.dryer}`);
+							this.log.debug(`Purifier set to: ${device.purifier}`);
 
 						} else if (device.deviceType === MideaDeviceType.Dehumidifier) {
 							applianceResponse = new DehumidifierApplianceResponse(Utils.decode(Utils.decryptAes(response.data.result.reply, this.dataKey)));
@@ -296,27 +311,21 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 							device.currentHumidity = applianceResponse.currentHumidity;
 							device.targetHumidity = applianceResponse.targetHumidity;
 							device.waterLevel = applianceResponse.waterLevel;
-							device.waterLevelWarningLevel = applianceResponse.waterLevelWarningLevel;
-							device.dhVerticalSwing = applianceResponse.verticalSwing;
 
-							this.log.debug(`Current Humidity is: ${device.currentHumidity}`);
-							this.log.debug(`Target humidity is set to: ${device.targetHumidity}`);
-							this.log.debug(`Water level is at: ${device.waterLevel}`);
-							this.log.debug(`Water level warning is at: ${device.waterLevelWarningLevel}`);
-							this.log.debug(`Vertical Swing level is at: ${device.dhVerticalSwing}`);
+							this.log.debug(`Current Humidity: ${device.currentHumidity}`);
+							this.log.debug(`Target humidity set to: ${device.targetHumidity}`);
+							this.log.debug(`Water level at: ${device.waterLevel}`);
 						};
 						// Common
 						device.powerState = applianceResponse.powerState ? 1 : 0;
 						device.operationalMode = applianceResponse.operationalMode;
 						device.fanSpeed = applianceResponse.fanSpeed;
-						device.swingMode = applianceResponse.swingMode;
 
-						this.log.debug(`Power State is set to: ${device.powerState}`);
-						this.log.debug(`Operational Mode is set to: ${device.operationalMode}`);
-						this.log.debug(`Fan Speed is set to: ${device.fanSpeed}`);
-						this.log.debug(`Swing Mode is set to: ${device.swingMode}`);
+						this.log.debug(`Power State set to: ${device.powerState}`);
+						this.log.debug(`Operational Mode set to: ${device.operationalMode}`);
+						this.log.debug(`Fan Speed set to: ${device.fanSpeed}`);
 
-						this.log.debug(`Full data is: ${Utils.formatResponse(applianceResponse.data)}`)
+						this.log.debug(`Full data: ${Utils.formatResponse(applianceResponse.data)}`)
 						resolve();
 					};
 				} catch (err) {
@@ -377,9 +386,10 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			if (device.deviceType === MideaDeviceType.AirConditioner) {
 				command = new ACSetCommand();
 				command.targetTemperature = device.targetTemperature;
+				command.swingMode = device.swingMode;
 				command.useFahrenheit = device.useFahrenheit;
 				command.ecoMode = device.ecoMode;
-				command.turboMode = device.turboMode;
+				// command.screenDisplay = device.screenDisplay;
 			} else if (device.deviceType === MideaDeviceType.Dehumidifier) {
 				command = new DehumidifierSetCommand()
 				this.log.debug(`[sendUpdateToDevice] Generated a new command to set targetHumidity to: ${device.targetHumidity}`)
@@ -389,18 +399,15 @@ export class MideaPlatform implements DynamicPlatformPlugin {
 			command.audibleFeedback = device.audibleFeedback;
 			command.operationalMode = device.operationalMode;
 			command.fanSpeed = device.fanSpeed;
-			command.swingMode = device.swingMode;
 			//operational mode for workaround with fan only mode on device
 			const pktBuilder = new PacketBuilder();
 			pktBuilder.command = command;
 			const data = pktBuilder.finalize();
 			this.log.debug(`[sendUpdateToDevice] Header + Command: ${JSON.stringify(data)}`);
-
 			try {
 				await this.sendCommand(device, data, '[sendUpdateToDevice] attempt 1/2')
 				this.log.debug(`[sendUpdateToDevice] Send command to device: ${device.name} (${device.deviceId})`)
 			} catch (err) {
-				// TODO: this should be handled only on invalidSession error. Also all the retry logic could be done better (Promise retry instead of await?)
 				this.log.warn(`[sendUpdateToDevice] Error sending the command: ${err}. Trying to re-login before re-issuing command...`);
 				this.log.debug(`[sendUpdateToDevice] Trying to re-login first`);
 				try {
