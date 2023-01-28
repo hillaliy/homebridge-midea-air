@@ -27,7 +27,7 @@ export default class BaseCommand {
                 // Command Header End
                 // Data Start
                 64,             // 10       - Data request/response: Set up
-                65,             // 11       - power state: 0/1 + audible feedback: 64 
+                64,             // 11       - power state: 0/1 + audible feedback: 64 
                 70,             // 12       - Operational mode + Target Temperature
                 102,            // 13       - Fan speed 20/40/60/80/102
                 127,            // 14       - On timer
@@ -39,8 +39,7 @@ export default class BaseCommand {
                 0,              // 20       - TurboMode / Screen display / Fahrenheit
                 // Padding
                 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                // 0, // Message ID 
-                //  0, 0, 6, 14, 187, 137, 169, 223, 88, 121, 170, 108, 162, 36, 170, 80, 242, 143,
+                // 0, 0, 0, 6, 14, 187,
                 // Data End
             ];
             this.data[0x02] = device_type;
@@ -60,18 +59,19 @@ export default class BaseCommand {
                 // Command Header End
                 // Data Start
                 72,             // 10        - Command type: Set (72), Query (65)
-                65,             // 11        - power state: 0/1 + audible feedback: 64
+                64,             // 11        - power state: 0/1 + audible feedback: 64
                 1,              // 12        - Operational mode (1: target, 2: continuous, 3: smart, 4: dry)
-                208,            // 13        - Timing + wind speed 40/60/80
-                127,            // 14        - On timer
-                127,            // 15        - Off timer
+                50,             // 13        - Timing + wind speed 40/60/80
+                0,              // 14        - On timer
+                0,              // 15        - Off timer
                 0,              // 16        - Common timer
-                50,             // 17        - Target humidity
+                0,              // 17        - Target humidity
                 0,              // 18        - Target humidity (float)?
                 0,              // 19        - Display and other settings
-                1,              // 20        - Swing and other settings. In dehumidifier, matches mode
+                0,              // 20        - Swing and other settings. In dehumidifier, matches mode
                 // Padding
-                0, 0, 0, 0, 0, 0, 0, 0, 0
+                0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0,
                 // Data End
             ];
         } else {
