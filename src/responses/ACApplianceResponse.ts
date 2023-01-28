@@ -1,5 +1,5 @@
 import { userInfo } from 'os';
-import ApplianceResponse from '../ApplianceResponse'
+import ApplianceResponse from './ApplianceResponse'
 
 export default class ACApplianceResponse extends ApplianceResponse {
     // Byte 0x02
