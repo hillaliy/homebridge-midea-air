@@ -152,13 +152,12 @@ export default class Utils {
 	};
 
 	static getSignProxied(form: any) {
-		const msg = `meicloud${form}${this.randomString}`;
+		const msg = `meicloud${form}${Utils.randomString}`;
 		return crypto
 			.createHmac('sha256', 'PROD_VnoClJI9aikS8dyy')
 			.update(msg)
 			.digest('hex');
 	};
-
 	static randomString = Math.floor(new Date().getTime() / 1000).toString();
 	static pushToken = crypto.randomBytes(120).toString('base64');
 	static reqId = crypto.randomBytes(16).toString('hex');
